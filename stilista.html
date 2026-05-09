@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Il Tuo Stilista</title>
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ivory: #FAF7F2;
+    --sand: #D4C5A9;
+    --warm-brown: #8B6F47;
+    --dark-brown: #3D2B1F;
+    --charcoal: #2C2C2C;
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --muted: #9A8E7E;
+    --white: #FFFFFF;
+    --error: #C0392B;
+    --success: #2E7D32;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--cream);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── SETUP SCREEN ── */
+  #setupScreen {
+    background: var(--dark-brown);
+    color: var(--cream);
+    padding: env(safe-area-inset-top, 20px) 28px 40px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .setup-header {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 40px;
+  }
+
+  .setup-header .monogram {
+    font-size: 48px;
+    letter-spacing: 8px;
+    color: var(--gold);
+    font-weight: normal;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .setup-header h1 {
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: normal;
+  }
+
+  .setup-body {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .setup-body p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--sand);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .setup-body textarea {
+    width: 100%;
+    height: 220px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,169,110,0.4);
+    border-radius: 4px;
+    color: var(--cream);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 16px;
+    resize: none;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  .setup-body textarea::placeholder { color: rgba(212,197,169,0.45); }
+  .setup-body textarea:focus { border-color: var(--gold); }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--gold);
+    color: var(--dark-brown);
+    border: none;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+
+  .btn-primary:active { background: var(--warm-brown); color: var(--cream); transform: scale(0.98); }
+
+  /* ── MAIN SCREEN ── */
+  #mainScreen {
+    background: var(--ivory);
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+  }
+
+  .main-header {
+    background: var(--dark-brown);
+    padding: calc(env(safe-area-inset-top, 20px) + 16px) 24px 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .main-header-left h1 {
+    font-size: 22px;
+    color: var(--gold);
+    font-weight: normal;
+    letter-spacing: 2px;
+  }
+
+  .main-header-left p {
+    font-size: 11px;
+    color: var(--sand);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .btn-icon {
+    background: transparent;
+    border: 1px solid rgba(201,169,110,0.35);
+    color: var(--sand);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    -webkit-appearance: none;
+  }
+  .btn-icon:active { background: rgba(201,169,110,0.2); }
+
+  /* ── INPUT AREA ── */
+  .input-area {
+    padding: 24px 20px 16px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .input-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .occasion-input {
+    flex: 1;
+    border: 1px solid var(--sand);
+    border-radius: 3px;
+    padding: 13px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--charcoal);
+    background: var(--ivory);
+    outline: none;
+    -webkit-appearance: none;
+    transition: border-color 0.2s;
+  }
+  .occasion-input:focus { border-color: var(--warm-brown); }
+  .occasion-input::placeholder { color: var(--sand); font-style: italic; font-size: 13px; }
+
+  .btn-generate {
+    background: var(--dark-brown);
+    color: var(--gold);
+    border: none;
+    border-radius: 3px;
+    padding: 0 18px;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-appearance: none;
+    min-width: 90px;
+  }
+  .btn-generate:active { transform: scale(0.97); background: var(--warm-brown); }
+  .btn-generate.loading { opacity: 0.6; pointer-events: none; }
+
+  /* ── OCCASIONS PILLS ── */
+  .occasions-pills {
+    padding: 12px 20px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .occasions-pills::-webkit-scrollbar { display: none; }
+
+  .pill {
+    flex-shrink: 0;
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--warm-brown);
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    border: none;
+    font-family: inherit;
+  }
+  .pill:active, .pill.selected { background: var(--dark-brown); color: var(--gold); }
+
+  /* ── OUTFIT DISPLAY ── */
+  .outfit-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--sand);
+    text-align: center;
+    gap: 12px;
+  }
+
+  .empty-state .empty-icon { font-size: 48px; opacity: 0.5; }
+  .empty-state p { font-size: 13px; line-height: 1.7; font-style: italic; max-width: 260px; }
+
+  /* ── OUTFIT CARD ── */
+  .outfit-card {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+    animation: slideUp 0.4s ease;
+    margin-bottom: 16px;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .outfit-card-header {
+    background: var(--dark-brown);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .outfit-occasion {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .outfit-timestamp {
+    font-size: 10px;
+    color: var(--sand);
+    opacity: 0.7;
+  }
+
+  .outfit-items {
+    padding: 20px;
+  }
+
+  .outfit-section {
+    margin-bottom: 16px;
+  }
+
+  .outfit-section:last-child { margin-bottom: 0; }
+
+  .outfit-section-title {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .outfit-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+  }
+
+  .outfit-item {
+    font-size: 15px;
+    color: var(--charcoal);
+    padding: 6px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    border-bottom: 1px dashed rgba(0,0,0,0.05);
+  }
+
+  .outfit-item:last-child { border-bottom: none; }
+
+  .outfit-item-emoji { font-size: 18px; flex-shrink: 0; }
+  .outfit-item-name { line-height: 1.4; }
+
+  .outfit-note {
+    padding: 0 20px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.6;
+    border-top: 1px solid rgba(0,0,0,0.04);
+    padding-top: 14px;
+  }
+
+  /* ── RATING ── */
+  .rating-area {
+    padding: 16px 20px;
+    background: var(--ivory);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rating-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+  .stars-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .star {
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    color: var(--sand);
+    background: none;
+    border: none;
+    padding: 2px;
+    -webkit-appearance: none;
+    line-height: 1;
+  }
+  .star.active { color: var(--gold); }
+  .star:active { transform: scale(1.3); }
+
+  .rating-saved {
+    font-size: 11px;
+    color: var(--success);
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .rating-saved.show { opacity: 1; }
+
+  /* ── HISTORY PANEL ── */
+  #historyPanel {
+    position: fixed;
+    inset: 0;
+    background: var(--ivory);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #historyPanel.open { display: flex; }
+
+  .history-header {
+    background: var(--dark-brown);
+    padding: calc(env(safe-area-inset-top, 20px) + 16px) 20px 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .history-header h2 {
+    font-size: 16px;
+    color: var(--gold);
+    font-weight: normal;
+    letter-spacing: 2px;
+  }
+
+  .btn-close {
+    background: transparent;
+    border: 1px solid rgba(201,169,110,0.35);
+    color: var(--sand);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+
+  .history-list {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .history-item {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+
+  .history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .history-item-occasion { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--warm-brown); }
+  .history-item-date { font-size: 10px; color: var(--muted); }
+  .history-item-rating { font-size: 13px; color: var(--gold); }
+
+  .history-item-items {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── RESET CONFIRM ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 28px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal h3 { font-size: 17px; margin-bottom: 10px; color: var(--dark-brown); }
+  .modal p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+
+  .modal-buttons { display: flex; gap: 10px; }
+  .btn-cancel {
+    flex: 1; padding: 12px; border: 1px solid var(--sand); border-radius: 3px;
+    background: transparent; color: var(--muted); font-family: inherit; font-size: 13px;
+    cursor: pointer; -webkit-appearance: none;
+  }
+  .btn-danger {
+    flex: 1; padding: 12px; border: none; border-radius: 3px;
+    background: var(--error); color: white; font-family: inherit; font-size: 13px;
+    cursor: pointer; -webkit-appearance: none;
+  }
+
+  /* ── SEASONAL TAG ── */
+  .season-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--cream);
+    color: var(--warm-brown);
+    margin: 14px 20px 0;
+  }
+
+  .stylist-tip {
+    padding: 12px 20px;
+    font-size: 11px;
+    color: var(--warm-brown);
+    background: linear-gradient(135deg, rgba(201,169,110,0.08), rgba(201,169,110,0.03));
+    border-left: 2px solid var(--gold);
+    margin: 0 20px 20px;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.6;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setupScreen" class="screen">
+  <div class="setup-header">
+    <span class="monogram">IL</span>
+    <h1>Tuo Stilista Personale</h1>
+  </div>
+  <div class="setup-body">
+    <p>Benvenuto. Per iniziare, incolla il tuo guardaroba qui sotto — ogni capo su una riga. Li memorizzerò per sempre.</p>
+    <textarea id="wardrobeInput" placeholder="Polo bianca Ralph Lauren&#10;Chino navy&#10;Zegna suede marrone&#10;..."></textarea>
+    <button class="btn-primary" onclick="saveWardrobe()">Salva Guardaroba →</button>
+  </div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="mainScreen" class="screen">
+  <div class="main-header">
+    <div class="main-header-left">
+      <h1>Stilista</h1>
+      <p>Quiet Luxury · Old Money</p>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-icon" onclick="openHistory()" title="Storico">◷</button>
+      <button class="btn-icon" onclick="openReset()" title="Reset">⚙</button>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <label class="input-label">Cosa fai oggi?</label>
+    <div class="input-row">
+      <input type="text" class="occasion-input" id="occasionInput"
+        placeholder="es. cena elegante, giorno al mare…"
+        onkeydown="if(event.key==='Enter'){generateOutfit()}" />
+      <button class="btn-generate" id="generateBtn" onclick="generateOutfit()">Crea</button>
+    </div>
+  </div>
+
+  <div class="occasions-pills">
+    <button class="pill" onclick="setPill('Cena elegante')">🍽 Cena</button>
+    <button class="pill" onclick="setPill('Giornata al mare')">🏖 Mare</button>
+    <button class="pill" onclick="setPill('Ufficio casual')">💼 Ufficio</button>
+    <button class="pill" onclick="setPill('Aperitivo serale')">🥂 Aperitivo</button>
+    <button class="pill" onclick="setPill('Passeggiata casual')">🚶 Casual</button>
+    <button class="pill" onclick="setPill('Appuntamento romantico')">💫 Date</button>
+    <button class="pill" onclick="setPill('Weekend in città')">🏙 Weekend</button>
+  </div>
+
+  <div class="outfit-area" id="outfitArea">
+    <div class="empty-state">
+      <div class="empty-icon">✦</div>
+      <p>Scrivi l'occasione e lascia che il tuo stilista personale componga il look perfetto.</p>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY PANEL -->
+<div id="historyPanel">
+  <div class="history-header">
+    <h2>Storico Look</h2>
+    <button class="btn-close" onclick="closeHistory()">Chiudi</button>
+  </div>
+  <div class="history-list" id="historyList"></div>
+</div>
+
+<!-- RESET MODAL -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h3>Reset Guardaroba</h3>
+    <p>Cancellerà il guardaroba, tutto lo storico outfit e le valutazioni. Operazione irreversibile.</p>
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeReset()">Annulla</button>
+      <button class="btn-danger" onclick="doReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  WARDROBE DATABASE
+// ════════════════════════════════════════
+
+const WARDROBE_CATALOG = {
+  intimo: [
+    { nome: "Boxer/slip", cat: "intimo", emoji: "🩲", colori: ["neutro"], formalita: 1, stagioni: ["all"], occasioni: ["all"] }
+  ],
+  torso: [
+    { nome: "Polo beige maglia Zara",        cat: "torso", emoji: "👕", colori: ["beige","neutro"], formalita: 3, stagioni: ["primavera","estate","autunno"], occasioni: ["casual","smart-casual","aperitivo","weekend"] },
+    { nome: "Polo maniche lunghe beige Zara", cat: "torso", emoji: "👕", colori: ["beige","neutro"], formalita: 3, stagioni: ["autunno","inverno","primavera"],  occasioni: ["casual","smart-casual","ufficio","aperitivo"] },
+    { nome: "Polo bianca Ralph Lauren",       cat: "torso", emoji: "👕", colori: ["bianco","neutro"],formalita: 4, stagioni: ["primavera","estate","autunno"],  occasioni: ["smart-casual","ufficio","aperitivo","cena","date","weekend"] },
+    { nome: "Polo nera Lacoste",              cat: "torso", emoji: "👕", colori: ["nero"],           formalita: 4, stagioni: ["all"],                           occasioni: ["smart-casual","ufficio","aperitivo","cena","date"] },
+    { nome: "Camicia RL blu righe bianche",   cat: "torso", emoji: "👔", colori: ["blu","bianco"],   formalita: 4, stagioni: ["primavera","estate","autunno"],  occasioni: ["smart-casual","ufficio","aperitivo","cena","date","weekend"] },
+    { nome: "Camicia Zara lino righe azzurre",cat: "torso", emoji: "👔", colori: ["azzurro","bianco"],formalita: 3,stagioni: ["primavera","estate"],            occasioni: ["casual","smart-casual","mare","weekend","aperitivo"] },
+    { nome: "Camicia RL lino bianca",         cat: "torso", emoji: "👔", colori: ["bianco","neutro"],formalita: 4, stagioni: ["primavera","estate"],            occasioni: ["casual","smart-casual","mare","cena","aperitivo","date","weekend"] },
+    { nome: "Camicia RL lino blu chiaro",     cat: "torso", emoji: "👔", colori: ["azzurro","blu"],  formalita: 4, stagioni: ["primavera","estate"],            occasioni: ["casual","smart-casual","mare","cena","aperitivo","date","weekend"] },
+    { nome: "Camicia Casablanca avorio",      cat: "torso", emoji: "👔", colori: ["beige","avorio","neutro"],formalita: 4,stagioni: ["primavera","estate","autunno"],occasioni: ["smart-casual","aperitivo","cena","date","weekend"] },
+    { nome: "Camicia Pull&Bear beige traforata",cat:"torso",emoji:"👕",  colori: ["beige","neutro"], formalita: 2, stagioni: ["primavera","estate"],            occasioni: ["casual","mare","weekend","aperitivo"] },
+    { nome: "Maglione RL navy",               cat: "torso", emoji: "🧥", colori: ["navy","blu"],     formalita: 3, stagioni: ["autunno","inverno"],             occasioni: ["casual","smart-casual","ufficio","weekend"] },
+    { nome: "Maglione RL zip beige",          cat: "torso", emoji: "🧥", colori: ["beige","neutro"], formalita: 3, stagioni: ["autunno","inverno"],             occasioni: ["casual","smart-casual","ufficio","weekend","aperitivo"] },
+    { nome: "Maglione RL zip azzurro",        cat: "torso", emoji: "🧥", colori: ["azzurro"],        formalita: 3, stagioni: ["autunno","inverno"],             occasioni: ["casual","smart-casual","ufficio","weekend","aperitivo"] },
+    { nome: "Dolcevita nero",                 cat: "torso", emoji: "🖤", colori: ["nero"],            formalita: 4, stagioni: ["autunno","inverno"],             occasioni: ["smart-casual","cena","date","aperitivo","ufficio"] }
+  ],
+  strato: [
+    { nome: "Cappotto grigio",                cat: "strato", emoji: "🧥", colori: ["grigio","neutro"],formalita: 5, stagioni: ["autunno","inverno"],             occasioni: ["smart-casual","ufficio","cena","date","aperitivo","weekend"] },
+    { nome: "Giacca pelle nera",              cat: "strato", emoji: "🧥", colori: ["nero"],           formalita: 3, stagioni: ["autunno","inverno","primavera"], occasioni: ["casual","smart-casual","aperitivo","date","weekend"] }
+  ],
+  gambe: [
+    { nome: "Chino navy",                     cat: "gambe", emoji: "👖", colori: ["navy","blu"],      formalita: 4, stagioni: ["all"],                           occasioni: ["smart-casual","ufficio","aperitivo","cena","date","weekend"] },
+    { nome: "Chino beige",                    cat: "gambe", emoji: "👖", colori: ["beige","neutro"],  formalita: 4, stagioni: ["all"],                           occasioni: ["smart-casual","ufficio","aperitivo","cena","date","weekend","casual"] },
+    { nome: "Pantaloni lino bianchi",         cat: "gambe", emoji: "👖", colori: ["bianco","neutro"], formalita: 4, stagioni: ["primavera","estate"],            occasioni: ["smart-casual","cena","aperitivo","date","mare","weekend"] },
+    { nome: "Jeans neri relaxed",             cat: "gambe", emoji: "👖", colori: ["nero"],            formalita: 3, stagioni: ["all"],                           occasioni: ["casual","smart-casual","aperitivo","date","weekend"] },
+    { nome: "Jeans denim scuro",              cat: "gambe", emoji: "👖", colori: ["blu","navy"],      formalita: 3, stagioni: ["all"],                           occasioni: ["casual","smart-casual","ufficio","aperitivo","date","weekend"] },
+    { nome: "Bermuda bianchi",                cat: "gambe", emoji: "🩳", colori: ["bianco","neutro"], formalita: 2, stagioni: ["estate","primavera"],            occasioni: ["casual","mare","weekend"] },
+    { nome: "Pantaloncini sabbia uncinetto",  cat: "gambe", emoji: "🩳", colori: ["sabbia","beige","neutro"],formalita:2,stagioni:["estate"],                    occasioni: ["casual","mare","weekend"] },
+    { nome: "Pantaloncini Casablanca",        cat: "gambe", emoji: "🩳", colori: ["vari"],            formalita: 2, stagioni: ["estate","primavera"],            occasioni: ["casual","mare","weekend","aperitivo"] }
+  ],
+  scarpe: [
+    { nome: "Zegna suede marrone",            cat: "scarpe", emoji: "👞", colori: ["marrone"],        formalita: 5, stagioni: ["autunno","inverno","primavera"], occasioni: ["smart-casual","ufficio","cena","date","aperitivo"] },
+    { nome: "Espadrillas sabbia",             cat: "scarpe", emoji: "👟", colori: ["sabbia","beige"],  formalita: 2, stagioni: ["estate","primavera"],            occasioni: ["casual","mare","weekend","aperitivo"] },
+    { nome: "Birkenstock Boston",             cat: "scarpe", emoji: "🥿", colori: ["neutro","beige"],  formalita: 1, stagioni: ["estate","primavera"],            occasioni: ["casual","mare","weekend"] },
+    { nome: "Valentino bianche",              cat: "scarpe", emoji: "👟", colori: ["bianco"],          formalita: 3, stagioni: ["all"],                           occasioni: ["casual","smart-casual","aperitivo","date","weekend"] },
+    { nome: "Heritage Court nere",            cat: "scarpe", emoji: "👟", colori: ["nero"],            formalita: 3, stagioni: ["all"],                           occasioni: ["casual","smart-casual","aperitivo","date","weekend"] },
+    { nome: "Chelsea neri",                   cat: "scarpe", emoji: "👞", colori: ["nero"],            formalita: 5, stagioni: ["autunno","inverno","primavera"], occasioni: ["smart-casual","ufficio","cena","date","aperitivo"] },
+    { nome: "LV Trainer",                     cat: "scarpe", emoji: "👟", colori: ["vari"],            formalita: 3, stagioni: ["all"],                           occasioni: ["casual","smart-casual","aperitivo","date","weekend"] }
+  ],
+  accessori: [
+    { nome: "Hermès marrone",                 cat: "accessori", emoji: "🪢", colori: ["marrone"],     formalita: 5, stagioni: ["all"], tipo: "cintura", occasioni: ["smart-casual","ufficio","cena","date","aperitivo"] },
+    { nome: "Ferragamo marrone scuro",        cat: "accessori", emoji: "🪢", colori: ["marrone"],     formalita: 5, stagioni: ["all"], tipo: "cintura", occasioni: ["smart-casual","ufficio","cena","date","aperitivo"] },
+    { nome: "Ferragamo nera",                 cat: "accessori", emoji: "🪢", colori: ["nero"],        formalita: 5, stagioni: ["all"], tipo: "cintura", occasioni: ["smart-casual","ufficio","cena","date","aperitivo"] },
+    { nome: "Casio navy",                     cat: "accessori", emoji: "⌚", colori: ["navy","blu"],  formalita: 2, stagioni: ["all"], tipo: "orologio", occasioni: ["casual","mare","weekend","smart-casual"] },
+    { nome: "Casio bicolore",                 cat: "accessori", emoji: "⌚", colori: ["neutro"],      formalita: 3, stagioni: ["all"], tipo: "orologio", occasioni: ["casual","smart-casual","weekend","aperitivo","date"] },
+    { nome: "Anello sigillo",                 cat: "accessori", emoji: "💍", colori: ["oro"],         formalita: 4, stagioni: ["all"], tipo: "gioiello", occasioni: ["smart-casual","cena","date","aperitivo","weekend"] },
+    { nome: "Collana oro semplice",           cat: "accessori", emoji: "📿", colori: ["oro"],         formalita: 3, stagioni: ["all"], tipo: "gioiello", occasioni: ["casual","smart-casual","mare","aperitivo","date","weekend"] },
+    { nome: "Bracciale catena semplice",      cat: "accessori", emoji: "⛓", colori: ["oro"],         formalita: 3, stagioni: ["all"], tipo: "gioiello", occasioni: ["casual","smart-casual","mare","aperitivo","date","weekend"] }
+  ]
+};
+
+// ════════════════════════════════════════
+//  OCCASION → CONTEXT MAPPING
+// ════════════════════════════════════════
+
+function parseOccasion(text) {
+  const t = text.toLowerCase();
+  const ctx = { occasione: "casual", formalitaTarget: 2, stagione: guessSeason(), note: "" };
+
+  if (/cena|dinner|ristorante|elegante|formale/.test(t)) {
+    ctx.occasione = "cena"; ctx.formalitaTarget = 5;
+    ctx.note = "Mantieni le proporzioni: pantaloni dritti che valorizzano la vita stretta. Scarpe chiuse impeccabili.";
+  } else if (/mare|spiaggia|beach|piscin|pool/.test(t)) {
+    ctx.occasione = "mare"; ctx.formalitaTarget = 1;
+    ctx.note = "Look balneare curato: tessuti leggeri, palette chiara. La tua abbronzatura farà il resto.";
+  } else if (/ufficio|lavoro|meeting|office|professionale/.test(t)) {
+    ctx.occasione = "ufficio"; ctx.formalitaTarget = 4;
+    ctx.note = "Smart casual impeccabile: chino ben stirati, polo o camicia. Cintura abbinata alle scarpe.";
+  } else if (/aperitivo|drink|happy hour|cocktail/.test(t)) {
+    ctx.occasione = "aperitivo"; ctx.formalitaTarget = 3;
+    ctx.note = "Il momento perfetto per la tua componente urbana e seducente. Cura ogni dettaglio.";
+  } else if (/date|appuntamento|romantico|lei|ragazza/.test(t)) {
+    ctx.occasione = "date"; ctx.formalitaTarget = 4;
+    ctx.note = "Curato ma non rigido: lascia trasparire la personalità. Profumo + gioielli sottili.";
+  } else if (/weekend|sabato|domenica|passeggiata|giro/.test(t)) {
+    ctx.occasione = "weekend"; ctx.formalitaTarget = 3;
+    ctx.note = "Casual elevato — il tuo stile quiet luxury funziona meglio quando sembra naturale.";
+  } else if (/casual|relax|casa|amici/.test(t)) {
+    ctx.occasione = "casual"; ctx.formalitaTarget = 2;
+    ctx.note = "Anche nella casualità, dettagli curati fanno la differenza.";
+  } else {
+    // guess formalità da parole chiave
+    ctx.occasione = "smart-casual"; ctx.formalitaTarget = 3;
+    ctx.note = "Ho interpretato la tua occasione come smart casual. Adatta il look al contesto.";
+  }
+  return ctx;
+}
+
+function guessSeason() {
+  const m = new Date().getMonth() + 1;
+  if (m >= 3 && m <= 5) return "primavera";
+  if (m >= 6 && m <= 8) return "estate";
+  if (m >= 9 && m <= 11) return "autunno";
+  return "inverno";
+}
+
+// ════════════════════════════════════════
+//  COLOR HARMONY RULES
+// ════════════════════════════════════════
+
+const COLOR_HARMONY = {
+  navy:    ["bianco","beige","neutro","sabbia","marrone","grigio","azzurro"],
+  blu:     ["bianco","beige","neutro","sabbia","marrone","grigio","azzurro"],
+  azzurro: ["bianco","beige","neutro","navy","blu","sabbia"],
+  beige:   ["navy","blu","azzurro","bianco","neutro","marrone","nero","sabbia","avorio"],
+  neutro:  ["all"],
+  bianco:  ["navy","blu","azzurro","nero","marrone","beige","sabbia"],
+  nero:    ["bianco","beige","neutro","grigio","marrone","sabbia","avorio"],
+  grigio:  ["bianco","nero","navy","blu","beige","neutro"],
+  marrone: ["beige","neutro","navy","bianco","sabbia","avorio"],
+  sabbia:  ["navy","blu","bianco","neutro","beige","marrone"],
+  avorio:  ["navy","blu","beige","neutro","marrone"],
+  oro:     ["navy","nero","bianco","beige","neutro"],
+  vari:    ["all"]
+};
+
+function coloriCompatibili(c1, c2) {
+  if (c1 === "all" || c2 === "all" || c1 === "vari" || c2 === "vari") return true;
+  if (c1 === "neutro" || c2 === "neutro") return true;
+  const compat = COLOR_HARMONY[c1] || [];
+  return compat.includes("all") || compat.includes(c2) || c1 === c2;
+}
+
+function checkColorsOk(items) {
+  // Check top vs bottom color harmony
+  const top = items.find(i => i.cat === "torso");
+  const bottom = items.find(i => i.cat === "gambe");
+  const shoes = items.find(i => i.cat === "scarpe");
+  if (!top || !bottom) return true;
+  const topColor = top.colori[0];
+  const botColor = bottom.colori[0];
+  if (!coloriCompatibili(topColor, botColor)) return false;
+  if (shoes) {
+    const shColor = shoes.colori[0];
+    if (!coloriCompatibili(shColor, topColor) && !coloriCompatibili(shColor, botColor)) return false;
+  }
+  return true;
+}
+
+// ════════════════════════════════════════
+//  WEIGHT SYSTEM (ratings)
+// ════════════════════════════════════════
+
+function getItemWeight(itemName) {
+  const ratings = JSON.parse(localStorage.getItem('itemRatings') || '{}');
+  const base = 1.0;
+  if (!ratings[itemName]) return base;
+  const r = ratings[itemName];
+  // avg rating 1-5 → weight 0.3x to 2.5x
+  return 0.3 + (r.sum / r.count - 1) * (2.2 / 4);
+}
+
+function updateItemRating(outfitItems, rating) {
+  const ratings = JSON.parse(localStorage.getItem('itemRatings') || '{}');
+  outfitItems.forEach(item => {
+    if (!ratings[item.nome]) ratings[item.nome] = { sum: 0, count: 0 };
+    ratings[item.nome].sum += rating;
+    ratings[item.nome].count += 1;
+  });
+  localStorage.setItem('itemRatings', JSON.stringify(ratings));
+}
+
+function weightedRandom(arr) {
+  const weights = arr.map(i => getItemWeight(i.nome));
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < arr.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return arr[i];
+  }
+  return arr[arr.length - 1];
+}
+
+// ════════════════════════════════════════
+//  AVOID RECENT REPETITION
+// ════════════════════════════════════════
+
+function recentItemNames() {
+  const history = JSON.parse(localStorage.getItem('outfitHistory') || '[]');
+  const recent = history.slice(-5);
+  const names = new Set();
+  recent.forEach(o => o.items && o.items.forEach(i => names.add(i.nome)));
+  return names;
+}
+
+function penalizeRecent(arr) {
+  const recent = recentItemNames();
+  // give items NOT in recent a 2x bonus
+  return arr.map(item => ({
+    ...item,
+    _localWeight: recent.has(item.nome) ? 0.4 : 1.5
+  }));
+}
+
+function weightedRandomWithPenalty(arr) {
+  const penalized = penalizeRecent(arr);
+  const weights = penalized.map(i => getItemWeight(i.nome) * i._localWeight);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < penalized.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return arr[i];
+  }
+  return arr[arr.length - 1];
+}
+
+// ════════════════════════════════════════
+//  OUTFIT GENERATION ENGINE
+// ════════════════════════════════════════
+
+function filterByContext(items, ctx) {
+  return items.filter(item => {
+    const stagioneFit = item.stagioni.includes("all") || item.stagioni.includes(ctx.stagione);
+    const occFit = item.occasioni.includes("all") || item.occasioni.includes(ctx.occasione) ||
+                   item.occasioni.includes("smart-casual") && ctx.formalitaTarget >= 3;
+    return stagioneFit && occFit;
+  });
+}
+
+function generateOutfitItems(ctx) {
+  const W = WARDROBE_CATALOG;
+  let attempts = 0;
+  const maxAttempts = 40;
+
+  while (attempts < maxAttempts) {
+    attempts++;
+    const selected = [];
+
+    // 1. Intimo (sempre)
+    selected.push(W.intimo[0]);
+
+    // 2. Torso
+    const torsoOpts = filterByContext(W.torso, ctx);
+    if (!torsoOpts.length) continue;
+    const torso = weightedRandomWithPenalty(torsoOpts);
+    selected.push(torso);
+
+    // 3. Strato (condizionale: formalità alta o inverno/autunno)
+    const needStrato = ctx.stagione === "inverno" || ctx.stagione === "autunno" || ctx.formalitaTarget >= 5;
+    if (needStrato) {
+      const stratoOpts = filterByContext(W.strato, ctx);
+      if (stratoOpts.length) {
+        const strato = weightedRandomWithPenalty(stratoOpts);
+        selected.push(strato);
+      }
+    }
+
+    // 4. Gambe
+    const gambeOpts = filterByContext(W.gambe, ctx);
+    if (!gambeOpts.length) continue;
+    const gambe = weightedRandomWithPenalty(gambeOpts);
+    selected.push(gambe);
+
+    // 5. Color check torso + gambe
+    if (!checkColorsOk(selected)) continue;
+
+    // 6. Scarpe
+    const scarpeOpts = filterByContext(W.scarpe, ctx).filter(s => {
+      // no birkenstock / espadrillas per cena/ufficio
+      if (ctx.formalitaTarget >= 4 && s.nome.includes("Birkenstock")) return false;
+      if (ctx.formalitaTarget >= 5 && s.nome.includes("Espadrillas")) return false;
+      if (ctx.formalitaTarget >= 5 && s.nome.includes("LV Trainer")) return false;
+      // no scarpe chiuse per mare
+      if (ctx.occasione === "mare" && (s.nome.includes("Chelsea") || s.nome.includes("Zegna"))) return false;
+      return coloriCompatibili(s.colori[0], gambe.colori[0]) || coloriCompatibili(s.colori[0], torso.colori[0]);
+    });
+    if (!scarpeOpts.length) continue;
+    const scarpe = weightedRandomWithPenalty(scarpeOpts);
+    selected.push(scarpe);
+
+    // 7. Cintura (se pantaloni e formalità ≥ 3)
+    const hasPants = !gambe.nome.includes("Bermuda") && !gambe.nome.includes("Pantaloncini");
+    if (hasPants && ctx.formalitaTarget >= 3) {
+      const cintureOpts = W.accessori.filter(a => a.tipo === "cintura");
+      // match colore con scarpe
+      const cintureFit = cintureOpts.filter(c =>
+        coloriCompatibili(c.colori[0], scarpe.colori[0])
+      );
+      const cintura = cintureFit.length
+        ? weightedRandomWithPenalty(cintureFit)
+        : weightedRandomWithPenalty(cintureOpts);
+      selected.push(cintura);
+    }
+
+    // 8. Orologio
+    const orologiOpts = W.accessori.filter(a => a.tipo === "orologio" &&
+      (a.occasioni.includes(ctx.occasione) || a.occasioni.includes("all")));
+    if (orologiOpts.length) {
+      const orologio = weightedRandomWithPenalty(orologiOpts);
+      selected.push(orologio);
+    }
+
+    // 9. Gioielli (aggiungere 1-2 pezzi per stile)
+    const gioielliOpts = W.accessori.filter(a => a.tipo === "gioiello" &&
+      (a.occasioni.includes(ctx.occasione) || a.occasioni.includes("smart-casual")));
+    if (gioielliOpts.length) {
+      // Anello quasi sempre
+      const anello = gioielliOpts.find(g => g.nome.includes("Anello"));
+      if (anello && Math.random() > 0.2) selected.push(anello);
+      // Collana o bracciale (non entrambi sempre)
+      const restG = gioielliOpts.filter(g => !g.nome.includes("Anello"));
+      if (restG.length && Math.random() > 0.35) {
+        selected.push(weightedRandomWithPenalty(restG));
+      }
+    }
+
+    // All good!
+    return selected;
+  }
+
+  // Fallback: basic outfit
+  return [W.intimo[0], W.torso[2], W.gambe[1], W.scarpe[3]];
+}
+
+// ════════════════════════════════════════
+//  UI RENDERING
+// ════════════════════════════════════════
+
+const SECTION_ORDER = [
+  { key: "intimo",    label: "Intimo",     emoji: "👙" },
+  { key: "torso",     label: "Sopra",      emoji: "👕" },
+  { key: "strato",    label: "Strato",     emoji: "🧥" },
+  { key: "gambe",     label: "Sotto",      emoji: "👖" },
+  { key: "scarpe",    label: "Scarpe",     emoji: "👞" },
+  { key: "accessori", label: "Accessori",  emoji: "✨" }
+];
+
+const STAGIONE_LABEL = {
+  primavera: "🌸 Primavera",
+  estate: "☀️ Estate",
+  autunno: "🍂 Autunno",
+  inverno: "❄️ Inverno"
+};
+
+function renderOutfit(items, ctx, outfitId) {
+  const grouped = {};
+  items.forEach(i => {
+    if (!grouped[i.cat]) grouped[i.cat] = [];
+    grouped[i.cat].push(i);
+  });
+
+  let html = `<div class="outfit-card" id="card-${outfitId}">`;
+  html += `<div class="outfit-card-header">
+    <span class="outfit-occasion">${ctx.occasione.toUpperCase()}</span>
+    <span class="outfit-timestamp">${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+  </div>`;
+
+  html += `<span class="season-tag">${STAGIONE_LABEL[ctx.stagione] || ctx.stagione}</span>`;
+  html += `<div class="outfit-items">`;
+
+  SECTION_ORDER.forEach(sec => {
+    const secItems = grouped[sec.key];
+    if (!secItems || !secItems.length) return;
+    html += `<div class="outfit-section">
+      <div class="outfit-section-title">${sec.emoji} ${sec.label}</div>`;
+    secItems.forEach(item => {
+      html += `<div class="outfit-item">
+        <span class="outfit-item-emoji">${item.emoji}</span>
+        <span class="outfit-item-name">${item.nome}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `</div>`;
+
+  if (ctx.note) {
+    html += `<div class="outfit-note">${ctx.note}</div>`;
+  }
+
+  // Rating
+  html += `<div class="rating-area">
+    <span class="rating-label">Valuta il look</span>
+    <div class="stars-row" id="stars-${outfitId}">
+      ${[1,2,3,4,5].map(n => `<button class="star" onclick="rateOutfit('${outfitId}',${n})" aria-label="${n} stelle">☆</button>`).join('')}
+    </div>
+    <span class="rating-saved" id="ratingSaved-${outfitId}">✓ Salvato</span>
+  </div>`;
+
+  html += `</div>`;
+  return html;
+}
+
+function rateOutfit(outfitId, rating) {
+  // Update stars UI
+  const stars = document.querySelectorAll(`#stars-${outfitId} .star`);
+  stars.forEach((s, i) => {
+    s.textContent = i < rating ? '★' : '☆';
+    s.classList.toggle('active', i < rating);
+    s.onclick = null; // disable re-rating
+  });
+
+  // Show saved
+  const saved = document.getElementById(`ratingSaved-${outfitId}`);
+  saved.classList.add('show');
+
+  // Find outfit in history and save rating
+  const history = JSON.parse(localStorage.getItem('outfitHistory') || '[]');
+  const outfit = history.find(o => o.id === outfitId);
+  if (outfit) {
+    outfit.rating = rating;
+    localStorage.setItem('outfitHistory', JSON.stringify(history));
+    // Update per-item ratings
+    updateItemRating(outfit.items, rating);
+  }
+}
+
+// ════════════════════════════════════════
+//  MAIN GENERATE FUNCTION
+// ════════════════════════════════════════
+
+let currentOutfitId = null;
+
+function generateOutfit() {
+  const input = document.getElementById('occasionInput');
+  const occasion = input.value.trim();
+  if (!occasion) {
+    input.focus();
+    input.placeholder = "Scrivi prima cosa fai oggi!";
+    setTimeout(() => { input.placeholder = "es. cena elegante, giorno al mare…"; }, 2000);
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.classList.add('loading');
+  btn.textContent = '...';
+
+  setTimeout(() => {
+    const ctx = parseOccasion(occasion);
+    const items = generateOutfitItems(ctx);
+
+    // Save to history
+    const id = 'outfit_' + Date.now();
+    currentOutfitId = id;
+    const history = JSON.parse(localStorage.getItem('outfitHistory') || '[]');
+    history.unshift({ id, occasion, ctx, items, rating: null, date: new Date().toISOString() });
+    // keep max 20
+    localStorage.setItem('outfitHistory', JSON.stringify(history.slice(0, 20)));
+
+    // Render
+    const area = document.getElementById('outfitArea');
+    const newCardHTML = renderOutfit(items, ctx, id);
+    // Prepend new card, keep one old one visible
+    const existing = area.querySelector('.outfit-card');
+    area.innerHTML = newCardHTML + (existing ? existing.outerHTML : '');
+
+    btn.classList.remove('loading');
+    btn.textContent = 'Crea';
+
+    // Scroll to top of outfit area
+    area.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 300);
+}
+
+// ════════════════════════════════════════
+//  PILL QUICK SELECT
+// ════════════════════════════════════════
+
+function setPill(val) {
+  document.getElementById('occasionInput').value = val;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  event.target.classList.add('selected');
+  generateOutfit();
+}
+
+// ════════════════════════════════════════
+//  HISTORY PANEL
+// ════════════════════════════════════════
+
+function openHistory() {
+  const history = JSON.parse(localStorage.getItem('outfitHistory') || '[]');
+  const list = document.getElementById('historyList');
+
+  if (!history.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px;font-style:italic;">Nessun outfit generato ancora.</p>';
+  } else {
+    list.innerHTML = history.map(o => {
+      const stars = o.rating ? '★'.repeat(o.rating) + '☆'.repeat(5 - o.rating) : '—';
+      const itemList = o.items ? o.items.filter(i => i.cat !== 'intimo').map(i => i.nome).join(', ') : '';
+      const date = new Date(o.date).toLocaleDateString('it-IT', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      return `<div class="history-item">
+        <div class="history-item-header">
+          <span class="history-item-occasion">${o.occasion}</span>
+          <span class="history-item-rating">${stars}</span>
+        </div>
+        <div class="history-item-date">${date}</div>
+        <div class="history-item-items">${itemList}</div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('historyPanel').classList.add('open');
+}
+
+function closeHistory() {
+  document.getElementById('historyPanel').classList.remove('open');
+}
+
+// ════════════════════════════════════════
+//  SETUP / RESET
+// ════════════════════════════════════════
+
+function saveWardrobe() {
+  const val = document.getElementById('wardrobeInput').value.trim();
+  if (!val) {
+    alert("Inserisci almeno qualche capo del tuo guardaroba.");
+    return;
+  }
+  localStorage.setItem('wardrobeText', val);
+  localStorage.setItem('wardrobeSet', '1');
+  showMainScreen();
+}
+
+function openReset() { document.getElementById('resetModal').classList.add('open'); }
+function closeReset() { document.getElementById('resetModal').classList.remove('open'); }
+
+function doReset() {
+  localStorage.clear();
+  location.reload();
+}
+
+// ════════════════════════════════════════
+//  SCREEN MANAGEMENT
+// ════════════════════════════════════════
+
+function showMainScreen() {
+  document.getElementById('setupScreen').classList.remove('active');
+  document.getElementById('mainScreen').classList.add('active');
+}
+
+function showSetupScreen() {
+  document.getElementById('mainScreen').classList.remove('active');
+  document.getElementById('setupScreen').classList.add('active');
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('wardrobeSet')) {
+    showMainScreen();
+  } else {
+    document.getElementById('setupScreen').classList.add('active');
+    // Pre-fill with the user's wardrobe
+    const preloaded = `Polo beige maglia Zara
+Polo maniche lunghe beige Zara
+Polo bianca Ralph Lauren
+Polo nera Lacoste
+Camicia RL blu righe bianche
+Camicia Zara lino righe azzurre
+Camicia RL lino bianca
+Camicia RL lino blu chiaro
+Camicia Casablanca avorio
+Camicia Pull&Bear beige traforata
+Maglione RL navy
+Maglione RL zip beige
+Maglione RL zip azzurro
+Dolcevita nero
+Cappotto grigio
+Giacca pelle nera
+Chino navy
+Chino beige
+Pantaloni lino bianchi
+Jeans neri relaxed
+Jeans denim scuro
+Bermuda bianchi
+Pantaloncini sabbia uncinetto
+Pantaloncini Casablanca
+Zegna suede marrone
+Espadrillas sabbia
+Birkenstock Boston
+Valentino bianche
+Heritage Court nere
+Chelsea neri
+LV Trainer
+Hermès marrone
+Ferragamo marrone scuro
+Ferragamo nera
+Casio navy
+Casio bicolore
+Anello sigillo
+Collana oro semplice
+Bracciale catena semplice`;
+    document.getElementById('wardrobeInput').value = preloaded;
+  }
+});
+</script>
+</body>
+</html>
