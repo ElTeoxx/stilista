@@ -132,6 +132,7 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
 .trip-moment-header{background:rgba(61,43,31,0.06);padding:10px 16px;}
 .trip-moment-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--warm-brown);}
 .trip-moment-body{padding:14px 16px;}
+.trip-rating-area{padding:10px 16px;background:var(--ivory);border-top:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;gap:12px;}
 .trip-moment-item{font-size:13px;color:var(--charcoal);padding:4px 0;display:flex;gap:8px;border-bottom:1px dashed rgba(0,0,0,0.05);}
 .trip-moment-item:last-child{border-bottom:none;}
 .trip-moment-emoji{font-size:15px;flex-shrink:0;}
@@ -429,6 +430,8 @@ const BASE_CATALOG = {
 let W = null;
 // Ultima combo usata negli outfit singoli (evita consecutiva)
 let lastSingleCombo = '';
+// Mappa momentId → items per il rating del viaggio
+const tripMomentItems = {};
 
 // ════════════════════════════════════════
 //  SETUP STEP 1 → 2
@@ -862,23 +865,35 @@ function generateTrip() {
   const history=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
   history.unshift({id:tripId,type:'trip',dest,fromVal:fv,toVal:tv,plan,date:new Date().toISOString()});
   localStorage.setItem('outfitHistory',JSON.stringify(history.slice(0,20)));
-  renderTripPlan(plan,dest,fv,tv);
+  renderTripPlan(plan,dest,fv,tv,tripId);
 }
 
 const SECS=[{key:"intimo",e:"🩲"},{key:"torso",e:"👕"},{key:"strato",e:"🧥"},{key:"gambe",e:"👖"},{key:"scarpe",e:"👞"},{key:"calze",e:"🧦"},{key:"accessori",e:"✨"}];
 
-function renderTripPlan(plan,dest,fv,tv){
+function renderTripPlan(plan,dest,fv,tv,tripId){
   const area=document.getElementById('outfitArea');
   const fd=new Date(fv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
   const td=new Date(tv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
   let html=`<div class="trip-plan"><div class="trip-header-card"><h2>✈ ${dest}</h2><p>${fd} — ${td} · ${plan.length} giorn${plan.length===1?'o':'i'}</p></div>`;
   plan.forEach((day,di)=>{
     html+=`<div class="trip-day"><div class="trip-day-header"><div class="trip-day-number">${di+1}</div><div><div class="trip-day-title">Giorno ${di+1}</div><div class="trip-day-date">${day.dateStr}</div></div></div>`;
-    day.dayOutfits.forEach(outfit=>{
+    day.dayOutfits.forEach((outfit,oi)=>{
+      const momentId = `${tripId}_d${di}_m${oi}`;
       html+=`<div class="trip-moment"><div class="trip-moment-header"><span class="trip-moment-label">${outfit.label}</span></div><div class="trip-moment-body">`;
       const g={};outfit.items.forEach(i=>{if(!g[i.cat])g[i.cat]=[];g[i.cat].push(i);});
       SECS.forEach(s=>{if(!g[s.key]||!g[s.key].length)return;g[s.key].forEach(item=>{html+=`<div class="trip-moment-item"><span class="trip-moment-emoji">${item.emoji}</span><span>${item.nome}</span></div>`;});});
-      html+=`</div></div>`;
+      html+=`</div>`;
+      // Salva items in mappa globale per il rating
+      tripMomentItems[momentId] = outfit.items;
+      // Rating stars
+      html+=`<div class="trip-rating-area">
+        <span class="rating-label">Valuta</span>
+        <div class="stars-row" id="stars-${momentId}">
+          ${[1,2,3,4,5].map(n=>`<button class="star" onclick="rateTripMoment('${momentId}',${n})">☆</button>`).join('')}
+        </div>
+        <span class="rating-saved" id="ratingSaved-${momentId}">✓</span>
+      </div>`;
+      html+=`</div>`;
     });
     html+=`</div>`;
   });
@@ -969,6 +984,30 @@ function renderOutfit(items,ctx,oid){
   if(ctx.note)h+=`<div class="outfit-note">${ctx.note}</div>`;
   h+=`<div class="rating-area"><span class="rating-label">Valuta il look</span><div class="stars-row" id="stars-${oid}">${[1,2,3,4,5].map(n=>`<button class="star" onclick="rateOutfit('${oid}',${n})">☆</button>`).join('')}</div><span class="rating-saved" id="ratingSaved-${oid}">✓ Salvato</span></div></div>`;
   return h;
+}
+
+function rateTripMoment(momentId, rating) {
+  const items = tripMomentItems[momentId];
+  if (!items) return;
+  // Update stars UI
+  document.querySelectorAll(`#stars-${momentId} .star`).forEach((s,i)=>{
+    s.textContent=i<rating?'★':'☆';
+    s.classList.toggle('active',i<rating);
+    s.onclick=null;
+  });
+  const sv=document.getElementById(`ratingSaved-${momentId}`);
+  if(sv) sv.classList.add('show');
+  // Save item ratings
+  updateItemRating(items, rating);
+  // Save combo rating
+  const torso=items.find(i=>i.cat==='torso');
+  const gambe=items.find(i=>i.cat==='gambe');
+  if(torso&&gambe){
+    const comboKey=torso.nome+'|'+gambe.nome;
+    const comboRatings=JSON.parse(localStorage.getItem('comboRatings')||'[]');
+    comboRatings.push({key:comboKey,rating,date:new Date().toISOString()});
+    localStorage.setItem('comboRatings',JSON.stringify(comboRatings.slice(-100)));
+  }
 }
 
 function rateOutfit(oid,rating){
