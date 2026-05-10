@@ -75,6 +75,11 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
 .date-row{margin-top:4px;}
 .date-input{width:100%;border:1px solid var(--sand);border-radius:3px;padding:9px 12px;font-family:inherit;font-size:13px;color:var(--charcoal);background:var(--ivory);outline:none;-webkit-appearance:none;}
 .date-input:focus{border-color:var(--warm-brown);}
+.weather-row{margin-top:4px;}
+.weather-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.weather-chip{padding:7px 13px;border-radius:20px;font-size:12px;color:var(--warm-brown);background:var(--cream);border:1px solid var(--sand);cursor:pointer;font-family:inherit;-webkit-appearance:none;transition:all 0.15s;white-space:nowrap;}
+.weather-chip.selected{background:var(--dark-brown);color:var(--gold);border-color:var(--dark-brown);}
+.weather-chip:active{transform:scale(0.96);}
 
 /* TRIP FORM */
 .trip-form{padding:20px;background:var(--white);border-bottom:1px solid rgba(0,0,0,0.06);display:none;flex-direction:column;gap:14px;}
@@ -230,6 +235,16 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
         <label class="input-label" style="margin:10px 0 6px;">Data</label>
         <input type="date" id="singleDate" class="date-input" />
       </div>
+      <div class="weather-row">
+        <label class="input-label" style="margin:10px 0 8px;">Condizioni meteo</label>
+        <div class="weather-chips">
+          <button class="weather-chip selected" id="w-normale" onclick="selectWeather('normale')">☀️ Normale</button>
+          <button class="weather-chip" id="w-caldo" onclick="selectWeather('caldo')">🥵 Molto caldo</button>
+          <button class="weather-chip" id="w-fresco" onclick="selectWeather('fresco')">🌤 Fresco</button>
+          <button class="weather-chip" id="w-pioggia" onclick="selectWeather('pioggia')">🌧 Pioggia</button>
+          <button class="weather-chip" id="w-freddo" onclick="selectWeather('freddo')">🥶 Freddo</button>
+        </div>
+      </div>
     </div>
     <div class="occasions-pills">
       <button class="pill" onclick="setPill('Cena elegante')">🍽 Cena</button>
@@ -258,6 +273,16 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
         <button class="pill" id="vtype-montagna" onclick="selectVtype('montagna')">⛰ Montagna</button>
         <button class="pill" id="vtype-resort" onclick="selectVtype('resort')">🌴 Resort</button>
         <button class="pill" id="vtype-evento" onclick="selectVtype('evento')">🎉 Evento</button>
+      </div>
+    </div>
+    <div>
+      <label class="input-label" style="margin-bottom:8px;">Meteo previsto</label>
+      <div class="weather-chips">
+        <button class="weather-chip selected" id="tw-normale" onclick="selectTripWeather('normale')">☀️ Normale</button>
+        <button class="weather-chip" id="tw-caldo" onclick="selectTripWeather('caldo')">🥵 Molto caldo</button>
+        <button class="weather-chip" id="tw-fresco" onclick="selectTripWeather('fresco')">🌤 Fresco</button>
+        <button class="weather-chip" id="tw-pioggia" onclick="selectTripWeather('pioggia')">🌧 Pioggia</button>
+        <button class="weather-chip" id="tw-freddo" onclick="selectTripWeather('freddo')">🥶 Freddo</button>
       </div>
     </div>
     <button class="btn-trip" onclick="generateTrip()">✈ Pianifica Viaggio</button>
@@ -430,6 +455,10 @@ const BASE_CATALOG = {
 let W = null;
 // Ultima combo usata negli outfit singoli (evita consecutiva)
 let lastSingleCombo = '';
+// Meteo selezionato dall'utente
+let selectedWeather = 'normale';
+// Meteo viaggio
+let selectedTripWeather = 'normale';
 // Mappa momentId → items per il rating del viaggio
 const tripMomentItems = {};
 
@@ -736,10 +765,11 @@ function buildOutfit(ctx, tripUsed) {
   const sel = [];
   sel.push(torso);
 
-  // Strato (solo stagioni fredde)
-  if (COLD.includes(ctx.stagione)) {
+  // Strato: freddo o meteo che lo richiede, ma non se fa molto caldo
+  const needStrato = COLD.includes(ctx.stagione) || ctx.forceStrato;
+  if (needStrato && !ctx.noStrato) {
     const sO = filterCtx(W.strato, ctx);
-    if (sO.length && Math.random() > 0.3) sel.push(pickRand(sO));
+    if (sO.length) sel.push(pickRand(sO));
   }
 
   sel.push(gambe);
@@ -749,6 +779,9 @@ function buildOutfit(ctx, tripUsed) {
     if (ctx.formalitaTarget>=4 && s.nome.includes("Birkenstock")) return false;
     if (ctx.formalitaTarget>=5 && (s.nome.includes("Espadrillas")||s.nome.includes("LV Trainer"))) return false;
     if (ctx.occasione==="mare" && (s.nome.includes("Chelsea")||s.nome.includes("Zegna"))) return false;
+    // Con la pioggia: no scarpe aperte (Birkenstock, Espadrillas) e no sneaker in canvas
+    if (ctx.pioggia && (s.nome.includes("Birkenstock")||s.nome.includes("Espadrillas"))) return false;
+    if (ctx.pioggia && (s.nome.includes("Espadrillas")||s.nome.includes("LV Trainer"))) return false;
     return cc(s.colori[0],gambe.colori[0]) || cc(s.colori[0],torso.colori[0]);
   });
   // Se nessuna scarpa compatibile, allarga il filtro
@@ -858,7 +891,12 @@ function generateTrip() {
     const date=new Date(fd); date.setDate(date.getDate()+d);
     const dateStr=date.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
     const momenti=getMomenti(d,days,selectedVtype);
-    const dayOutfits=momenti.map(m=>{ const ctx=parseOccasion(m.occ); ctx.stagione=stagione; return{label:m.label,occ:m.occ,items:buildOutfit(ctx,tripUsed),ctx}; });
+    const dayOutfits=momenti.map(m=>{
+      const ctx=parseOccasion(m.occ);
+      ctx.stagione=stagione;
+      applyWeather(ctx, selectedTripWeather);
+      return{label:m.label,occ:m.occ,items:buildOutfit(ctx,tripUsed),ctx};
+    });
     plan.push({dayIndex:d,dateStr,dayOutfits});
   }
   const tripId='trip_'+Date.now();
@@ -874,7 +912,10 @@ function renderTripPlan(plan,dest,fv,tv,tripId){
   const area=document.getElementById('outfitArea');
   const fd=new Date(fv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
   const td=new Date(tv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
-  let html=`<div class="trip-plan"><div class="trip-header-card"><h2>✈ ${dest}</h2><p>${fd} — ${td} · ${plan.length} giorn${plan.length===1?'o':'i'}</p></div>`;
+  const tripWeatherEmoji = {normale:'☀️',caldo:'🥵',fresco:'🌤',pioggia:'🌧',freddo:'🥶'};
+  const tripWeatherLabel = {normale:'Bel tempo',caldo:'Molto caldo',fresco:'Fresco',pioggia:'Pioggia',freddo:'Freddo'};
+  const wInfo = selectedTripWeather!=='normale' ? ` · ${tripWeatherEmoji[selectedTripWeather]} ${tripWeatherLabel[selectedTripWeather]}` : '';
+  let html=`<div class="trip-plan"><div class="trip-header-card"><h2>✈ ${dest}</h2><p>${fd} — ${td} · ${plan.length} giorn${plan.length===1?'o':'i'}${wInfo}</p></div>`;
   plan.forEach((day,di)=>{
     html+=`<div class="trip-day"><div class="trip-day-header"><div class="trip-day-number">${di+1}</div><div><div class="trip-day-title">Giorno ${di+1}</div><div class="trip-day-date">${day.dateStr}</div></div></div>`;
     day.dayOutfits.forEach((outfit,oi)=>{
@@ -978,7 +1019,9 @@ const SL={primavera:"🌸 Primavera","primavera-fredda":"🌸 Primavera (fresca)
 function renderOutfit(items,ctx,oid){
   const g={};items.forEach(i=>{if(!g[i.cat])g[i.cat]=[];g[i.cat].push(i);});
   let h=`<div class="outfit-card" id="card-${oid}"><div class="outfit-card-header"><span class="outfit-occasion">${ctx.occasione.toUpperCase()}</span><span class="outfit-timestamp">${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div>`;
-  h+=`<span class="season-tag">${SL[ctx.stagione]||ctx.stagione}</span><div class="outfit-items">`;
+  const weatherEmoji = {normale:'',caldo:' 🥵',fresco:' 🌤',pioggia:' 🌧',freddo:' 🥶'};
+  const wTag = ctx.weather && ctx.weather!=='normale' ? `<span class="season-tag" style="margin-left:6px;">${weatherEmoji[ctx.weather]||''} ${ctx.weather.charAt(0).toUpperCase()+ctx.weather.slice(1)}</span>` : '';
+  h+=`<span class="season-tag">${SL[ctx.stagione]||ctx.stagione}</span>${wTag}<div class="outfit-items">`;
   SO.forEach(s=>{if(!g[s.key]||!g[s.key].length)return;h+=`<div class="outfit-section"><div class="outfit-section-title">${s.emoji} ${s.label}</div>`;g[s.key].forEach(item=>{h+=`<div class="outfit-item"><span class="outfit-item-emoji">${item.emoji}</span><span class="outfit-item-name">${item.nome}</span></div>`;});h+=`</div>`;});
   h+=`</div>`;
   if(ctx.note)h+=`<div class="outfit-note">${ctx.note}</div>`;
@@ -1035,11 +1078,63 @@ function rateOutfit(oid,rating){
 // ════════════════════════════════════════
 //  MODE / NAVIGATION
 // ════════════════════════════════════════
+function selectTripWeather(w){
+  selectedTripWeather = w;
+  document.querySelectorAll('[id^="tw-"]').forEach(b=>b.classList.remove('selected'));
+  const el = document.getElementById('tw-'+w);
+  if(el) el.classList.add('selected');
+}
+
+function selectWeather(w){
+  selectedWeather = w;
+  document.querySelectorAll('.weather-chip').forEach(b=>b.classList.remove('selected'));
+  const el = document.getElementById('w-'+w);
+  if(el) el.classList.add('selected');
+}
+
+// Applica le condizioni meteo al contesto: sovrascrive stagione e aggiunge flag
+function applyWeather(ctx, weather) {
+  ctx.weather = weather;
+  switch(weather) {
+    case 'caldo':
+      // Forza estate: capi leggeri, no strati
+      ctx.stagione = 'estate';
+      ctx.noStrato = true;
+      ctx.note += ' Caldo intenso: privilegia tessuti leggeri e traspiranti.';
+      break;
+    case 'fresco':
+      // Sposta verso primavera fredda: strato leggero ok
+      if(['estate','primavera','autunno-caldo'].includes(ctx.stagione)){
+        ctx.stagione = 'primavera-fredda';
+      }
+      ctx.note += ' Aria fresca: considera uno strato leggero.';
+      break;
+    case 'pioggia':
+      // Evita scarpe aperte, suggerisce strato
+      ctx.pioggia = true;
+      ctx.note += ' Pioggia in arrivo: scarpe chiuse e uno strato.';
+      break;
+    case 'freddo':
+      // Forza inverno: strato obbligatorio
+      ctx.stagione = 'inverno';
+      ctx.forceStrato = true;
+      ctx.note += ' Freddo: strato obbligatorio.';
+      break;
+    case 'normale':
+    default:
+      break;
+  }
+  return ctx;
+}
+
 function switchMode(mode){
   document.getElementById('tabSingle').classList.toggle('active',mode==='single');
   document.getElementById('tabTrip').classList.toggle('active',mode==='trip');
   document.getElementById('singleInput').style.display=mode==='single'?'block':'none';
   document.getElementById('tripInput').classList.toggle('active',mode==='trip');
+  // Reset weather selectors when switching tab
+  if(mode==='single') selectWeather(selectedWeather);
+  if(mode==='trip') selectTripWeather(selectedTripWeather);
   document.getElementById('outfitArea').innerHTML=`<div class="empty-state"><div class="empty-icon">${mode==='trip'?'✈':'✦'}</div><p>${mode==='trip'?'Inserisci destinazione e date per pianificare il guardaroba del tuo viaggio.':'Scrivi l\'occasione e lascia che il tuo stilista personale componga il look perfetto.'}</p></div>`;
 }
 
@@ -1054,6 +1149,7 @@ function generateOutfit(){
     const ctx=parseOccasion(occ);
     const dateVal=document.getElementById('singleDate').value;
     if(dateVal) ctx.stagione=seasonFromDate(dateVal);
+    applyWeather(ctx, selectedWeather);
     // Passa una mini-map che blocca solo l'ultima combo usata
     const singleMap = new Map();
     if(lastSingleCombo) singleMap.set('__last__', lastSingleCombo);
