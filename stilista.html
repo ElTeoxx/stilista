@@ -3,1515 +3,2164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Il Tuo Stilista</title>
+<title>VESTIRE — Outfit Planner</title>
 <style>
 :root {
-  --cream:#F5F0E8; --ivory:#FAF7F2; --sand:#D4C5A9; --warm-brown:#8B6F47;
-  --dark-brown:#3D2B1F; --charcoal:#2C2C2C; --gold:#C9A96E; --muted:#9A8E7E;
-  --white:#FFFFFF; --error:#C0392B; --success:#2E7D32;
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html, body { min-height:100%; background:var(--cream); font-family:'Georgia','Times New Roman',serif; color:var(--charcoal); }
-
-/* ── SCREENS ── */
-.screen { display:none; min-height:100vh; }
-.screen.active { display:flex; flex-direction:column; }
-
-/* ── SETUP STEP 1 ── */
-#setupScreen { background:var(--dark-brown); color:var(--cream); padding:60px 24px 40px; align-items:center; }
-.setup-logo { text-align:center; margin-bottom:32px; }
-.setup-logo .mono { font-size:44px; letter-spacing:8px; color:var(--gold); font-weight:normal; display:block; margin-bottom:8px; }
-.setup-logo h1 { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--sand); font-weight:normal; }
-.setup-body { width:100%; max-width:500px; }
-.setup-body p { font-size:13px; line-height:1.8; color:var(--sand); margin-bottom:16px; font-style:italic; }
-.setup-body textarea { width:100%; height:200px; background:rgba(255,255,255,0.06); border:1px solid rgba(201,169,110,0.4); border-radius:4px; color:var(--cream); font-family:'Courier New',monospace; font-size:12px; line-height:1.7; padding:14px; resize:none; outline:none; -webkit-appearance:none; }
-.setup-body textarea:focus { border-color:var(--gold); }
-.setup-body textarea::placeholder { color:rgba(212,197,169,0.4); }
-
-/* ── SETUP STEP 2 ── */
-#materialsScreen { background:var(--ivory); }
-.mat-header { background:var(--dark-brown); padding:20px 20px 18px; position:sticky; top:0; z-index:10; }
-.mat-header h2 { color:var(--gold); font-size:16px; font-weight:normal; letter-spacing:2px; margin-bottom:4px; }
-.mat-header p { color:var(--sand); font-size:11px; letter-spacing:1px; }
-.mat-progress { height:3px; background:rgba(255,255,255,0.15); margin-top:12px; border-radius:2px; }
-.mat-progress-bar { height:100%; background:var(--gold); border-radius:2px; transition:width 0.3s; }
-.mat-list { padding:16px; }
-.mat-item { background:var(--white); border-radius:8px; margin-bottom:10px; overflow:hidden; box-shadow:0 1px 8px rgba(0,0,0,0.05); }
-.mat-item-name { padding:14px 16px 10px; font-size:14px; color:var(--charcoal); border-bottom:1px solid rgba(0,0,0,0.04); }
-.mat-item-name span { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:2px; }
-.mat-chips { padding:10px 12px 12px; display:flex; flex-wrap:wrap; gap:7px; }
-.mat-chip { touch-action:manipulation; padding:6px 13px; border-radius:20px; font-size:12px; color:var(--warm-brown); background:var(--cream); border:1px solid var(--sand); cursor:pointer; font-family:inherit; -webkit-appearance:none; transition:all 0.15s; white-space:nowrap; }
-.mat-chip.sel { background:var(--dark-brown); color:var(--gold); border-color:var(--dark-brown); }
-.mat-chip:active { transform:scale(0.96); }
-.mat-footer { padding:16px; position:sticky; bottom:0; background:var(--ivory); border-top:1px solid rgba(0,0,0,0.06); }
-.mat-count { font-size:11px; color:var(--muted); text-align:center; margin-bottom:10px; letter-spacing:1px; }
-
-/* ── MAIN SCREEN ── */
-#mainScreen { background:var(--ivory); }
-.main-header { background:var(--dark-brown); padding:20px 24px; display:flex; align-items:center; justify-content:space-between; }
-.main-header-left h1 { font-size:22px; color:var(--gold); font-weight:normal; letter-spacing:2px; }
-.main-header-left p { font-size:11px; color:var(--sand); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
-.mode-tabs { display:flex; background:var(--white); border-bottom:1px solid rgba(0,0,0,0.06); }
-.mode-tab { flex:1; padding:13px 8px; font-family:inherit; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; -webkit-appearance:none; touch-action:manipulation; }
-.mode-tab.active { color:var(--dark-brown); border-bottom-color:var(--gold); }
-.input-area { padding:16px 20px 12px; background:var(--white); border-bottom:1px solid rgba(0,0,0,0.06); }
-.input-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; display:block; }
-.input-row { display:flex; gap:10px; align-items:stretch; }
-.occasion-input { flex:1; border:1px solid var(--sand); border-radius:3px; padding:12px 14px; font-family:inherit; font-size:15px; color:var(--charcoal); background:var(--ivory); outline:none; -webkit-appearance:none; }
-.occasion-input:focus { border-color:var(--warm-brown); }
-.occasion-input::placeholder { color:var(--sand); font-style:italic; font-size:13px; }
-.date-row { margin-top:8px; }
-.date-input { width:100%; border:1px solid var(--sand); border-radius:3px; padding:9px 12px; font-family:inherit; font-size:13px; color:var(--charcoal); background:var(--ivory); outline:none; -webkit-appearance:none; }
-.date-input:focus { border-color:var(--warm-brown); }
-.weather-row { margin-top:8px; }
-.weather-chips { display:flex; gap:7px; flex-wrap:wrap; }
-.weather-chip { touch-action:manipulation; padding:6px 12px; border-radius:20px; font-size:11px; color:var(--warm-brown); background:var(--cream); border:1px solid var(--sand); cursor:pointer; font-family:inherit; -webkit-appearance:none; transition:all 0.15s; white-space:nowrap; }
-.weather-chip.selected { background:var(--dark-brown); color:var(--gold); border-color:var(--dark-brown); }
-.occasions-pills { padding:10px 20px; background:var(--white); border-bottom:1px solid rgba(0,0,0,0.06); display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-.occasions-pills::-webkit-scrollbar { display:none; }
-.pill { touch-action:manipulation; flex-shrink:0; background:var(--cream); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--warm-brown); cursor:pointer; white-space:nowrap; -webkit-appearance:none; border:none; font-family:inherit; }
-.pill:active, .pill.selected { background:var(--dark-brown); color:var(--gold); }
-.outfit-area { flex:1; padding:16px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
-.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; color:var(--sand); text-align:center; gap:12px; }
-.empty-state .empty-icon { font-size:48px; opacity:0.5; }
-.empty-state p { font-size:13px; line-height:1.7; font-style:italic; max-width:260px; }
-
-/* ── TRIP FORM ── */
-.trip-form { padding:16px; background:var(--white); border-bottom:1px solid rgba(0,0,0,0.06); display:none; flex-direction:column; gap:12px; }
-.trip-form.active { display:flex; }
-.trip-row { display:flex; gap:10px; }
-.trip-field { flex:1; display:flex; flex-direction:column; gap:6px; }
-.trip-field label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
-.trip-field input { border:1px solid var(--sand); border-radius:3px; padding:10px 12px; font-family:inherit; font-size:14px; color:var(--charcoal); background:var(--ivory); outline:none; -webkit-appearance:none; width:100%; }
-.trip-field input:focus { border-color:var(--warm-brown); }
-
-/* ── BUTTONS ── */
-.btn-gold { touch-action:manipulation; display:block; width:100%; margin-top:12px; padding:15px; background:var(--gold); color:var(--dark-brown); border:none; border-radius:3px; font-family:inherit; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; font-weight:bold; -webkit-appearance:none; }
-.btn-gold:active { background:var(--warm-brown); color:var(--cream); }
-.btn-generate { touch-action:manipulation; background:var(--dark-brown); color:var(--gold); border:none; border-radius:3px; padding:0 18px; font-family:inherit; font-size:11px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; white-space:nowrap; -webkit-appearance:none; min-width:90px; }
-.btn-generate:active { background:var(--warm-brown); }
-.btn-generate.loading { opacity:0.6; pointer-events:none; }
-.btn-trip { touch-action:manipulation; background:var(--dark-brown); color:var(--gold); border:none; border-radius:3px; padding:14px; font-family:inherit; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; -webkit-appearance:none; }
-.btn-trip:active { background:var(--warm-brown); }
-.btn-icon { touch-action:manipulation; background:transparent; border:1px solid rgba(201,169,110,0.35); color:var(--sand); width:38px; height:38px; border-radius:50%; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-appearance:none; flex-shrink:0; }
-.btn-icon:active { background:rgba(201,169,110,0.2); }
-.btn-close { touch-action:manipulation; background:transparent; border:1px solid rgba(201,169,110,0.35); color:var(--sand); padding:8px 16px; border-radius:20px; font-size:12px; cursor:pointer; font-family:inherit; -webkit-appearance:none; white-space:nowrap; flex-shrink:0; }
-.btn-close:active { background:rgba(201,169,110,0.2); }
-.btn-cancel { flex:1; padding:12px; border:1px solid var(--sand); border-radius:3px; background:transparent; color:var(--muted); font-family:inherit; font-size:13px; cursor:pointer; -webkit-appearance:none; touch-action:manipulation; }
-.btn-danger { flex:1; padding:12px; border:none; border-radius:3px; background:var(--error); color:white; font-family:inherit; font-size:13px; cursor:pointer; -webkit-appearance:none; touch-action:manipulation; }
-.btn-danger-soft { touch-action:manipulation; width:100%; padding:12px; border:1px solid var(--error); border-radius:4px; background:transparent; color:var(--error); font-family:inherit; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; -webkit-appearance:none; }
-
-/* ── OUTFIT CARDS ── */
-.outfit-card { background:var(--white); border-radius:8px; overflow:hidden; box-shadow:0 2px 20px rgba(0,0,0,0.07); animation:slideUp 0.4s ease; margin-bottom:16px; }
-@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.outfit-card-header { background:var(--dark-brown); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
-.outfit-occasion { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
-.outfit-timestamp { font-size:10px; color:var(--sand); opacity:0.7; }
-.outfit-items { padding:16px; }
-.outfit-section { margin-bottom:14px; }
-.outfit-section:last-child { margin-bottom:0; }
-.outfit-section-title { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
-.outfit-section-title::after { content:''; flex:1; height:1px; background:rgba(0,0,0,0.06); }
-.outfit-item { font-size:14px; color:var(--charcoal); padding:5px 0; display:flex; align-items:baseline; gap:10px; border-bottom:1px dashed rgba(0,0,0,0.05); }
-.outfit-item:last-child { border-bottom:none; }
-.outfit-item-emoji { font-size:16px; flex-shrink:0; }
-.outfit-note { padding:12px 16px; font-size:12px; color:var(--muted); font-style:italic; line-height:1.6; border-top:1px solid rgba(0,0,0,0.04); }
-.season-tag { display:inline-block; padding:3px 10px; border-radius:12px; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:var(--cream); color:var(--warm-brown); margin:12px 16px 0; }
-.rating-area { padding:12px 16px; background:var(--ivory); border-top:1px solid rgba(0,0,0,0.06); display:flex; align-items:center; justify-content:space-between; }
-.rating-label { font-size:11px; color:var(--muted); letter-spacing:1px; }
-.stars-row { display:flex; gap:4px; }
-.star { touch-action:manipulation; font-size:22px; cursor:pointer; color:var(--sand); background:none; border:none; padding:2px; -webkit-appearance:none; line-height:1; }
-.star.active { color:var(--gold); }
-.rating-saved { font-size:11px; color:var(--success); letter-spacing:1px; opacity:0; transition:opacity 0.3s; }
-.rating-saved.show { opacity:1; }
-
-/* ── TRIP PLAN ── */
-.trip-plan { animation:slideUp 0.4s ease; }
-.trip-header-card { background:var(--dark-brown); border-radius:8px; padding:18px; margin-bottom:14px; }
-.trip-header-card h2 { color:var(--gold); font-size:18px; font-weight:normal; letter-spacing:1px; margin-bottom:4px; }
-.trip-header-card p { color:var(--sand); font-size:12px; }
-.trip-day { margin-bottom:18px; }
-.trip-day-header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-.trip-day-number { background:var(--gold); color:var(--dark-brown); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; flex-shrink:0; }
-.trip-day-title { font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--warm-brown); }
-.trip-day-date { font-size:11px; color:var(--muted); }
-.trip-moment { background:var(--white); border-radius:6px; margin-bottom:8px; overflow:hidden; box-shadow:0 1px 8px rgba(0,0,0,0.05); }
-.trip-moment-header { background:rgba(61,43,31,0.06); padding:10px 14px; }
-.trip-moment-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--warm-brown); }
-.trip-moment-body { padding:12px 14px; }
-.trip-moment-item { font-size:13px; color:var(--charcoal); padding:4px 0; display:flex; gap:8px; border-bottom:1px dashed rgba(0,0,0,0.05); }
-.trip-moment-item:last-child { border-bottom:none; }
-.trip-moment-emoji { font-size:14px; flex-shrink:0; }
-.trip-rating-area { padding:8px 14px; background:var(--ivory); border-top:1px solid rgba(0,0,0,0.05); display:flex; align-items:center; gap:12px; }
-.valigia-section { margin-top:18px; }
-.valigia-header { background:var(--dark-brown); border-radius:8px 8px 0 0; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
-.valigia-header h3 { color:var(--gold); font-size:14px; font-weight:normal; letter-spacing:2px; text-transform:uppercase; }
-.valigia-header span { color:var(--sand); font-size:11px; }
-.valigia-body { background:var(--white); border-radius:0 0 8px 8px; padding:14px 18px; box-shadow:0 2px 20px rgba(0,0,0,0.07); }
-.valigia-cat { margin-bottom:12px; }
-.valigia-cat-title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(0,0,0,0.06); }
-.valigia-item { font-size:13px; color:var(--charcoal); padding:5px 0; display:flex; gap:8px; align-items:center; }
-.valigia-qty { background:var(--gold); color:var(--dark-brown); border-radius:10px; padding:1px 7px; font-size:10px; font-weight:bold; flex-shrink:0; }
-
-/* ── PANELS (full-page overlays) ── */
-.panel {
-  display:none;
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  z-index:200;
-  flex-direction:column;
-  background:var(--ivory);
-  overflow:hidden;
-}
-.panel.open { display:flex; }
-.panel-header {
-  background:var(--dark-brown);
-  padding:20px 20px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  flex-shrink:0;
-}
-.panel-header h2 { font-size:16px; color:var(--gold); font-weight:normal; letter-spacing:2px; flex:1; }
-.panel-header p { font-size:11px; color:var(--sand); margin-top:2px; }
-.panel-body {
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  padding:14px;
+  --brown: #3D2B1F;
+  --brown-light: #5C3D2E;
+  --gold: #C9A96E;
+  --gold-light: #E2C898;
+  --gold-pale: #F0E0C0;
+  --cream: #F5F0E8;
+  --ivory: #FAF7F2;
+  --text: #2A1A10;
+  --text-muted: #7A6055;
+  --border: rgba(201,169,110,0.25);
+  --shadow: 0 4px 24px rgba(61,43,31,0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
 }
 
-/* ── HISTORY ITEMS ── */
-.history-item { background:var(--white); border-radius:6px; padding:14px 16px; box-shadow:0 1px 8px rgba(0,0,0,0.05); margin-bottom:10px; }
-.history-item-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-.history-item-occasion { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--warm-brown); }
-.history-item-date { font-size:10px; color:var(--muted); }
-.history-item-rating { font-size:13px; color:var(--gold); }
-.history-item-items { font-size:12px; color:var(--muted); line-height:1.7; }
-.history-badge { display:inline-block; background:rgba(201,169,110,0.2); color:var(--warm-brown); border-radius:10px; padding:2px 8px; font-size:10px; letter-spacing:1px; margin-bottom:6px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── WARDROBE MANAGER ── */
-.wp-add { background:var(--white); border-radius:8px; padding:14px; box-shadow:0 1px 8px rgba(0,0,0,0.06); margin-bottom:12px; }
-.wp-add-title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
-.wp-input { width:100%; border:1px solid var(--sand); border-radius:3px; padding:10px 12px; font-family:inherit; font-size:14px; color:var(--charcoal); background:var(--ivory); outline:none; -webkit-appearance:none; margin-bottom:10px; }
-.wp-input:focus { border-color:var(--warm-brown); }
-.wp-add-chips { display:flex; flex-wrap:wrap; gap:6px; }
-.wp-item { background:var(--white); border-radius:8px; padding:14px 16px; box-shadow:0 1px 6px rgba(0,0,0,0.05); margin-bottom:8px; }
-.wp-item-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:8px; }
-.wp-item-name { font-size:14px; color:var(--charcoal); flex:1; min-width:0; word-break:break-word; }
-.wp-item-cat { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); flex-shrink:0; }
-.wp-item-del { touch-action:manipulation; background:transparent; border:none; color:var(--sand); font-size:22px; cursor:pointer; padding:0 4px; -webkit-appearance:none; flex-shrink:0; line-height:1; }
-.wp-item-del:active { color:var(--error); }
-.wp-item-chips { display:flex; flex-wrap:wrap; gap:6px; }
+html { background: var(--brown); }
 
-/* ── MODAL ── */
-.modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:300; display:none; align-items:center; justify-content:center; padding:30px; }
-.modal-overlay.open { display:flex; }
-.modal { background:var(--white); border-radius:8px; padding:28px; max-width:320px; width:100%; text-align:center; }
-.modal h3 { font-size:17px; margin-bottom:10px; color:var(--dark-brown); }
-.modal p { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:24px; }
-.modal-buttons { display:flex; gap:10px; }
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--ivory);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--brown);
+  color: var(--gold);
+  padding: 14px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.app-title {
+  font-size: 22px;
+  letter-spacing: 4px;
+  font-style: italic;
+  font-weight: normal;
+}
+.header-actions { display: flex; gap: 10px; }
+.icon-btn {
+  background: none;
+  border: 1px solid rgba(201,169,110,0.4);
+  color: var(--gold);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.icon-btn:active { background: rgba(201,169,110,0.15); }
+
+/* ── TABS ── */
+.tab-bar {
+  display: flex;
+  background: var(--brown);
+  border-bottom: 1px solid rgba(201,169,110,0.2);
+}
+.tab-btn {
+  flex: 1;
+  padding: 11px 6px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  color: rgba(201,169,110,0.5);
+}
+.tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ── MAIN CONTENT ── */
+.tab-content { display: none; padding: 20px 16px 100px; }
+.tab-content.active { display: block; }
+
+/* ── SETUP ── */
+.setup-step { display: none; padding: 20px 16px 100px; }
+.setup-step.active { display: block; }
+
+.step-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.step-number {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.step-title {
+  font-size: 22px;
+  color: var(--brown);
+  font-weight: normal;
+}
+.step-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+textarea {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  line-height: 1.8;
+}
+textarea:focus { border-color: var(--gold); }
+
+.btn-primary {
+  width: 100%;
+  background: var(--brown);
+  color: var(--gold);
+  border: none;
+  padding: 16px;
+  border-radius: var(--radius);
+  font-family: Georgia, serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+  margin-top: 16px;
+  transition: background 0.2s;
+}
+.btn-primary:active { background: var(--brown-light); }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--brown);
+}
+.btn-gold:active { background: var(--gold-light); }
+
+/* ── CATALOG ITEM SETUP ── */
+.catalog-setup-list { display: flex; flex-direction: column; gap: 16px; }
+
+.catalog-item-setup {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.item-name-setup {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--brown);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.chip-group-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.chip {
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-family: Georgia, serif;
+  background: var(--ivory);
+  color: var(--text-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+}
+.chip.selected {
+  background: var(--brown);
+  color: var(--gold);
+  border-color: var(--brown);
+}
+.chip:active { opacity: 0.7; }
+
+/* ── OUTFIT TAB ── */
+.field-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+  display: block;
+}
+.field-group { margin-bottom: 16px; }
+
+input[type="text"], input[type="date"] {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  -webkit-appearance: none;
+}
+input:focus { border-color: var(--gold); }
+
+.weather-chips, .quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.weather-chip, .quick-chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-family: Georgia, serif;
+  background: var(--cream);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+}
+.weather-chip.selected, .quick-chip.selected {
+  background: var(--brown);
+  color: var(--gold);
+  border-color: var(--brown);
+}
+
+/* ── OUTFIT RESULT ── */
+.outfit-result {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-top: 20px;
+  display: none;
+}
+.outfit-result.visible { display: block; }
+.outfit-result-title {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.outfit-layer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.outfit-layer:last-of-type { border-bottom: none; }
+.outfit-layer-icon {
+  font-size: 22px;
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.outfit-layer-content { flex: 1; }
+.outfit-layer-cat {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.outfit-layer-item {
+  font-size: 15px;
+  color: var(--brown);
+  font-style: italic;
+}
+.outfit-layer-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ── STARS ── */
+.stars-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  touch-action: manipulation;
+  color: var(--border);
+  transition: color 0.15s, transform 0.15s;
+  user-select: none;
+}
+.star.lit { color: var(--gold); }
+.star:active { transform: scale(1.3); }
+
+/* ── TRAVEL TAB ── */
+.travel-type-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.travel-type-chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-family: Georgia, serif;
+  background: var(--cream);
+  color: var(--text);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s;
+}
+.travel-type-chip.selected {
+  background: var(--brown);
+  color: var(--gold);
+  border-color: var(--brown);
+}
+
+.travel-plan { margin-top: 20px; display: none; }
+.travel-plan.visible { display: block; }
+
+.travel-day {
+  margin-bottom: 24px;
+}
+.travel-day-header {
+  background: var(--brown);
+  color: var(--gold);
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.travel-moment {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.travel-moment-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.packing-list {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 24px;
+}
+.packing-list-title {
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.packing-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.packing-item:last-child { border-bottom: none; }
+.packing-qty {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 9px;
+}
+
+/* ── OVERLAY PANELS ── */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: var(--ivory);
+  flex-direction: column;
+}
+.overlay.open { display: flex; }
+.overlay-header {
+  background: var(--brown);
+  padding: 60px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.overlay-title {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.overlay-close {
+  background: none;
+  border: 1px solid rgba(201,169,110,0.4);
+  color: var(--gold);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex; align-items: center; justify-content: center;
+}
+.overlay-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  padding-bottom: 40px;
+}
+
+/* ── WARDROBE OVERLAY ── */
+.wardrobe-item {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wardrobe-item-name { flex: 1; font-size: 14px; font-style: italic; }
+.wardrobe-item-meta { font-size: 11px; color: var(--text-muted); }
+.wardrobe-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  touch-action: manipulation;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.wardrobe-delete:active { background: rgba(201,169,110,0.15); }
+
+.add-item-form {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.add-item-form-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.reset-btn {
+  width: 100%;
+  background: none;
+  border: 1px solid rgba(201,169,110,0.3);
+  color: var(--text-muted);
+  padding: 14px;
+  border-radius: var(--radius);
+  font-family: Georgia, serif;
+  font-size: 13px;
+  cursor: pointer;
+  touch-action: manipulation;
+  margin-top: 20px;
+  letter-spacing: 1px;
+}
+.reset-btn:active { background: rgba(201,169,110,0.1); }
+
+/* ── HISTORY OVERLAY ── */
+.history-item {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.history-occasion {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--brown);
+  margin-bottom: 4px;
+}
+.history-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.history-items { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.history-stars { color: var(--gold); font-size: 13px; margin-top: 6px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state-text { font-size: 14px; line-height: 1.6; }
+
+/* ── DIVIDER ── */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+/* ── PROGRESS ── */
+.setup-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+.progress-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.progress-dot.active { background: var(--gold); }
+
+/* ── MATERIAL CHIP EDIT ── */
+.mat-chip-small {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-family: Georgia, serif;
+  background: var(--brown);
+  color: var(--gold);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: inline-block;
+}
+
+/* ── INLINE SELECT ── */
+.inline-select {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.generating-msg {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+  padding: 20px;
+}
+
+/* ── NOTIFICATION ── */
+.notif {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--brown);
+  color: var(--gold);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.notif.show { opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; }
 </style>
 </head>
 <body>
 
-<!-- STEP 1: Lista capi -->
-<div id="setupScreen" class="screen">
-  <div class="setup-logo">
-    <span class="mono">IL</span>
-    <h1>Tuo Stilista Personale</h1>
-  </div>
-  <div class="setup-body">
-    <p>Incolla il tuo guardaroba — un capo per riga. Nel passo successivo indicherai il materiale di ognuno.</p>
-    <textarea id="wardrobeInput" placeholder="Polo bianca Ralph Lauren&#10;Chino navy&#10;Chelsea neri&#10;..."></textarea>
-    <button class="btn-gold" onclick="goToMaterials()">Continua → Materiali</button>
+<div class="app-header">
+  <div class="app-title">vestire</div>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="openHistory()" title="Storico">◷</button>
+    <button class="icon-btn" onclick="openWardrobe()" title="Guardaroba">⚙</button>
   </div>
 </div>
 
-<!-- STEP 2: Materiali -->
-<div id="materialsScreen" class="screen">
-  <div class="mat-header">
-    <h2>Materiali</h2>
-    <p>Tocca il materiale di ogni capo — guida lo stilista</p>
-    <div class="mat-progress"><div class="mat-progress-bar" id="matProgressBar" style="width:0%"></div></div>
+<!-- TABS -->
+<div class="tab-bar" id="tabBar" style="display:none">
+  <button class="tab-btn active" onclick="switchTab('outfit')" id="tab-outfit">Outfit</button>
+  <button class="tab-btn" onclick="switchTab('travel')" id="tab-travel">Viaggio</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SETUP -->
+<!-- ══════════════════════════════════════════ -->
+<div id="setupSection">
+  <!-- STEP 1 -->
+  <div class="setup-step active" id="setup-step1">
+    <div class="step-header">
+      <div class="step-number">Setup — Passo 1 di 2</div>
+      <div class="step-title">Il tuo guardaroba</div>
+      <div class="step-subtitle">Incolla i tuoi capi, uno per riga.<br>Esempio: Camicia bianca Oxford, Jeans slim navy…</div>
+    </div>
+    <textarea id="wardrobeInput" rows="14" placeholder="Camicia bianca Oxford&#10;Jeans slim navy&#10;Sneakers bianche Clean&#10;Blazer beige lino&#10;..."></textarea>
+    <button class="btn-primary btn-gold" onclick="proceedToStep2()" style="touch-action:manipulation">Continua →</button>
   </div>
-  <div class="mat-list" id="matList"></div>
-  <div class="mat-footer">
-    <div class="mat-count" id="matCount">Seleziona il materiale di ogni capo</div>
-    <button class="btn-gold" onclick="saveMaterials()">Salva e Inizia →</button>
+
+  <!-- STEP 2 -->
+  <div class="setup-step" id="setup-step2">
+    <div class="step-header">
+      <div class="step-number">Setup — Passo 2 di 2</div>
+      <div class="step-title">Classifica i capi</div>
+      <div class="step-subtitle">Per ogni capo seleziona categoria e materiale.</div>
+    </div>
+    <div class="catalog-setup-list" id="catalogSetupList"></div>
+    <button class="btn-primary btn-gold" onclick="saveSetup()" style="margin-top:20px">Salva Guardaroba ✓</button>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="mainScreen" class="screen">
-  <div class="main-header">
-    <div class="main-header-left">
-      <h1>Stilista</h1>
-      <p>Quiet Luxury · Old Money</p>
+<!-- ══════════════════════════════════════════ -->
+<!-- OUTFIT TAB -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-outfit-content">
+
+  <div class="field-group">
+    <label class="field-label">Occasione</label>
+    <input type="text" id="outfitOccasione" placeholder="Es. cena con amici, aperitivo in centro…">
+  </div>
+
+  <div class="two-col">
+    <div class="field-group">
+      <label class="field-label">Data</label>
+      <input type="date" id="outfitData">
     </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn-icon" onclick="openHistory()">◷</button>
-      <button class="btn-icon" onclick="openWardrobe()">⚙</button>
+    <div class="field-group">
+      <label class="field-label">Meteo</label>
+      <select class="inline-select" id="outfitMeteo">
+        <option value="normal">☀️ Normale</option>
+        <option value="hot">🥵 Molto caldo</option>
+        <option value="cool">🌤 Fresco</option>
+        <option value="rain">🌧 Pioggia</option>
+        <option value="cold">🥶 Freddo</option>
+      </select>
     </div>
   </div>
-  <div class="mode-tabs">
-    <button class="mode-tab active" id="tabSingle" onclick="switchMode('single')">✦ Outfit</button>
-    <button class="mode-tab" id="tabTrip" onclick="switchMode('trip')">✈ Viaggio</button>
+
+  <div class="field-group">
+    <label class="field-label">Tipo</label>
+    <div class="quick-chips" id="quickChips">
+      <span class="quick-chip" onclick="toggleQuick(this,'Cena')">Cena</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Mare')">Mare</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Ufficio')">Ufficio</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Aperitivo')">Aperitivo</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Casual')">Casual</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Date')">Date</span>
+      <span class="quick-chip" onclick="toggleQuick(this,'Weekend')">Weekend</span>
+    </div>
   </div>
-  <div id="singleInput">
-    <div class="input-area">
-      <label class="input-label">Cosa fai oggi?</label>
-      <div class="input-row">
-        <input type="text" class="occasion-input" id="occasionInput"
-          placeholder="es. cena elegante, giorno al mare…"
-          onkeydown="if(event.key==='Enter'){generateOutfit()}" />
-        <button class="btn-generate" id="generateBtn" onclick="generateOutfit()">Crea</button>
+
+  <button class="btn-primary" onclick="generateOutfit()">Crea Outfit</button>
+
+  <div class="outfit-result" id="outfitResult">
+    <div class="outfit-result-title" id="outfitResultTitle">Outfit del Giorno</div>
+    <div id="outfitLayers"></div>
+    <div class="stars-row" id="outfitStars">
+      <span class="star" onclick="rateOutfit(1)">★</span>
+      <span class="star" onclick="rateOutfit(2)">★</span>
+      <span class="star" onclick="rateOutfit(3)">★</span>
+      <span class="star" onclick="rateOutfit(4)">★</span>
+      <span class="star" onclick="rateOutfit(5)">★</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TRAVEL TAB -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-travel-content">
+
+  <div class="field-group">
+    <label class="field-label">Destinazione</label>
+    <input type="text" id="travelDest" placeholder="Es. Barcellona, Capri, Parigi…">
+  </div>
+
+  <div class="two-col">
+    <div class="field-group">
+      <label class="field-label">Dal</label>
+      <input type="date" id="travelFrom">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Al</label>
+      <input type="date" id="travelTo">
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Tipo Vacanza</label>
+    <div class="travel-type-chips" id="travelTypeChips">
+      <span class="travel-type-chip" onclick="toggleTravelType(this,'Mare')">🌊 Mare</span>
+      <span class="travel-type-chip" onclick="toggleTravelType(this,'Città')">🏙 Città</span>
+      <span class="travel-type-chip" onclick="toggleTravelType(this,'Montagna')">⛰ Montagna</span>
+      <span class="travel-type-chip" onclick="toggleTravelType(this,'Resort')">🏨 Resort</span>
+      <span class="travel-type-chip" onclick="toggleTravelType(this,'Evento')">🎭 Evento</span>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label class="field-label">Meteo Previsto</label>
+    <select class="inline-select" id="travelMeteo">
+      <option value="normal">☀️ Normale</option>
+      <option value="hot">🥵 Molto caldo</option>
+      <option value="cool">🌤 Fresco</option>
+      <option value="rain">🌧 Pioggia</option>
+      <option value="cold">🥶 Freddo</option>
+    </select>
+  </div>
+
+  <button class="btn-primary" onclick="planTravel()">Pianifica Viaggio</button>
+
+  <div class="travel-plan" id="travelPlan">
+    <div id="travelDaysList"></div>
+    <div class="packing-list" id="packingList">
+      <div class="packing-list-title">Lista Valigia</div>
+      <div id="packingItems"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- WARDROBE OVERLAY -->
+<!-- ══════════════════════════════════════════ -->
+<div class="overlay" id="wardrobeOverlay">
+  <div class="overlay-header">
+    <span class="overlay-title">Guardaroba</span>
+    <button class="overlay-close" onclick="closeWardrobe()">×</button>
+  </div>
+  <div class="overlay-body">
+    <div class="add-item-form">
+      <div class="add-item-form-title">Aggiungi Capo</div>
+      <div class="field-group">
+        <input type="text" id="newItemName" placeholder="Nome capo…">
       </div>
-      <div class="date-row">
-        <label class="input-label" style="margin:10px 0 6px;">Data</label>
-        <input type="date" id="singleDate" class="date-input" />
-      </div>
-      <div class="weather-row">
-        <label class="input-label" style="margin:10px 0 8px;">Condizioni meteo</label>
-        <div class="weather-chips">
-          <button class="weather-chip selected" id="w-normale" onclick="selectWeather('normale')">☀️ Normale</button>
-          <button class="weather-chip" id="w-caldo" onclick="selectWeather('caldo')">🥵 Molto caldo</button>
-          <button class="weather-chip" id="w-fresco" onclick="selectWeather('fresco')">🌤 Fresco</button>
-          <button class="weather-chip" id="w-pioggia" onclick="selectWeather('pioggia')">🌧 Pioggia</button>
-          <button class="weather-chip" id="w-freddo" onclick="selectWeather('freddo')">🥶 Freddo</button>
+      <div class="field-group">
+        <label class="field-label">Categoria</label>
+        <div class="chip-group" id="newItemCatChips">
+          <span class="chip" onclick="selectNewCat(this,'Sopra')">Sopra</span>
+          <span class="chip" onclick="selectNewCat(this,'Sotto')">Sotto</span>
+          <span class="chip" onclick="selectNewCat(this,'Scarpe')">Scarpe</span>
+          <span class="chip" onclick="selectNewCat(this,'Strato')">Strato</span>
+          <span class="chip" onclick="selectNewCat(this,'Accessori')">Accessori</span>
+          <span class="chip" onclick="selectNewCat(this,'Intimo')">Intimo</span>
         </div>
       </div>
-    </div>
-    <div class="occasions-pills">
-      <button class="pill" onclick="setPill('Cena elegante')">🍽 Cena</button>
-      <button class="pill" onclick="setPill('Giornata al mare')">🏖 Mare</button>
-      <button class="pill" onclick="setPill('Ufficio casual')">💼 Ufficio</button>
-      <button class="pill" onclick="setPill('Aperitivo serale')">🥂 Aperitivo</button>
-      <button class="pill" onclick="setPill('Passeggiata casual')">🚶 Casual</button>
-      <button class="pill" onclick="setPill('Appuntamento romantico')">💫 Date</button>
-      <button class="pill" onclick="setPill('Weekend in città')">🏙 Weekend</button>
-    </div>
-  </div>
-  <div class="trip-form" id="tripInput">
-    <div>
-      <label class="input-label">Destinazione</label>
-      <input type="text" class="occasion-input" id="tripDest" placeholder="es. Sardegna, Parigi, Ibiza…" style="width:100%;" />
-    </div>
-    <div class="trip-row">
-      <div class="trip-field"><label>Dal</label><input type="date" id="tripFrom" /></div>
-      <div class="trip-field"><label>Al</label><input type="date" id="tripTo" /></div>
-    </div>
-    <div>
-      <label class="input-label" style="margin-bottom:8px;">Tipo di vacanza</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="pill" id="vtype-mare" onclick="selectVtype('mare')">🏖 Mare</button>
-        <button class="pill" id="vtype-citta" onclick="selectVtype('citta')">🏛 Città</button>
-        <button class="pill" id="vtype-montagna" onclick="selectVtype('montagna')">⛰ Montagna</button>
-        <button class="pill" id="vtype-resort" onclick="selectVtype('resort')">🌴 Resort</button>
-        <button class="pill" id="vtype-evento" onclick="selectVtype('evento')">🎉 Evento</button>
+      <div class="field-group">
+        <label class="field-label">Materiale</label>
+        <div class="chip-group" id="newItemMatChips">
+          <span class="chip" onclick="selectNewMat(this,'Cotone leggero')">Cotone leggero</span>
+          <span class="chip" onclick="selectNewMat(this,'Lino')">Lino</span>
+          <span class="chip" onclick="selectNewMat(this,'Cotone')">Cotone</span>
+          <span class="chip" onclick="selectNewMat(this,'Jersey-polo')">Jersey</span>
+          <span class="chip" onclick="selectNewMat(this,'Denim')">Denim</span>
+          <span class="chip" onclick="selectNewMat(this,'Maglia')">Maglia</span>
+          <span class="chip" onclick="selectNewMat(this,'Lana')">Lana</span>
+          <span class="chip" onclick="selectNewMat(this,'Cashmere')">Cashmere</span>
+          <span class="chip" onclick="selectNewMat(this,'Pelle')">Pelle</span>
+          <span class="chip" onclick="selectNewMat(this,'Suede-camoscio')">Suede</span>
+          <span class="chip" onclick="selectNewMat(this,'Canvas-tela')">Canvas</span>
+          <span class="chip" onclick="selectNewMat(this,'Sintetico')">Sintetico</span>
+          <span class="chip" onclick="selectNewMat(this,'Metallo-oro')">Metallo</span>
+          <span class="chip" onclick="selectNewMat(this,'Plastica')">Plastica</span>
+        </div>
       </div>
+      <button class="btn-primary btn-gold" onclick="addNewItem()">Aggiungi</button>
     </div>
-    <div>
-      <label class="input-label" style="margin-bottom:8px;">Meteo previsto</label>
-      <div class="weather-chips">
-        <button class="weather-chip selected" id="tw-normale" onclick="selectTripWeather('normale')">☀️ Normale</button>
-        <button class="weather-chip" id="tw-caldo" onclick="selectTripWeather('caldo')">🥵 Molto caldo</button>
-        <button class="weather-chip" id="tw-fresco" onclick="selectTripWeather('fresco')">🌤 Fresco</button>
-        <button class="weather-chip" id="tw-pioggia" onclick="selectTripWeather('pioggia')">🌧 Pioggia</button>
-        <button class="weather-chip" id="tw-freddo" onclick="selectTripWeather('freddo')">🥶 Freddo</button>
-      </div>
-    </div>
-    <button class="btn-trip" onclick="generateTrip()">✈ Pianifica Viaggio</button>
-  </div>
-  <div class="outfit-area" id="outfitArea">
-    <div class="empty-state">
-      <div class="empty-icon">✦</div>
-      <p>Scrivi l'occasione e lascia che il tuo stilista personale componga il look perfetto.</p>
-    </div>
+
+    <div id="wardrobeList"></div>
+    <button class="reset-btn" onclick="resetAll()">⚠ Reset completo guardaroba</button>
   </div>
 </div>
 
-<!-- WARDROBE MANAGER -->
-<div id="wardrobePanel" class="panel">
-  <div class="panel-header">
-    <div style="flex:1;min-width:0;">
-      <h2>Guardaroba</h2>
-      <p id="wpCount" style="font-size:11px;color:var(--sand);margin-top:2px;"></p>
-    </div>
-    <button class="btn-close" onclick="closeWardrobe()">Chiudi</button>
+<!-- ══════════════════════════════════════════ -->
+<!-- HISTORY OVERLAY -->
+<!-- ══════════════════════════════════════════ -->
+<div class="overlay" id="historyOverlay">
+  <div class="overlay-header">
+    <span class="overlay-title">Storico Outfit</span>
+    <button class="overlay-close" onclick="closeHistory()">×</button>
   </div>
-  <div class="panel-body">
-    <div class="wp-add">
-      <div class="wp-add-title">➕ Aggiungi capo</div>
-      <input type="text" id="wpNewName" placeholder="es. Giacca lino beige…" class="wp-input" />
-      <div class="input-label" style="margin:8px 0 6px;">Categoria</div>
-      <div class="wp-add-chips" id="wpCatChips"></div>
-      <div class="input-label" style="margin:10px 0 6px;">Materiale</div>
-      <div class="wp-add-chips" id="wpNewChips"></div>
-      <button class="btn-gold" onclick="addWardrobeItem()" style="margin-top:12px;">Aggiungi</button>
-    </div>
-    <div id="wpList"></div>
-    <div style="margin-top:12px;">
-      <button class="btn-danger-soft" onclick="openReset()">🗑 Reset completo guardaroba</button>
-    </div>
-  </div>
+  <div class="overlay-body" id="historyBody"></div>
 </div>
 
-<!-- HISTORY -->
-<div id="historyPanel" class="panel">
-  <div class="panel-header">
-    <h2>Storico Look</h2>
-    <button class="btn-close" onclick="closeHistory()">Chiudi</button>
-  </div>
-  <div class="panel-body" id="historyList"></div>
-</div>
-
-<!-- RESET MODAL -->
-<div class="modal-overlay" id="resetModal">
-  <div class="modal">
-    <h3>Reset Guardaroba</h3>
-    <p>Cancellerà guardaroba, storico outfit e valutazioni. Irreversibile.</p>
-    <div class="modal-buttons">
-      <button class="btn-cancel" onclick="closeReset()">Annulla</button>
-      <button class="btn-danger" onclick="doReset()">Reset</button>
-    </div>
-  </div>
-</div>
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
 
 <script>
-// ════════════════════════════════════════
-//  MATERIALI — definizioni e stagioni
-// ════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// DATA & CONSTANTS
+// ══════════════════════════════════════════════════
 
-// Per ogni materiale: quali stagioni sono appropriate
-const MATERIAL_SEASONS = {
-  // Caldi/estivi
-  lino:          ["primavera","estate","autunno-caldo"],
-  cotone_leggero:["primavera","estate","autunno-caldo"],
-  seersucker:    ["estate","primavera"],
-  jersey:        ["primavera","estate","autunno-caldo","autunno"],
-  // Medi
-  cotone:        ["primavera-fredda","primavera","estate","autunno-caldo","autunno"],
-  denim:         ["primavera-fredda","primavera","autunno","inverno"],
-  // Freddi
-  maglia:        ["primavera-fredda","autunno","inverno"],
-  lana:          ["autunno","inverno","primavera-fredda"],
-  cashmere:      ["autunno","inverno","primavera-fredda"],
-  flanella:      ["autunno","inverno","primavera-fredda"],
-  // Speciali
-  pelle:         ["autunno","inverno","primavera-fredda"],
-  suede:         ["autunno","inverno","primavera-fredda"],
-  camoscio:      ["autunno","inverno","primavera-fredda"],
-  sintetico:     ["all"],
-  canvas:        ["primavera","estate","autunno-caldo","primavera-fredda","autunno"],
-  // Accessori
-  metallo:       ["all"],
-  oro:           ["all"],
-  argento:       ["all"],
-  plastica:      ["all"],
-  resina:        ["all"],
+const CATS = ['Sopra','Sotto','Scarpe','Strato','Accessori','Intimo'];
+const MATS = ['Cotone leggero','Lino','Cotone','Jersey-polo','Denim','Maglia','Lana','Cashmere','Pelle','Suede-camoscio','Canvas-tela','Sintetico','Metallo-oro','Plastica'];
+
+// Stagioni per materiale
+const MAT_SEASONS = {
+  'Lino': ['primavera','estate','autunno-caldo'],
+  'Cotone leggero': ['primavera','estate','autunno-caldo'],
+  'Canvas-tela': ['primavera','estate','autunno-caldo'],
+  'Cotone': ['primavera-fredda','primavera','estate','autunno'],
+  'Jersey-polo': ['primavera-fredda','primavera','estate','autunno'],
+  'Denim': ['primavera-fredda','primavera','estate','autunno'],
+  'Maglia': ['autunno','inverno','primavera-fredda'],
+  'Lana': ['autunno','inverno','primavera-fredda'],
+  'Cashmere': ['autunno','inverno','primavera-fredda'],
+  'Pelle': ['autunno','inverno','primavera-fredda'],
+  'Suede-camoscio': ['autunno','inverno','primavera-fredda'],
+  'Sintetico': ['inverno','primavera-fredda','primavera','estate','autunno-caldo','autunno'],
+  'Metallo-oro': ['inverno','primavera-fredda','primavera','estate','autunno-caldo','autunno'],
+  'Plastica': ['inverno','primavera-fredda','primavera','estate','autunno-caldo','autunno']
 };
 
-// Opzioni materiale per categoria di capo
-const MATERIAL_OPTIONS = {
-  torso: [
-    {id:"cotone_leggero", label:"Cotone leggero"},
-    {id:"lino",           label:"Lino"},
-    {id:"cotone",         label:"Cotone"},
-    {id:"jersey",         label:"Jersey/polo"},
-    {id:"maglia",         label:"Maglia"},
-    {id:"lana",           label:"Lana"},
-    {id:"cashmere",       label:"Cashmere"},
-  ],
-  gambe: [
-    {id:"cotone",         label:"Cotone"},
-    {id:"lino",           label:"Lino"},
-    {id:"denim",          label:"Denim"},
-    {id:"flanella",       label:"Flanella"},
-    {id:"lana",           label:"Lana"},
-    {id:"sintetico",      label:"Sintetico/tecnico"},
-  ],
-  strato: [
-    {id:"pelle",          label:"Pelle"},
-    {id:"lana",           label:"Lana"},
-    {id:"cotone",         label:"Cotone"},
-    {id:"sintetico",      label:"Sintetico"},
-  ],
-  scarpe: [
-    {id:"suede",          label:"Suede/camoscio"},
-    {id:"pelle",          label:"Pelle"},
-    {id:"canvas",         label:"Canvas/tela"},
-    {id:"sintetico",      label:"Sintetico"},
-  ],
-  accessori: [
-    {id:"pelle",          label:"Pelle"},
-    {id:"metallo",        label:"Metallo/oro"},
-    {id:"plastica",       label:"Plastica/resina"},
-    {id:"sintetico",      label:"Sintetico"},
-  ],
-  intimo: [
-    {id:"cotone",         label:"Cotone"},
-    {id:"sintetico",      label:"Sintetico/microfibra"},
-  ],
-};
-
-// ════════════════════════════════════════
-//  WARDROBE CATALOG (base — stagioni da materiale)
-// ════════════════════════════════════════
-const BASE_CATALOG = {
-  intimo: [], torso: [], strato: [], gambe: [], scarpe: [], accessori: []
-};
-
-// Carica i capi salvati in localStorage nel BASE_CATALOG
-function loadCatalogFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('userCatalog') || '[]');
-  // Reset
-  for (const cat in BASE_CATALOG) BASE_CATALOG[cat] = [];
-  stored.forEach(item => {
-    const cat = item.cat || 'torso';
-    if (!BASE_CATALOG[cat]) BASE_CATALOG[cat] = [];
-    BASE_CATALOG[cat].push(item);
-  });
+// Mese → stagione
+function monthToSeason(month) { // 1-12
+  if ([12,1,2].includes(month)) return 'inverno';
+  if ([3,4].includes(month)) return 'primavera-fredda';
+  if (month === 5) return 'primavera';
+  if ([6,7,8].includes(month)) return 'estate';
+  if (month === 9) return 'autunno-caldo';
+  if ([10,11].includes(month)) return 'autunno';
 }
 
-// Salva BASE_CATALOG in localStorage
-function saveCatalogToStorage() {
-  const all = [];
-  for (const cat in BASE_CATALOG) {
-    (BASE_CATALOG[cat] || []).forEach(item => all.push(item));
+// Meteo override stagione
+function meteoSeason(meteo, baseSeason) {
+  if (meteo === 'hot') return 'estate';
+  if (meteo === 'cold') return 'inverno';
+  if (meteo === 'cool') {
+    if (baseSeason === 'estate') return 'primavera';
+    return baseSeason;
   }
-  localStorage.setItem('userCatalog', JSON.stringify(all));
+  return baseSeason;
 }
 
-// Wardrobe arricchito con stagioni (popolato dopo setup)
-let W = null;
-// Ultima combo usata negli outfit singoli (evita consecutiva)
-let lastSingleCombo = '';
-// Meteo selezionato dall'utente
-let selectedWeather = 'normale';
-// Meteo viaggio
-let selectedTripWeather = 'normale';
-// Mappa momentId → items per il rating del viaggio
-const tripMomentItems = {};
+// ══════════════════════════════════════════════════
+// SISTEMA COLORI PROFESSIONALE
+// Basato su teoria menswear: tono, temperatura, saturazione
+// Fonte: Flusser "Dressing the Man", capsule Zegna/Loro Piana
+// ══════════════════════════════════════════════════
 
-// ════════════════════════════════════════
-//  SETUP STEP 1 → 2
-// ════════════════════════════════════════
-// Mappatura automatica nome→categoria per lo step materiali
-function guessCategory(name) {
-  // Check manual override first (set when user adds a new item)
-  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
-  if (catOverrides[name]) return catOverrides[name];
+// Famiglie cromatiche — per rilevare il colore dal nome del capo
+const COLOR_FAMILIES = {
+  // NEUTRI FREDDI
+  'nero':        ['nero','nera','black','ebano'],
+  'antracite':   ['antracite','anthracite','grafite','graphite','carbone'],
+  'grigio scuro':['grigio scuro','charcoal','grigio piombo','slate'],
+  'grigio':      ['grigio','gray','grey','grigio medio'],
+  'grigio chiaro':['grigio chiaro','light gray','silver','argento'],
+  'bianco':      ['bianco','bianca','white','ottico','optical'],
+  'avorio':      ['avorio','ivory','panna','off-white','off white'],
+  'crema':       ['crema','cream','ecru','écru'],
+  // NEUTRI CALDI
+  'cammello':    ['cammello','camel','camo','caramel','caramello'],
+  'beige':       ['beige','sabbia','sand','wheat','grano','nude'],
+  'tan':         ['tan','tabacco','tobacco','cuoio','cognac'],
+  'marrone chiaro':['marrone chiaro','light brown','nocciola','hazel','testa di moro chiaro'],
+  'marrone':     ['marrone','brown','cioccolato','chocolate','castagna'],
+  'marrone scuro':['marrone scuro','dark brown','mogano','mahogany','testa di moro'],
+  // BLU
+  'navy':        ['navy','blu navy','blue navy','blu scuro','dark blue','notte'],
+  'blu':         ['blu','blue','royal blue','blu reale','cobalto','cobalt'],
+  'blu medio':   ['blu medio','medium blue','blu elettrico','electric blue'],
+  'azzurro':     ['azzurro','azzurra','light blue','celeste','sky blue','cielo'],
+  'turchese':    ['turchese','turquoise','acquamarina','aquamarine','petrolio','petrol'],
+  // VERDI
+  'verde scuro': ['verde scuro','dark green','verde bottiglia','bottle green','bosco','forest'],
+  'verde':       ['verde','green','smeraldo','emerald','menta','mint'],
+  'oliva':       ['oliva','olive','militare','khaki','kaki','verde militare','verde kaki'],
+  'salvia':      ['salvia','sage','verde salvia','verde chiaro','lime'],
+  // ROSSI E CALDI
+  'bordeaux':    ['bordeaux','vino','wine','sangue','blood red'],
+  'borgogna':    ['borgogna','burgundy','amaranto','amaranth','rubino','ruby'],
+  'rosso':       ['rosso','rossa','red','pomodoro','tomato','cherry','ciliegia'],
+  'ruggine':     ['ruggine','rust','terracotta','mattone','brick','burnt orange'],
+  'arancione':   ['arancione','orange','albicocca','apricot'],
+  // NEUTRI CALDI SPECIALI
+  'rosa':        ['rosa','pink','blush','rosa antico','dusty rose','rose'],
+  'lilla':       ['lilla','lilac','lavanda','lavender','malva','mauve'],
+  // METALLICI
+  'oro':         ['oro','gold','dorato','golden'],
+  'argento':     ['argento','silver','silverado','platino','platinum'],
+};
+
+// Matrice abbinamenti professionale
+// Logica: tono (chiaro/scuro), temperatura (caldo/freddo), saturazione
+// ✓ = ottimo   (presente nella lista)
+// assente = non consigliato
+const COLOR_HARMONY = {
+  // ── NEUTRI FREDDI ──
+  'nero': [
+    'bianco','avorio','crema',          // contrasto massimo classico
+    'grigio','grigio chiaro',           // tono su tono
+    'antracite','grigio scuro',         // monocromatico dark
+    'beige','cammello','tan',           // neutri caldi — contrasto temperatura
+    'rosso','bordeaux','borgogna',      // accenti saturi su base dark
+    'navy','blu',                       // blu scuro su nero: ok con distanza tono
+    'oliva',                            // verde militare su nero: urban chic
+    'oro','argento',                    // metallici su nero: sempre ok
+  ],
+  'antracite': [
+    'bianco','avorio','crema',
+    'grigio','grigio chiaro',
+    'nero',
+    'beige','cammello',
+    'bordeaux','borgogna',
+    'navy',
+    'azzurro',
+    'oro','argento',
+  ],
+  'grigio scuro': [
+    'bianco','avorio','crema',
+    'grigio','grigio chiaro',
+    'nero','antracite',
+    'beige','cammello','tan',
+    'navy','blu','azzurro',
+    'bordeaux','borgogna',
+    'rosa',
+    'oro','argento',
+  ],
+  'grigio': [
+    'bianco','avorio','crema',
+    'grigio chiaro','grigio scuro','antracite','nero',
+    'navy','blu','azzurro',
+    'beige','cammello','tan',
+    'bordeaux','borgogna','rosso',
+    'verde scuro','oliva',
+    'rosa','lilla',
+    'oro','argento',
+  ],
+  'grigio chiaro': [
+    'bianco','avorio',
+    'grigio','grigio scuro','antracite','nero',
+    'navy','blu',
+    'beige','cammello',
+    'bordeaux','borgogna',
+    'rosa','lilla',
+    'turchese','azzurro',
+    'oro','argento',
+  ],
+  'bianco': [
+    'nero','antracite','grigio scuro','grigio','grigio chiaro',
+    'navy','blu','azzurro','turchese',
+    'beige','cammello','tan','marrone','marrone scuro',
+    'verde scuro','verde','oliva','salvia',
+    'bordeaux','borgogna','rosso','ruggine',
+    'rosa','lilla',
+    'oro','argento',
+  ],
+  'avorio': [
+    'nero','antracite','grigio scuro','grigio',
+    'navy','blu',
+    'cammello','tan','marrone','marrone scuro',
+    'verde scuro','oliva',
+    'bordeaux','borgogna',
+    'ruggine',
+    'oro',
+  ],
+  'crema': [
+    'nero','antracite','grigio scuro','grigio',
+    'navy','blu',
+    'cammello','tan','marrone chiaro','marrone',
+    'verde scuro','oliva','salvia',
+    'bordeaux','borgogna',
+    'ruggine','arancione',
+    'oro',
+  ],
+  // ── NEUTRI CALDI ──
+  'cammello': [
+    'bianco','avorio','crema',
+    'nero','antracite',
+    'grigio','grigio scuro',
+    'navy','blu',
+    'marrone chiaro',                   // tono su tono caldo
+    'verde scuro','oliva',
+    'bordeaux','borgogna',
+    'ruggine',
+    'oro',
+  ],
+  'beige': [
+    'bianco','avorio','crema',
+    'nero','antracite',
+    'grigio','grigio scuro','grigio chiaro',
+    'navy','blu','azzurro',
+    'marrone','marrone chiaro','tan','cammello',
+    'verde scuro','verde','oliva','salvia',
+    'bordeaux','borgogna','rosso',
+    'ruggine',
+    'oro',
+  ],
+  'tan': [
+    'bianco','avorio','crema',
+    'nero','antracite',
+    'grigio','grigio scuro',
+    'navy','blu',
+    'marrone','marrone chiaro','cammello',
+    'verde scuro','oliva',
+    'bordeaux','borgogna',
+    'oro',
+  ],
+  'marrone chiaro': [
+    'bianco','avorio','crema',
+    'beige','cammello','tan',
+    'grigio chiaro','grigio',
+    'navy','blu','azzurro',
+    'verde scuro','oliva',
+    'oro',
+  ],
+  'marrone': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan','marrone chiaro',
+    'grigio chiaro','grigio',
+    'navy','blu',
+    'verde scuro','oliva',
+    'ruggine',
+    'oro',
+  ],
+  'marrone scuro': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan',
+    'grigio chiaro','grigio',
+    'navy',
+    'verde scuro',
+    'oro',
+  ],
+  // ── BLU ──
+  'navy': [
+    'bianco','avorio','crema',
+    'beige','cammello','tan',
+    'grigio','grigio chiaro',
+    'marrone','marrone chiaro','tan',
+    'rosso',                            // classico navy+rosso preppy
+    'bordeaux','borgogna',
+    'verde scuro',
+    'azzurro',                          // tono su tono blu — ok se distanza chiara
+    'oro','argento',
+  ],
+  'blu': [
+    'bianco','avorio','crema',
+    'beige','cammello',
+    'grigio','grigio chiaro',
+    'marrone chiaro','tan',
+    'bordeaux',
+    'rosso',
+    'oro','argento',
+  ],
+  'blu medio': [
+    'bianco','avorio',
+    'beige','cammello',
+    'grigio chiaro','grigio',
+    'marrone chiaro',
+    'oro','argento',
+  ],
+  'azzurro': [
+    'bianco','avorio','crema',
+    'beige','cammello',
+    'grigio chiaro','grigio',
+    'navy',
+    'marrone chiaro','tan',
+    'bordeaux',
+    'oro','argento',
+  ],
+  'turchese': [
+    'bianco','avorio',
+    'beige',
+    'grigio chiaro','grigio',
+    'marrone chiaro',
+    'navy',
+    'oro',
+  ],
+  // ── VERDI ──
+  'verde scuro': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan','marrone','marrone chiaro',
+    'grigio','grigio chiaro',
+    'oliva',                            // tono su tono verde — ok se contrasto
+    'nero','antracite',
+    'oro',
+  ],
+  'verde': [
+    'bianco','avorio','crema',
+    'beige','cammello',
+    'grigio chiaro','grigio',
+    'marrone chiaro',
+    'navy',
+    'oro',
+  ],
+  'oliva': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan','marrone','marrone chiaro',
+    'grigio','grigio chiaro',
+    'nero','antracite',
+    'verde scuro',
+    'ruggine',
+    'oro',
+  ],
+  'salvia': [
+    'bianco','avorio','crema','beige',
+    'grigio chiaro','grigio',
+    'cammello',
+    'marrone chiaro',
+    'navy',
+    'oro','argento',
+  ],
+  // ── ROSSI E CALDI ──
+  'bordeaux': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan','marrone chiaro',
+    'grigio','grigio chiaro','grigio scuro',
+    'navy','blu',
+    'nero','antracite',
+    'oro',
+  ],
+  'borgogna': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan',
+    'grigio','grigio chiaro','grigio scuro',
+    'navy',
+    'nero','antracite',
+    'oro',
+  ],
+  'rosso': [
+    'bianco','avorio',
+    'grigio','grigio scuro','antracite','nero',
+    'navy',
+    'beige','cammello',
+    'oro',
+  ],
+  'ruggine': [
+    'bianco','avorio','crema','beige',
+    'cammello','tan','marrone chiaro',
+    'grigio chiaro','grigio',
+    'navy',
+    'oliva','verde scuro',
+    'oro',
+  ],
+  'arancione': [
+    'bianco','avorio',
+    'grigio chiaro','grigio',
+    'navy',
+    'beige',
+    'oro',
+  ],
+  // ── ROSA E LILLA ──
+  'rosa': [
+    'bianco','avorio','crema',
+    'grigio','grigio chiaro',
+    'navy','blu',
+    'beige','cammello',
+    'marrone chiaro',
+    'borgogna','bordeaux',
+    'oro','argento',
+  ],
+  'lilla': [
+    'bianco','avorio','crema',
+    'grigio chiaro','grigio',
+    'navy',
+    'beige',
+    'borgogna',
+    'argento','oro',
+  ],
+  // ── METALLICI ──
+  'oro': [
+    'nero','antracite','navy','blu',
+    'bianco','avorio','crema',
+    'bordeaux','borgogna',
+    'verde scuro','oliva',
+    'marrone scuro',
+  ],
+  'argento': [
+    'nero','antracite','grigio','grigio scuro',
+    'bianco','avorio',
+    'navy','blu','azzurro',
+    'bordeaux','borgogna',
+    'rosa','lilla',
+  ],
+};
+
+// Rileva il colore canonico dal nome del capo
+function getColor(name) {
+  if (!name) return null;
   const n = name.toLowerCase();
-  if(/boxer|slip|intimo/.test(n)) return 'intimo';
-  if(/cappotto|giacca|giubbotto|blazer/.test(n)) return 'strato';
-  if(/scarpe|scarpa|chelsea|birkenstock|espadrillas|valentino|trainer|loafer|mocassino|sneaker|heritage|zegna|lv /.test(n)) return 'scarpe';
-  // gambe: chino, pantalone, jeans, bermuda, pantaloncini, short
-  // OPPURE parole come "bianchi/navy/beige" + lino/cotone se NON è una camicia/polo
-  if(/chino|pantalone|jeans|bermuda|pantaloncin|short/.test(n)) return 'gambe';
-  // "lino bianchi" o simili che NON iniziano con camicia/polo/maglione = gambe
-  if(/lino/.test(n) && !/camicia|polo|maglione|maglia/.test(n)) return 'gambe';
-  if(/cintura|hermès|hermes|ferragamo|casio|anello|collana|bracciale|orologio/.test(n)) return 'accessori';
-  return 'torso';
+  for (const [canonical, keywords] of Object.entries(COLOR_FAMILIES)) {
+    for (const kw of keywords) {
+      if (n.includes(kw)) return canonical;
+    }
+  }
+  return null;
 }
 
-let pendingItems = []; // [{nome, cat}]
-let materialSelections = {}; // nome → materialId
+// getColor now defined in COLOR_FAMILIES section above
 
-function goToMaterials() {
+function colorsMatch(nameA, nameB) {
+  if (!nameA || !nameB) return true;
+  const cA = getColor(nameA);
+  const cB = getColor(nameB);
+  if (!cA || !cB) return true; // colore sconosciuto = compatibile con tutto
+  if (cA === cB) return true;  // stesso colore = sempre ok (tono su tono)
+  const listA = COLOR_HARMONY[cA] || [];
+  const listB = COLOR_HARMONY[cB] || [];
+  // Simmetrico: A abbina B oppure B abbina A
+  return listA.includes(cB) || listB.includes(cA);
+}
+
+// Formalità per occasione
+const FORMALITY_MAP = {
+  'Cena': 5, 'Ufficio': 4, 'Aperitivo': 3, 'Date': 4,
+  'Casual': 2, 'Weekend': 2, 'Mare': 1
+};
+
+// Formalità capo (da nome)
+function guessFormalita(nome, cat) {
+  const n = nome.toLowerCase();
+  if (cat === 'Intimo') return 1;
+  if (n.includes('blazer') || n.includes('giacca') || n.includes('cappotto') || n.includes('soprabito')) return 5;
+  if (n.includes('camicia') || n.includes('dress') || n.includes('elegante')) return 4;
+  if (n.includes('polo') || n.includes('cardigan') || n.includes('chino')) return 3;
+  if (n.includes('tshirt') || n.includes('t-shirt') || n.includes('jeans') || n.includes('sneaker')) return 2;
+  if (n.includes('costume') || n.includes('bermuda beach') || n.includes('infradito') || n.includes('ciabatt')) return 1;
+  if (cat === 'Strato') return 4;
+  if (cat === 'Sopra') return 3;
+  if (cat === 'Sotto') return 2;
+  if (cat === 'Scarpe') return 2;
+  return 2;
+}
+
+// Emoji per categoria
+const CAT_EMOJI = {
+  'Intimo': '🩲',
+  'Sopra': '👕',
+  'Strato': '🧥',
+  'Sotto': '👖',
+  'Scarpe': '👟',
+  'Accessori': '⌚'
+};
+
+// ══════════════════════════════════════════════════
+// STORAGE HELPERS
+// ══════════════════════════════════════════════════
+function load(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch { return null; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+function getCatalog() { return load('userCatalog') || []; }
+function saveCatalog(c) { save('userCatalog', c); }
+function getHistory() { return load('outfitHistory') || []; }
+function saveHistory(h) { save('outfitHistory', h); }
+function getItemRatings() { return load('itemRatings') || {}; }
+function getComboRatings() { return load('comboRatings') || {}; }
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+let currentOutfit = null;
+let selectedQuick = null;
+let selectedTravelType = null;
+let newItemCat = null;
+let newItemMat = null;
+let travelUsedCombos = [];
+
+window.addEventListener('DOMContentLoaded', () => {
+  const catalog = getCatalog();
+  if (catalog.length > 0) {
+    showMainApp();
+  } else {
+    showSetup();
+  }
+  // Set default date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('outfitData').value = today;
+  const tFrom = new Date();
+  const tTo = new Date(); tTo.setDate(tTo.getDate() + 5);
+  document.getElementById('travelFrom').value = tFrom.toISOString().split('T')[0];
+  document.getElementById('travelTo').value = tTo.toISOString().split('T')[0];
+});
+
+function showSetup() {
+  document.getElementById('setupSection').style.display = 'block';
+  document.getElementById('tab-outfit-content').style.display = 'none';
+  document.getElementById('tab-travel-content').style.display = 'none';
+  document.getElementById('tabBar').style.display = 'none';
+}
+
+function showMainApp() {
+  document.getElementById('setupSection').style.display = 'none';
+  document.getElementById('tab-outfit-content').style.display = 'none';
+  document.getElementById('tab-travel-content').style.display = 'none';
+  document.getElementById('tabBar').style.display = 'flex';
+  switchTab('outfit');
+}
+
+// ══════════════════════════════════════════════════
+// SETUP STEP 1 → 2
+// ══════════════════════════════════════════════════
+function proceedToStep2() {
   const raw = document.getElementById('wardrobeInput').value.trim();
-  if (!raw) { alert("Inserisci almeno qualche capo."); return; }
-  const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
-  if (!lines.length) { alert("Nessun capo trovato."); return; }
+  if (!raw) { notify('Inserisci almeno un capo'); return; }
+  const items = raw.split('\n').map(s => s.trim()).filter(Boolean);
+  if (items.length === 0) { notify('Inserisci almeno un capo'); return; }
 
-  // pendingItems: nome + categoria auto-rilevata (modificabile nello step 2)
-  pendingItems = lines.map(nome => ({ nome, cat: guessCategory(nome) }));
-  materialSelections = {};
-
-  renderMaterialList();
-  document.getElementById('setupScreen').classList.remove('active');
-  document.getElementById('materialsScreen').classList.add('active');
-  updateMatProgress();
+  document.getElementById('setup-step1').classList.remove('active');
+  document.getElementById('setup-step2').classList.add('active');
+  buildCatalogSetupList(items);
 }
 
-function renderMaterialList() {
-  const list = document.getElementById('matList');
-  const cats = [
-    {id:'torso',label:'👕 Sopra'},{id:'gambe',label:'👖 Sotto'},
-    {id:'scarpe',label:'👟 Scarpe'},{id:'strato',label:'🧥 Strato'},
-    {id:'accessori',label:'✨ Accessori'},{id:'intimo',label:'🩲 Intimo'}
-  ];
-  list.innerHTML = pendingItems.map((item, idx) => {
-    const opts = MATERIAL_OPTIONS[item.cat] || MATERIAL_OPTIONS['torso'];
-    const matChips = opts.map(o =>
-      `<button class="mat-chip" id="chip_${idx}_${o.id}" onclick="selectMaterial(${idx},'${o.id}')">${o.label}</button>`
-    ).join('');
-    const catChips = cats.map(c =>
-      `<button class="mat-chip${item.cat===c.id?' sel':''}" id="ccat_${idx}_${c.id}" onclick="selectItemCat(${idx},'${c.id}')">${c.label}</button>`
-    ).join('');
-    return `<div class="mat-item" id="matitem_${idx}">
-      <div class="mat-item-name"><span>CAPO</span>${item.nome}</div>
-      <div style="padding:6px 16px 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Categoria</div>
-      <div class="mat-chips">${catChips}</div>
-      <div style="padding:6px 16px 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Materiale</div>
-      <div class="mat-chips">${matChips}</div>
-    </div>`;
-  }).join('');
-}
+function buildCatalogSetupList(items) {
+  const el = document.getElementById('catalogSetupList');
+  el.innerHTML = '';
+  // Init state BEFORE building DOM and auto-guessing
+  window._setupItems = items;
+  window._setupCats = {};
+  window._setupMats = {};
 
-
-function selectItemCat(idx, catId) {
-  pendingItems[idx].cat = catId;
-  // Update cat chips UI
-  const cats = ['torso','gambe','scarpe','strato','accessori','intimo'];
-  cats.forEach(c => {
-    const chip = document.getElementById(`ccat_${idx}_${c}`);
-    if (chip) chip.classList.toggle('sel', c === catId);
-  });
-  // Refresh material chips for new category
-  const opts = MATERIAL_OPTIONS[catId] || MATERIAL_OPTIONS['torso'];
-  const matContainer = document.querySelector(`#matitem_${idx} .mat-chips:last-child`);
-  if (matContainer) {
-    matContainer.innerHTML = opts.map(o =>
-      `<button class="mat-chip" id="chip_${idx}_${o.id}" onclick="selectMaterial(${idx},'${o.id}')">${o.label}</button>`
-    ).join('');
-    // Clear previous selection for this item
-    delete materialSelections[pendingItems[idx].nome];
-    updateMatProgress();
-  }
-}
-
-function selectMaterial(idx, materialId) {
-  const item = pendingItems[idx];
-  materialSelections[item.nome] = materialId;
-  // Update chips UI
-  const opts = MATERIAL_OPTIONS[item.cat] || MATERIAL_OPTIONS['torso'];
-  opts.forEach(o => {
-    const chip = document.getElementById(`chip_${idx}_${o.id}`);
-    if (chip) chip.classList.toggle('sel', o.id === materialId);
-  });
-  updateMatProgress();
-}
-
-function updateMatProgress() {
-  const total = pendingItems.length;
-  const done = Object.keys(materialSelections).length;
-  const pct = total ? Math.round((done/total)*100) : 0;
-  document.getElementById('matProgressBar').style.width = pct + '%';
-  document.getElementById('matCount').textContent =
-    done === total
-      ? `✓ Tutti i ${total} capi completati!`
-      : `${done} di ${total} capi completati`;
-}
-
-function saveMaterials() {
-  const total = pendingItems.length;
-  const done = Object.keys(materialSelections).length;
-  if (done < total) {
-    const missing = pendingItems.filter(i => !materialSelections[i.nome]).map(i=>i.nome);
-    if (!confirm(`${total-done} capi senza materiale:\n${missing.slice(0,5).join('\n')}${missing.length>5?'\n…':''}\n\nProcedere comunque?`)) return;
-  }
-
-  // Build BASE_CATALOG from pendingItems
-  for (const cat in BASE_CATALOG) BASE_CATALOG[cat] = [];
-  const emojiMap = {torso:'👕',gambe:'👖',scarpe:'👟',strato:'🧥',accessori:'✨',intimo:'🩲'};
-  const occasioniMap = {
-    torso:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
-    gambe:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
-    scarpe:['casual','smart-casual','aperitivo','weekend','cena','date'],
-    strato:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio'],
-    accessori:['casual','smart-casual','aperitivo','weekend','cena','date','mare'],
-    intimo:['all']
-  };
-  pendingItems.forEach(item => {
-    const cat = item.cat;
-    if (!BASE_CATALOG[cat]) BASE_CATALOG[cat] = [];
-    BASE_CATALOG[cat].push({
-      nome: item.nome, cat,
-      emoji: emojiMap[cat] || '👕',
-      colori: ['neutro'],
-      formalita: 3,
-      occasioni: occasioniMap[cat] || ['casual','smart-casual']
-    });
+  items.forEach((nome, i) => {
+    const div = document.createElement('div');
+    div.className = 'catalog-item-setup';
+    div.dataset.idx = i;
+    div.innerHTML = `
+      <div class="item-name-setup">${escapeHtml(nome)}</div>
+      <div class="chip-group-label">Categoria</div>
+      <div class="chip-group" id="cat-chips-${i}">
+        ${CATS.map(c => `<span class="chip" data-idx="${i}" data-cat="${c}">${c}</span>`).join('')}
+      </div>
+      <div class="chip-group-label">Materiale</div>
+      <div class="chip-group" id="mat-chips-${i}">
+        ${MATS.map(m => `<span class="chip" data-idx="${i}" data-mat="${m}">${m}</span>`).join('')}
+      </div>
+    `;
+    el.appendChild(div);
+    // Auto-guess category
+    autoGuessSetup(i, nome);
   });
 
-  // Persist everything
-  localStorage.setItem('materialSelections', JSON.stringify(materialSelections));
-  localStorage.setItem('wardrobeSet', '1');
-  saveCatalogToStorage();
-  buildEnrichedWardrobe();
-  showMainScreen();
-}
-
-// ════════════════════════════════════════
-//  BUILD ENRICHED WARDROBE from materials
-// ════════════════════════════════════════
-function seasonsFromMaterial(materialId) {
-  if (!materialId) return ["all"];
-  const s = MATERIAL_SEASONS[materialId];
-  return (Array.isArray(s) && s.length) ? s : ["all"];
-}
-
-// Materiali di default per ogni capo
-const DEFAULT_MATERIALS = {
-  "Polo beige maglia Zara":"jersey","Polo maniche lunghe beige Zara":"jersey",
-  "Polo bianca Ralph Lauren":"cotone","Polo nera Lacoste":"cotone",
-  "Camicia RL blu righe bianche":"cotone","Camicia Zara lino righe azzurre":"lino",
-  "Camicia RL lino bianca":"lino","Camicia RL lino blu chiaro":"lino",
-  "Camicia Casablanca avorio":"cotone_leggero","Camicia Pull&Bear beige traforata":"cotone_leggero",
-  "Maglione RL navy":"maglia","Maglione RL zip beige":"maglia","Maglione RL zip azzurro":"maglia",
-  "Dolcevita nero":"lana","Cappotto grigio":"lana","Giacca pelle nera":"pelle",
-  "Chino navy":"cotone","Chino beige":"cotone","Pantaloni lino bianchi":"lino",
-  "Jeans neri relaxed":"denim","Jeans denim scuro":"denim",
-  "Bermuda bianchi":"cotone","Pantaloncini sabbia uncinetto":"cotone","Pantaloncini Casablanca":"sintetico",
-  "Zegna suede marrone":"suede","Espadrillas sabbia":"canvas","Birkenstock Boston":"canvas",
-  "Valentino bianche":"canvas","Heritage Court nere":"canvas","Chelsea neri":"pelle","LV Trainer":"sintetico",
-  "Hermes marrone":"pelle","Hermès marrone":"pelle","Ferragamo marrone scuro":"pelle","Ferragamo nera":"pelle",
-  "Casio navy":"plastica","Casio bicolore":"plastica",
-  "Anello sigillo":"metallo","Collana oro semplice":"metallo","Bracciale catena semplice":"metallo",
-  "Boxer/slip":"cotone",
-};
-
-function buildEnrichedWardrobe() {
-  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
-  // BASE_CATALOG is persisted via userCatalog in localStorage
-  W = {};
-  for (const cat in BASE_CATALOG) {
-    W[cat] = BASE_CATALOG[cat].map(item => {
-      const mat = saved[item.nome] || DEFAULT_MATERIALS[item.nome] || null;
-      const stagioni = seasonsFromMaterial(mat) || ["all"];
-      return { ...item, stagioni: Array.isArray(stagioni) ? stagioni : ["all"], occasioni: item.occasioni || ["all"], materiale: mat || null };
-    });
-  }
-}
-
-// ════════════════════════════════════════
-//  SEASON LOGIC
-// ════════════════════════════════════════
-function monthToSeason(m) {
-  if (m===12||m<=2) return "inverno";
-  if (m<=4)         return "primavera-fredda";
-  if (m===5)        return "primavera";
-  if (m<=8)         return "estate";
-  if (m===9)        return "autunno-caldo";
-  return "autunno";
-}
-function guessSeason()       { return monthToSeason(new Date().getMonth()+1); }
-function seasonFromDate(d)   { if(!d) return guessSeason(); return monthToSeason(new Date(d).getMonth()+1); }
-
-// ════════════════════════════════════════
-//  INTIMO & CALZE
-// ════════════════════════════════════════
-function selectIntimo(ctx, torso, gambe, scarpe) {
-  const bc = {
-    cena:"nero o bianco", ufficio:"bianco o grigio chiaro", aperitivo:"nero o navy",
-    date:"nero o bianco", mare:"bianco o colorato", casual:"bianco, grigio o navy",
-    "smart-casual":"bianco o grigio", weekend:"bianco, grigio o navy"
-  };
-  const boxer = {
-    nome:`Boxer/slip — colore: ${bc[ctx.occasione]||"bianco o grigio"}`,
-    cat:"intimo",emoji:"🩲",colori:["neutro"],formalita:1,stagioni:["all"],occasioni:["all"]
-  };
-  let calze = null;
-  if (gambe && scarpe) {
-    const isShorts  = gambe.nome.includes("Bermuda")||gambe.nome.includes("Pantaloncini");
-    const isBirk    = scarpe.nome.includes("Birkenstock");
-    const isEspa    = scarpe.nome.includes("Espadrillas");
-    const isChelsea = scarpe.nome.includes("Chelsea");
-    const isZegna   = scarpe.nome.includes("Zegna");
-    const isSneaker = scarpe.nome.includes("Valentino")||scarpe.nome.includes("Heritage")||scarpe.nome.includes("LV");
-    const isNero    = gambe.colori.includes("nero");
-    const isNavy    = gambe.colori.includes("navy")||gambe.colori.includes("blu");
-    const isBeige   = gambe.colori.includes("beige")||gambe.colori.includes("neutro");
-    const isBianco  = gambe.colori.includes("bianco");
-    if (isBirk||isEspa)
-      calze={nome:"Senza calze",cat:"calze",emoji:"🦶",colori:["neutro"],formalita:1,stagioni:["all"],occasioni:["all"]};
-    else if (isShorts&&isSneaker)
-      calze={nome:"Fantasmini bianchi o neutri (invisibili nella scarpa)",cat:"calze",emoji:"🧦",colori:["bianco"],formalita:1,stagioni:["all"],occasioni:["all"]};
-    else if (isShorts)
-      calze={nome:"Senza calze oppure fantasmini invisibili bianchi",cat:"calze",emoji:"🦶",colori:["neutro"],formalita:1,stagioni:["all"],occasioni:["all"]};
-    else if (isChelsea||isZegna) {
-      if (isNero)       calze={nome:"Calze lunghe nere (sopra la caviglia)",cat:"calze",emoji:"🧦",colori:["nero"],formalita:5,stagioni:["all"],occasioni:["all"]};
-      else if (isNavy)  calze={nome:"Calze lunghe navy o grigio scuro (sopra la caviglia)",cat:"calze",emoji:"🧦",colori:["navy"],formalita:5,stagioni:["all"],occasioni:["all"]};
-      else if (isBeige) calze={nome:"Calze lunghe beige/sabbia o grigio chiaro (sopra la caviglia)",cat:"calze",emoji:"🧦",colori:["beige"],formalita:5,stagioni:["all"],occasioni:["all"]};
-      else if (isBianco)calze={nome:"Calze lunghe bianche o avorio (sopra la caviglia)",cat:"calze",emoji:"🧦",colori:["bianco"],formalita:5,stagioni:["all"],occasioni:["all"]};
-      else              calze={nome:"Calze lunghe in tono col pantalone (sopra la caviglia)",cat:"calze",emoji:"🧦",colori:["neutro"],formalita:4,stagioni:["all"],occasioni:["all"]};
-    } else if (isSneaker) {
-      calze={nome:isNero?"Fantasmini neri o grigi scuri (invisibili)":"Fantasmini bianchi o grigi (invisibili nella scarpa)",cat:"calze",emoji:"🧦",colori:[isNero?"nero":"bianco"],formalita:2,stagioni:["all"],occasioni:["all"]};
-    } else {
-      calze={nome:"Calze alla caviglia in tono col pantalone",cat:"calze",emoji:"🧦",colori:["neutro"],formalita:3,stagioni:["all"],occasioni:["all"]};
+  // Attach events via delegation (safer on iOS Safari than inline onclick with quotes)
+  el.addEventListener('click', function(e) {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const idx = parseInt(chip.dataset.idx);
+    if (isNaN(idx)) return;
+    if (chip.dataset.cat !== undefined) {
+      window._setupCats[idx] = chip.dataset.cat;
+      document.querySelectorAll(`#cat-chips-${idx} .chip`).forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
     }
-  }
-  return { boxer, calze };
-}
-
-// ════════════════════════════════════════
-//  OCCASION PARSING
-// ════════════════════════════════════════
-function parseOccasion(text) {
-  const t = text.toLowerCase();
-  const ctx = { occasione:"casual", formalitaTarget:2, stagione:guessSeason(), note:"" };
-  if (/cena|dinner|ristorante|elegante|formale/.test(t))       { ctx.occasione="cena";        ctx.formalitaTarget=5; ctx.note="Mantieni le proporzioni: pantaloni dritti che valorizzano la vita stretta. Scarpe chiuse impeccabili."; }
-  else if (/mare|spiaggia|beach|piscin|pool/.test(t))          { ctx.occasione="mare";        ctx.formalitaTarget=1; ctx.note="Look balneare curato: tessuti leggeri, palette chiara. La tua abbronzatura farà il resto."; }
-  else if (/ufficio|lavoro|meeting|office|professionale/.test(t)){ ctx.occasione="ufficio";   ctx.formalitaTarget=4; ctx.note="Smart casual impeccabile: chino ben stirati, polo o camicia. Cintura abbinata alle scarpe."; }
-  else if (/aperitivo|drink|happy hour|cocktail/.test(t))      { ctx.occasione="aperitivo";   ctx.formalitaTarget=3; ctx.note="Il momento perfetto per la tua componente urbana e seducente. Cura ogni dettaglio."; }
-  else if (/date|appuntamento|romantico|lei|ragazza/.test(t))  { ctx.occasione="date";        ctx.formalitaTarget=4; ctx.note="Curato ma non rigido: lascia trasparire la personalità. Profumo + gioielli sottili."; }
-  else if (/weekend|sabato|domenica|passeggiata|giro/.test(t)) { ctx.occasione="weekend";     ctx.formalitaTarget=3; ctx.note="Casual elevato — il tuo stile quiet luxury funziona meglio quando sembra naturale."; }
-  else if (/casual|relax|casa|amici/.test(t))                  { ctx.occasione="casual";      ctx.formalitaTarget=2; ctx.note="Anche nella casualità, dettagli curati fanno la differenza."; }
-  else                                                           { ctx.occasione="smart-casual";ctx.formalitaTarget=3; ctx.note="Ho interpretato la tua occasione come smart casual. Adatta il look al contesto."; }
-  return ctx;
-}
-
-// ════════════════════════════════════════
-//  COLOR HARMONY
-// ════════════════════════════════════════
-const CH = {
-  navy:["bianco","beige","neutro","sabbia","marrone","grigio","azzurro"],
-  blu:["bianco","beige","neutro","sabbia","marrone","grigio","azzurro"],
-  azzurro:["bianco","beige","neutro","navy","blu","sabbia"],
-  beige:["navy","blu","azzurro","bianco","neutro","marrone","nero","sabbia","avorio"],
-  neutro:["all"],
-  bianco:["navy","blu","azzurro","nero","marrone","beige","sabbia"],
-  nero:["bianco","beige","neutro","grigio","marrone","sabbia","avorio"],
-  grigio:["bianco","nero","navy","blu","beige","neutro"],
-  marrone:["beige","neutro","navy","bianco","sabbia","avorio"],
-  sabbia:["navy","blu","bianco","neutro","beige","marrone"],
-  avorio:["navy","blu","beige","neutro","marrone"],
-  oro:["navy","nero","bianco","beige","neutro"],
-  vari:["all"]
-};
-function cc(c1,c2){ if(c1==="all"||c2==="all"||c1==="vari"||c2==="vari"||c1==="neutro"||c2==="neutro")return true; const a=CH[c1]||[]; return a.includes("all")||a.includes(c2)||c1===c2; }
-function colorsOk(items){ const top=items.find(i=>i.cat==="torso"); const bot=items.find(i=>i.cat==="gambe"); const sh=items.find(i=>i.cat==="scarpe"); if(!top||!bot)return true; if(!cc(top.colori[0],bot.colori[0]))return false; if(sh&&!cc(sh.colori[0],top.colori[0])&&!cc(sh.colori[0],bot.colori[0]))return false; return true; }
-
-// ════════════════════════════════════════
-//  WEIGHTS
-// ════════════════════════════════════════
-function getW(nome){ const r=JSON.parse(localStorage.getItem('itemRatings')||'{}'); if(!r[nome])return 1.0; const x=r[nome]; return 0.3+(x.sum/x.count-1)*(2.2/4); }
-function updateItemRating(items,rating){ const r=JSON.parse(localStorage.getItem('itemRatings')||'{}'); items.forEach(i=>{ if(!r[i.nome])r[i.nome]={sum:0,count:0}; r[i.nome].sum+=rating; r[i.nome].count+=1; }); localStorage.setItem('itemRatings',JSON.stringify(r)); }
-function recentNames(){ const h=JSON.parse(localStorage.getItem('outfitHistory')||'[]'); const s=new Set(); h.slice(-5).forEach(o=>o.items&&o.items.forEach(i=>s.add(i.nome))); return s; }
-function wRand(arr){ const rn=recentNames(); const ws=arr.map(i=>getW(i.nome)*(rn.has(i.nome)?0.4:1.5)); const tot=ws.reduce((a,b)=>a+b,0); let r=Math.random()*tot; for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i];} return arr[arr.length-1]; }
-
-// ════════════════════════════════════════
-//  OUTFIT ENGINE
-// ════════════════════════════════════════
-function filterCtx(items, ctx) {
-  return items.filter(item => {
-    const stagioni = item.stagioni || ["all"];
-    const occasioni = item.occasioni || ["all"];
-    const stagioneFit = stagioni.includes("all") || stagioni.includes(ctx.stagione);
-    const occFit = occasioni.includes("all") || occasioni.includes(ctx.occasione) ||
-                   (occasioni.includes("smart-casual") && ctx.formalitaTarget>=3);
-    return stagioneFit && occFit;
+    if (chip.dataset.mat !== undefined) {
+      window._setupMats[idx] = chip.dataset.mat;
+      document.querySelectorAll(`#mat-chips-${idx} .chip`).forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+    }
   });
 }
 
-function buildOutfit(ctx, tripUsed) {
-  if (!W) { buildEnrichedWardrobe(); }
-  if (!W) return [];
-  const COLD = ["inverno","autunno","primavera-fredda"];
+function autoGuessSetup(i, nome) {
+  const n = nome.toLowerCase();
+  let cat = null;
+  if (n.includes('boxer') || n.includes('slip') || n.includes('mutand') || n.includes('reggiseno') || n.includes('intimo')) cat = 'Intimo';
+  else if (n.includes('camicia') || n.includes('maglia') || n.includes('t-shirt') || n.includes('tshirt') || n.includes('polo') || n.includes('maglione') || n.includes('felpa') || n.includes('top') || n.includes('canotta') || n.includes('cardigan')) cat = 'Sopra';
+  else if (n.includes('jeans') || n.includes('pantalon') || n.includes('bermuda') || n.includes('short') || n.includes('chino') || n.includes('tuta') || n.includes('gonna') || n.includes('costume')) cat = 'Sotto';
+  else if (n.includes('scarpe') || n.includes('sneaker') || n.includes('mocassin') || n.includes('loafer') || n.includes('stivale') || n.includes('espadrill') || n.includes('sandal') || n.includes('infradito') || n.includes('derby') || n.includes('oxford') || n.includes('boot') || n.includes('birkenstock')) cat = 'Scarpe';
+  else if (n.includes('giacca') || n.includes('blazer') || n.includes('cappotto') || n.includes('giubbotto') || n.includes('piumino') || n.includes('trench') || n.includes('soprabito') || n.includes('overshirt')) cat = 'Strato';
+  else if (n.includes('orologio') || n.includes('cintura') || n.includes('anello') || n.includes('bracciale') || n.includes('collan') || n.includes('occhiali') || n.includes('cappello') || n.includes('borsa') || n.includes('zaino') || n.includes('accessori') || n.includes('calze') || n.includes('calzino')) cat = 'Accessori';
 
-  // Pre-filtra le opzioni disponibili
-  const tOpts = filterCtx(W.torso, ctx);
-  const gOpts = filterCtx(W.gambe, ctx);
-  if (!tOpts.length || !gOpts.length) return [];
+  let mat = null;
+  if (n.includes('lino')) mat = 'Lino';
+  else if (n.includes('cashmere')) mat = 'Cashmere';
+  else if (n.includes('lana')) mat = 'Lana';
+  else if (n.includes('denim') || n.includes('jeans')) mat = 'Denim';
+  else if (n.includes('polo') || n.includes('jersey')) mat = 'Jersey-polo';
+  else if (n.includes('pelle') || n.includes('leather')) mat = 'Pelle';
+  else if (n.includes('suede') || n.includes('camoscio')) mat = 'Suede-camoscio';
+  else if (n.includes('canvas') || n.includes('tela')) mat = 'Canvas-tela';
+  else if (n.includes('sintetico') || n.includes('nylon') || n.includes('tecnico')) mat = 'Sintetico';
 
-  // Genera tutte le combinazioni valide torso+gambe (colori ok + non usate)
-  // Ordina per priorità: combo mai usata > usata 1 volta > usata 2 volte
+  if (cat) {
+    window._setupCats[i] = cat;
+    document.querySelectorAll(`#cat-chips-${i} .chip`).forEach(c => {
+      if (c.textContent === cat) c.classList.add('selected');
+    });
+  }
+  if (mat) {
+    window._setupMats[i] = mat;
+    document.querySelectorAll(`#mat-chips-${i} .chip`).forEach(c => {
+      if (c.textContent === mat) c.classList.add('selected');
+    });
+  }
+  // Default mat = Cotone
+  if (!mat) {
+    window._setupMats[i] = 'Cotone';
+    document.querySelectorAll(`#mat-chips-${i} .chip`).forEach(c => {
+      if (c.textContent === 'Cotone') c.classList.add('selected');
+    });
+  }
+}
+
+function selectSetupCat(i, cat, el) {
+  window._setupCats[i] = cat;
+  document.querySelectorAll(`#cat-chips-${i} .chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectSetupMat(i, mat, el) {
+  window._setupMats[i] = mat;
+  document.querySelectorAll(`#mat-chips-${i} .chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function autoGuessCategory(nome) {
+  var n = nome.toLowerCase();
+  if (n.indexOf('boxer')>=0||n.indexOf('slip')>=0||n.indexOf('mutand')>=0||n.indexOf('intimo')>=0) return 'Intimo';
+  if (n.indexOf('camicia')>=0||n.indexOf('polo')>=0||n.indexOf('maglione')>=0||n.indexOf('t-shirt')>=0||n.indexOf('tshirt')>=0||n.indexOf('felpa')>=0||n.indexOf('cardigan')>=0||n.indexOf('canotta')>=0) return 'Sopra';
+  if (n.indexOf('jeans')>=0||n.indexOf('pantalon')>=0||n.indexOf('bermuda')>=0||n.indexOf('chino')>=0||n.indexOf('short')>=0||n.indexOf('gonna')>=0||n.indexOf('costume')>=0) return 'Sotto';
+  if (n.indexOf('scarpe')>=0||n.indexOf('sneaker')>=0||n.indexOf('mocassin')>=0||n.indexOf('loafer')>=0||n.indexOf('stival')>=0||n.indexOf('sandal')>=0||n.indexOf('derby')>=0||n.indexOf('oxford')>=0||n.indexOf('birkenstock')>=0||n.indexOf('espadrill')>=0) return 'Scarpe';
+  if (n.indexOf('giacca')>=0||n.indexOf('blazer')>=0||n.indexOf('cappotto')>=0||n.indexOf('giubbotto')>=0||n.indexOf('piumino')>=0||n.indexOf('trench')>=0||n.indexOf('overshirt')>=0) return 'Strato';
+  if (n.indexOf('orologio')>=0||n.indexOf('cintura')>=0||n.indexOf('anello')>=0||n.indexOf('bracciale')>=0||n.indexOf('collan')>=0||n.indexOf('occhiali')>=0||n.indexOf('cappello')>=0||n.indexOf('borsa')>=0||n.indexOf('zaino')>=0||n.indexOf('calze')>=0) return 'Accessori';
+  return 'Sopra';
+}
+
+function saveSetup() {
+  var items = window._setupItems || [];
+  var cats = window._setupCats || {};
+  var mats = window._setupMats || {};
+  if (items.length === 0) { notify('Nessun capo da salvare'); return; }
+  var catalog = items.map(function(nome, i) {
+    var cat = cats[i] || autoGuessCategory(nome);
+    var mat = mats[i] || 'Cotone';
+    var stagioni = MAT_SEASONS[mat] || MAT_SEASONS['Cotone'];
+    return {
+      id: Date.now() + i,
+      nome: nome,
+      cat: cat,
+      mat: mat,
+      stagioni: stagioni,
+      formalita: guessFormalita(nome, cat),
+      emoji: CAT_EMOJI[cat] || '👔'
+    };
+  });
+  saveCatalog(catalog);
+  notify('Guardaroba salvato! (' + catalog.length + ' capi)');
+  setTimeout(showMainApp, 900);
+}
+
+// ══════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-outfit-content').style.display = 'none';
+  document.getElementById('tab-travel-content').style.display = 'none';
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'outfit') {
+    document.getElementById('tab-outfit-content').style.display = 'block';
+  } else {
+    document.getElementById('tab-travel-content').style.display = 'block';
+  }
+}
+
+function toggleQuick(el, val) {
+  document.querySelectorAll('.quick-chip').forEach(c => c.classList.remove('selected'));
+  if (selectedQuick === val) { selectedQuick = null; }
+  else { selectedQuick = val; el.classList.add('selected'); }
+}
+function toggleTravelType(el, val) {
+  document.querySelectorAll('.travel-type-chip').forEach(c => c.classList.remove('selected'));
+  if (selectedTravelType === val) { selectedTravelType = null; }
+  else { selectedTravelType = val; el.classList.add('selected'); }
+}
+
+// ══════════════════════════════════════════════════
+// SEASON FROM DATE
+// ══════════════════════════════════════════════════
+function seasonFromDate(dateStr) {
+  if (!dateStr) {
+    const now = new Date();
+    return monthToSeason(now.getMonth() + 1);
+  }
+  const d = new Date(dateStr);
+  return monthToSeason(d.getMonth() + 1);
+}
+
+// ══════════════════════════════════════════════════
+// OUTFIT GENERATION
+// ══════════════════════════════════════════════════
+function generateOutfit(opts = {}) {
+  const catalog = getCatalog();
+  if (catalog.length < 3) { notify('Aggiungi più capi al guardaroba'); return null; }
+
+  const occasione = opts.occasione || document.getElementById('outfitOccasione')?.value || selectedQuick || 'Casual';
+  const dateStr = opts.date || document.getElementById('outfitData')?.value || '';
+  const meteo = opts.meteo || document.getElementById('outfitMeteo')?.value || 'normal';
+  const quickType = opts.quickType || selectedQuick || '';
+
+  const baseSeason = seasonFromDate(dateStr);
+  const season = meteoSeason(meteo, baseSeason);
+
+  // Formalità target
+  const occLabel = quickType || occasione.split(' ')[0];
+  const formalTarget = FORMALITY_MAP[occLabel] || 3;
+
+  // Filtra per stagione
+  function seasonOk(item) {
+    if (!item.stagioni || item.stagioni.length === 0) return true;
+    return item.stagioni.includes(season);
+  }
+
+  // Filtra per pioggia
+  function rainOk(item) {
+    if (meteo !== 'rain') return true;
+    const n = item.nome.toLowerCase();
+    if (item.cat === 'Scarpe' && (n.includes('sandal') || n.includes('infradito') || n.includes('espadrill') || n.includes('ciabatt'))) return false;
+    return true;
+  }
+
+  const filtered = catalog.filter(item => seasonOk(item) && rainOk(item));
+
+  const sopra = filtered.filter(i => i.cat === 'Sopra');
+  const sotto = filtered.filter(i => i.cat === 'Sotto');
+  const strati = filtered.filter(i => i.cat === 'Strato');
+  const acc = filtered.filter(i => i.cat === 'Accessori');
+  const intimo = filtered.filter(i => i.cat === 'Intimo');
+
+  // Scarpe: filtro stagione + pioggia, ma con fallback progressivo
+  let scarpe = catalog.filter(i => i.cat === 'Scarpe' && rainOk(i) && seasonOk(i));
+  if (scarpe.length === 0) scarpe = catalog.filter(i => i.cat === 'Scarpe' && rainOk(i));
+  if (scarpe.length === 0) scarpe = catalog.filter(i => i.cat === 'Scarpe');
+
+  if (sopra.length === 0 || sotto.length === 0) {
+    notify('Pochi capi disponibili per la stagione');
+    return null;
+  }
+
+  // Punteggi combo
+  const comboRatings = getComboRatings();
+  const used = opts.usedCombos || [];
+
+  // Genera combos torso+gambe
+  let bestCombo = null;
+  let bestWeight = -1;
   let combos = [];
-  for (const t of tOpts) {
-    for (const g of gOpts) {
-      if (!colorsOk([t, g])) continue;
-      const comboKey = t.nome + '|' + g.nome;
-      const uses = tripUsed ? (tripUsed.get(comboKey) || 0) : 0;
-      combos.push({ t, g, comboKey, uses });
+
+  for (const s of sopra) {
+    for (const p of sotto) {
+      if (!colorsMatch(s.nome, p.nome)) continue;
+      const key = `${s.id}_${p.id}`;
+      const isJustUsed = used.length > 0 && used[used.length - 1] === key;
+      if (isJustUsed) continue;
+      const timesUsed = used.filter(k => k === key).length;
+      const cr = comboRatings[key];
+      const ratingWeight = cr ? (0.3 + (cr / 5) * 2.2) : 1;
+      const usageWeight = 1 / (1 + timesUsed * 0.8);
+      const w = ratingWeight * usageWeight;
+      combos.push({ sopra: s, sotto: p, key, weight: w });
     }
   }
 
-  if (!combos.length) return [W.intimo[0], W.torso[2], W.gambe[1], W.scarpe[3]];
-
-  // Recupera l'ultima combo usata in questo viaggio (per evitare consecutive)
-  const lastCombo = tripUsed ? (tripUsed.get('__last__') || '') : '';
-
-  // Calcola il peso finale di ogni combo:
-  // peso = comboWeight (da valutazioni) / (uses+1) 
-  // così combo usate meno volte hanno più probabilità, MA quelle con 5★ tornano prima
-  combos.forEach(c => {
-    const ratingW = getComboWeight(c.comboKey);  // 0.3 – 2.5 da valutazioni
-    const usesPenalty = 1 / (c.uses + 1);         // 1, 0.5, 0.33, 0.25 ...
-    const consecutivePenalty = (c.comboKey === lastCombo) ? 0 : 1; // mai di fila
-    c.weight = ratingW * usesPenalty * consecutivePenalty;
-  });
-
-  // Weighted random tra tutte le combo
-  const totalW = combos.reduce((s,c)=>s+c.weight,0);
-  let r = Math.random() * totalW;
-  let chosen = combos[combos.length-1];
-  for (const c of combos) { r -= c.weight; if (r <= 0) { chosen = c; break; } }
-
-  const { t: torso, g: gambe, comboKey } = chosen;
-
-  // Registra combo usata e segnala come ultima
-  if (tripUsed) {
-    tripUsed.set(comboKey, (tripUsed.get(comboKey)||0) + 1);
-    tripUsed.set('__last__', comboKey);
+  // Fallback: no color filter
+  if (combos.length === 0) {
+    for (const s of sopra) {
+      for (const p of sotto) {
+        const key = `${s.id}_${p.id}`;
+        const isJustUsed = used.length > 0 && used[used.length - 1] === key;
+        if (isJustUsed) continue;
+        combos.push({ sopra: s, sotto: p, key, weight: 1 });
+      }
+    }
+  }
+  if (combos.length === 0 && sopra.length && sotto.length) {
+    combos = [{ sopra: sopra[0], sotto: sotto[0], key: `${sopra[0].id}_${sotto[0].id}`, weight: 1 }];
   }
 
-  const sel = [];
-  sel.push(torso);
+  // Weighted random
+  const combo = weightedRandom(combos);
+  if (!combo) { notify('Impossibile creare outfit'); return null; }
 
-  // Strato: freddo o meteo che lo richiede, ma non se fa molto caldo
-  const needStrato = COLD.includes(ctx.stagione) || ctx.forceStrato;
-  if (needStrato && !ctx.noStrato) {
-    const sO = filterCtx(W.strato, ctx);
-    if (sO.length) sel.push(pickRand(sO));
-  }
+  // Scegli scarpe compatibili
+  let compatScarpe = scarpe.filter(sc => colorsMatch(sc.nome, combo.sotto.nome) || colorsMatch(sc.nome, combo.sopra.nome));
+  if (compatScarpe.length === 0) compatScarpe = scarpe;
+  const pickedScarpe = compatScarpe.length ? pick(compatScarpe) : null;
 
-  sel.push(gambe);
+  // Strato: obbligatorio per freddo/pioggia/inverno/autunno
+  const needsStrato = ['inverno','primavera-fredda','autunno'].includes(season) || meteo === 'cold' || meteo === 'rain' || meteo === 'cool';
+  let pickedStrato = null;
+  if (needsStrato && strati.length > 0) pickedStrato = pick(strati);
 
-  // Scarpe: filtra per compatibilità colore e occasione
-  const scOpts = filterCtx(W.scarpe, ctx).filter(s => {
-    if (ctx.formalitaTarget>=4 && s.nome.includes("Birkenstock")) return false;
-    if (ctx.formalitaTarget>=5 && (s.nome.includes("Espadrillas")||s.nome.includes("LV Trainer"))) return false;
-    if (ctx.occasione==="mare" && (s.nome.includes("Chelsea")||s.nome.includes("Zegna"))) return false;
-    // Con la pioggia: no scarpe aperte (Birkenstock, Espadrillas) e no sneaker in canvas
-    if (ctx.pioggia && (s.nome.includes("Birkenstock")||s.nome.includes("Espadrillas"))) return false;
-    if (ctx.pioggia && (s.nome.includes("Espadrillas")||s.nome.includes("LV Trainer"))) return false;
-    return cc(s.colori[0],gambe.colori[0]) || cc(s.colori[0],torso.colori[0]);
-  });
-  // Se nessuna scarpa compatibile, allarga il filtro
-  const scarpePool = scOpts.length ? scOpts : filterCtx(W.scarpe, ctx);
-  const scarpe = pickRand(scarpePool);
-  sel.push(scarpe);
-
-  // Intimo + calze
-  const {boxer,calze} = selectIntimo(ctx,torso,gambe,scarpe);
-  sel.unshift(boxer);
-  if (calze) { const idx=sel.findIndex(i=>i.cat==="scarpe"); sel.splice(idx+1,0,calze); }
+  // Intimo
+  let pickedIntimo = intimo.length ? pick(intimo) : { nome: 'Boxer/slip bianchi', cat: 'Intimo' };
+  const intimoColor = getIntimoColor(formalTarget);
 
   // Cintura
-  const hasPants = !gambe.nome.includes("Bermuda") && !gambe.nome.includes("Pantaloncini");
-  if (hasPants && ctx.formalitaTarget>=3) {
-    const cf = W.accessori.filter(a=>a.tipo==="cintura"&&cc(a.colori[0],scarpe.colori[0]));
-    sel.push(cf.length ? pickRand(cf) : pickRand(W.accessori.filter(a=>a.tipo==="cintura")));
+  const shoeColor = pickedScarpe ? getColor(pickedScarpe.nome) : null;
+  const cintura = getCintura(shoeColor);
+  const orologio = getOrologio(formalTarget);
+  const gioielli = getGioielli(formalTarget);
+
+  // Calze
+  const calze = getCalze(pickedScarpe, combo.sotto);
+
+  const outfit = {
+    occasione: occasione || quickType,
+    date: dateStr,
+    season,
+    meteo,
+    intimo: pickedIntimo,
+    intimoNote: intimoColor,
+    sopra: combo.sopra,
+    strato: pickedStrato,
+    sotto: combo.sotto,
+    scarpe: pickedScarpe,
+    calzeNote: calze,
+    cintura,
+    orologio,
+    gioielli,
+    comboKey: combo.key,
+    timestamp: Date.now()
+  };
+
+  if (!opts.silent) {
+    renderOutfit(outfit);
+    currentOutfit = outfit;
+    saveToHistory(outfit);
   }
 
-  // Orologio
-  const orO = W.accessori.filter(a=>a.tipo==="orologio"&&((a.occasioni||[]).includes(ctx.occasione)||(a.occasioni||[]).includes("all")));
-  if (orO.length) sel.push(pickRand(orO));
+  return outfit;
+}
 
-  // Gioielli
-  const gjO = W.accessori.filter(a=>a.tipo==="gioiello"&&((a.occasioni||[]).includes(ctx.occasione)||(a.occasioni||[]).includes("smart-casual")));
-  if (gjO.length) {
-    const an = gjO.find(g=>g.nome.includes("Anello"));
-    if (an && Math.random()>0.2) sel.push(an);
-    const rest = gjO.filter(g=>!g.nome.includes("Anello"));
-    if (rest.length && Math.random()>0.35) sel.push(pickRand(rest));
+function weightedRandom(items) {
+  if (!items.length) return null;
+  const total = items.reduce((s, i) => s + i.weight, 0);
+  let r = Math.random() * total;
+  for (const item of items) {
+    r -= item.weight;
+    if (r <= 0) return item;
   }
-
-  return sel;
+  return items[items.length - 1];
 }
 
-// Simple random pick
-function pickRand(arr) {
-  if (!arr.length) return null;
-  return arr[Math.floor(Math.random()*arr.length)];
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Restituisce il peso di una combo torso|gambe basato sulle valutazioni passate
-// Rating medio 1-5 → peso 0.3x (pessima) a 2.5x (ottima)
-// Nessuna valutazione → peso 1.0 (neutro)
-function getComboWeight(comboKey) {
-  const comboRatings = JSON.parse(localStorage.getItem('comboRatings')||'[]');
-  const relevant = comboRatings.filter(r=>r.key===comboKey);
-  if (!relevant.length) return 1.0;
-  const avg = relevant.reduce((s,r)=>s+r.rating,0) / relevant.length;
-  // 1★ → 0.3x, 3★ → 1.0x, 5★ → 2.5x
-  return 0.3 + (avg - 1) * (2.2 / 4);
+function getIntimoColor(formalita) {
+  if (formalita >= 4) return 'Boxer bianchi o navy — colori neutri sotto camicia chiara';
+  if (formalita >= 3) return 'Boxer in tinta unita, colore a scelta';
+  return 'Boxer comfort, colore libero';
 }
 
-// Weighted random con penalizzazione viaggio
-function wRandTrip(arr, tripUsed, register) {
-  const rn = recentNames();
-  const weights = arr.map(i => {
-    let w = getW(i.nome);
-    if (rn.has(i.nome)) w *= 0.5;
-    if (tripUsed) {
-      // Usa i prefix keys T:/G:/S: per penalizzare capi già usati
-      const cat = i.cat;
-      const prefix = cat==='torso'?'T:':cat==='gambe'?'G:':cat==='scarpe'?'S:':'';
-      const uses = prefix ? (tripUsed.get(prefix+i.nome)||0) : 0;
-      if (uses >= 3) w *= 0.02;
-      else if (uses === 2) w *= 0.1;
-      else if (uses === 1) w *= 0.3;
-    }
-    return Math.max(w, 0.01);
+function getCintura(shoeColor) {
+  if (!shoeColor) return 'Cintura marrone in pelle liscia';
+  if (shoeColor === 'nero') return 'Cintura nera in pelle liscia — abbinata alle scarpe';
+  if (shoeColor === 'marrone') return 'Cintura marrone medium in pelle — abbinata alle scarpe';
+  if (['camel','cammello'].includes(shoeColor)) return 'Cintura camel/tan in pelle — abbinata alle scarpe';
+  if (['bianco','beige','crema','avorio'].includes(shoeColor)) return 'Nessuna cintura, oppure tan chiaro se necessario';
+  if (['navy','blu','azzurro'].includes(shoeColor)) return 'Cintura marrone scuro o nera in pelle';
+  return 'Cintura marrone in pelle, abbinata al tono delle scarpe';
+}
+
+function getOrologio(formalita) {
+  if (formalita >= 5) return 'Orologio elegante — quadrante bianco o nero, cinturino pelle';
+  if (formalita >= 4) return 'Orologio dress o sport-chic — acciaio o pelle';
+  if (formalita >= 3) return 'Orologio — qualsiasi modello che hai';
+  if (formalita >= 2) return 'Orologio casual o nessuno';
+  return null;
+}
+
+function getGioielli(formalita) {
+  if (formalita >= 5) return 'Anello sottile gold — no altri gioielli';
+  if (formalita >= 4) return 'Anello gold + bracciale sottile, oppure solo uno dei due';
+  if (formalita >= 3) return 'Anello o catenina sottile gold — facoltativo';
+  return 'Gioielli facoltativi — anello o catenina se vuoi';
+}
+
+function getCalze(scarpe, sotto) {
+  if (!scarpe) return 'Calze corte neutre';
+  const n = scarpe.nome.toLowerCase();
+  if (n.includes('birkenstock') || n.includes('infradito') || n.includes('espadrill') || n.includes('sandal') || n.includes('ciabatt')) return 'Senza calze';
+  const sn = sotto ? sotto.nome.toLowerCase() : '';
+  const sColor = sotto ? getColor(sotto.nome) : null;
+  const scColor = getColor(scarpe.nome);
+
+  if (sn.includes('bermuda') || sn.includes('short') || sn.includes('costume')) return 'Fantasmini bianchi o no-show skin-tone';
+  if (n.includes('sneaker') || n.includes('runner') || n.includes('canvas')) return 'Fantasmini o calzino alla caviglia bianchi';
+  if (n.includes('mocassin') || n.includes('loafer') || n.includes('derby') || n.includes('oxford')) {
+    if (sColor) return `Calze lunghe ${sColor} o navy — colore abbinato al pantalone`;
+    return 'Calze lunghe in colore abbinato al pantalone';
+  }
+  return 'Calze corte neutre';
+}
+
+// ══════════════════════════════════════════════════
+// RENDER OUTFIT
+// ══════════════════════════════════════════════════
+function renderOutfit(outfit) {
+  const el = document.getElementById('outfitResult');
+  el.classList.add('visible');
+
+  const titleEl = document.getElementById('outfitResultTitle');
+  titleEl.textContent = outfit.occasione ? `Outfit — ${outfit.occasione}` : 'Outfit del Giorno';
+
+  const layers = document.getElementById('outfitLayers');
+  layers.innerHTML = '';
+
+  const addLayer = (icon, cat, item, note) => {
+    if (item === null || item === undefined) return;
+    const nome = typeof item === 'string' ? item : item.nome;
+    if (!nome) return;
+    const div = document.createElement('div');
+    div.className = 'outfit-layer';
+    div.innerHTML = `
+      <div class="outfit-layer-icon">${icon}</div>
+      <div class="outfit-layer-content">
+        <div class="outfit-layer-cat">${cat}</div>
+        <div class="outfit-layer-item">${escapeHtml(nome)}</div>
+        ${note ? `<div class="outfit-layer-note">${escapeHtml(note)}</div>` : ''}
+      </div>
+    `;
+    layers.appendChild(div);
+  };
+
+  addLayer('🩲', 'Intimo', outfit.intimo, outfit.intimoNote);
+  addLayer('👕', 'Sopra', outfit.sopra, null);
+  if (outfit.strato) addLayer('🧥', 'Strato', outfit.strato, null);
+  addLayer('👖', 'Sotto', outfit.sotto, null);
+  if (outfit.scarpe) addLayer('👟', 'Scarpe', outfit.scarpe, outfit.calzeNote);
+  else if (outfit.calzeNote) addLayer('🧦', 'Calze', outfit.calzeNote, null);
+  
+  // Accessori — righe separate
+  if (outfit.cintura) addLayer('🪡', 'Cintura', outfit.cintura, null);
+  if (outfit.orologio) addLayer('⌚', 'Orologio', outfit.orologio, null);
+  if (outfit.gioielli) addLayer('💍', 'Gioielli', outfit.gioielli, null);
+
+  // Reset stars
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('lit'));
+}
+
+function saveToHistory(outfit) {
+  const h = getHistory();
+  h.unshift({
+    occasione: outfit.occasione,
+    date: outfit.date,
+    items: [
+      outfit.sopra?.nome,
+      outfit.sotto?.nome,
+      outfit.scarpe?.nome
+    ].filter(Boolean),
+    rating: 0,
+    id: outfit.timestamp
   });
-  const tot = weights.reduce((a,b)=>a+b,0);
-  let r = Math.random()*tot;
-  let chosen = arr[arr.length-1];
-  for (let i=0;i<arr.length;i++){r-=weights[i];if(r<=0){chosen=arr[i];break;}}
-  return chosen;
+  if (h.length > 20) h.splice(20);
+  saveHistory(h);
 }
 
-// ════════════════════════════════════════
-//  TRIP ENGINE
-// ════════════════════════════════════════
-let selectedVtype = 'mare';
-function selectVtype(t){ selectedVtype=t; document.querySelectorAll('[id^="vtype-"]').forEach(b=>b.classList.remove('selected')); document.getElementById('vtype-'+t).classList.add('selected'); }
-
-function getMomenti(dayIndex, totalDays, vtype) {
-  const m = [];
-  if (dayIndex===0) m.push({label:'✈ Partenza / Viaggio in arrivo', occ:'casual'});
-  else m.push({label:'☀️ '+(dayIndex===totalDays-1?'Mattina':'Mattina / Pranzo'), occ:vtype==='mare'?'mare':'casual'});
-  if (dayIndex<totalDays-1) m.push({label:'🌅 Aperitivo / Pomeriggio', occ:'aperitivo'});
-  if (dayIndex===totalDays-1) m.push({label:'✈ Ritorno a casa', occ:'casual'});
-  else m.push({label:'🌙 Cena / Sera', occ:'cena'});
-  return m;
-}
-
-function generateTrip() {
-  const dest = document.getElementById('tripDest').value.trim();
-  const fv = document.getElementById('tripFrom').value;
-  const tv = document.getElementById('tripTo').value;
-  if (!dest||!fv||!tv) { alert("Inserisci destinazione e date."); return; }
-  const fd=new Date(fv), td=new Date(tv);
-  if (td<fd) { alert("La data di fine deve essere dopo quella di inizio."); return; }
-  const days = Math.round((td-fd)/864e5)+1;
-  if (days>14) { alert("Massimo 14 giorni."); return; }
-  const stagione = seasonFromDate(fv);
-  const plan = [];
-  const tripUsed = new Map(); // blacklist condivisa per tutto il viaggio
-  for (let d=0; d<days; d++) {
-    const date=new Date(fd); date.setDate(date.getDate()+d);
-    const dateStr=date.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
-    const momenti=getMomenti(d,days,selectedVtype);
-    const dayOutfits=momenti.map(m=>{
-      const ctx=parseOccasion(m.occ);
-      ctx.stagione=stagione;
-      applyWeather(ctx, selectedTripWeather);
-      return{label:m.label,occ:m.occ,items:buildOutfit(ctx,tripUsed),ctx};
-    });
-    plan.push({dayIndex:d,dateStr,dayOutfits});
-  }
-  const tripId='trip_'+Date.now();
-  const history=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
-  history.unshift({id:tripId,type:'trip',dest,fromVal:fv,toVal:tv,plan,date:new Date().toISOString()});
-  localStorage.setItem('outfitHistory',JSON.stringify(history.slice(0,20)));
-  renderTripPlan(plan,dest,fv,tv,tripId);
-}
-
-const SECS=[{key:"intimo",e:"🩲"},{key:"torso",e:"👕"},{key:"strato",e:"🧥"},{key:"gambe",e:"👖"},{key:"scarpe",e:"👞"},{key:"calze",e:"🧦"},{key:"accessori",e:"✨"}];
-
-function renderTripPlan(plan,dest,fv,tv,tripId){
-  const area=document.getElementById('outfitArea');
-  const fd=new Date(fv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
-  const td=new Date(tv).toLocaleDateString('it-IT',{day:'numeric',month:'long'});
-  const tripWeatherEmoji = {normale:'☀️',caldo:'🥵',fresco:'🌤',pioggia:'🌧',freddo:'🥶'};
-  const tripWeatherLabel = {normale:'Bel tempo',caldo:'Molto caldo',fresco:'Fresco',pioggia:'Pioggia',freddo:'Freddo'};
-  const wInfo = selectedTripWeather!=='normale' ? ` · ${tripWeatherEmoji[selectedTripWeather]} ${tripWeatherLabel[selectedTripWeather]}` : '';
-  let html=`<div class="trip-plan"><div class="trip-header-card"><h2>✈ ${dest}</h2><p>${fd} — ${td} · ${plan.length} giorn${plan.length===1?'o':'i'}${wInfo}</p></div>`;
-  plan.forEach((day,di)=>{
-    html+=`<div class="trip-day"><div class="trip-day-header"><div class="trip-day-number">${di+1}</div><div><div class="trip-day-title">Giorno ${di+1}</div><div class="trip-day-date">${day.dateStr}</div></div></div>`;
-    day.dayOutfits.forEach((outfit,oi)=>{
-      const momentId = `${tripId}_d${di}_m${oi}`;
-      html+=`<div class="trip-moment"><div class="trip-moment-header"><span class="trip-moment-label">${outfit.label}</span></div><div class="trip-moment-body">`;
-      const g={};outfit.items.forEach(i=>{if(!g[i.cat])g[i.cat]=[];g[i.cat].push(i);});
-      SECS.forEach(s=>{if(!g[s.key]||!g[s.key].length)return;g[s.key].forEach(item=>{html+=`<div class="trip-moment-item"><span class="trip-moment-emoji">${item.emoji}</span><span>${item.nome}</span></div>`;});});
-      html+=`</div>`;
-      // Salva items in mappa globale per il rating
-      tripMomentItems[momentId] = outfit.items;
-      // Rating stars
-      html+=`<div class="trip-rating-area">
-        <span class="rating-label">Valuta</span>
-        <div class="stars-row" id="stars-${momentId}">
-          ${[1,2,3,4,5].map(n=>`<button class="star" onclick="rateTripMoment('${momentId}',${n})">☆</button>`).join('')}
-        </div>
-        <span class="rating-saved" id="ratingSaved-${momentId}">✓</span>
-      </div>`;
-      html+=`</div>`;
-    });
-    html+=`</div>`;
+function rateOutfit(stars) {
+  document.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('lit', i < stars);
   });
-  html+=renderValigia(plan,dest)+'</div>';
-  area.innerHTML=html;
-  area.scrollTo({top:0,behavior:'smooth'});
+  if (!currentOutfit) return;
+
+  // Save item ratings
+  const ir = getItemRatings();
+  const cr = getComboRatings();
+
+  [currentOutfit.sopra, currentOutfit.sotto, currentOutfit.scarpe, currentOutfit.strato].forEach(item => {
+    if (!item) return;
+    const key = String(item.id);
+    const prev = ir[key] || [];
+    prev.push(stars);
+    if (prev.length > 20) prev.shift();
+    ir[key] = prev;
+  });
+  save('itemRatings', ir);
+
+  // Combo rating
+  if (currentOutfit.comboKey) {
+    const prev = cr[currentOutfit.comboKey] || [];
+    prev.push(stars);
+    if (prev.length > 20) prev.shift();
+    cr[currentOutfit.comboKey] = prev;
+    save('comboRatings', cr);
+  }
+
+  // Update history rating
+  const h = getHistory();
+  const idx = h.findIndex(o => o.id === currentOutfit.timestamp);
+  if (idx >= 0) { h[idx].rating = stars; saveHistory(h); }
+
+  notify(`Outfit valutato: ${stars} ★`);
 }
 
-function renderValigia(plan,dest){
-  // Raccoglie i capi UNICI usati nel viaggio (ogni capo fisico appare una sola volta)
-  // Per intimo/calze conta i giorni (si cambiano ogni giorno)
-  const unique = {}; // key → {nome, cat, emoji, days: Set}
-  const totalDays = plan.length;
+// ══════════════════════════════════════════════════
+// TRAVEL PLANNING
+// ══════════════════════════════════════════════════
+function planTravel() {
+  const dest = document.getElementById('travelDest').value.trim();
+  const fromStr = document.getElementById('travelFrom').value;
+  const toStr = document.getElementById('travelTo').value;
+  const meteo = document.getElementById('travelMeteo').value;
+  const tipo = selectedTravelType || 'Città';
 
-  plan.forEach((day,di)=>day.dayOutfits.forEach(o=>{
-    o.items.forEach(item=>{
-      // Normalizza tutte le varianti boxer in un unico capo
-      let nome = item.nome;
-      if(nome.startsWith('Boxer/slip')) nome = 'Boxer/slip';
-      // Normalizza calze simili in categorie
-      if(nome.includes('Fantasmini bianchi')) nome = 'Fantasmini bianchi/neutri';
-      if(nome.includes('Fantasmini neri')) nome = 'Fantasmini scuri';
-      if(nome.includes('Senza calze')) nome = 'Senza calze';
-      if(nome.includes('Calze lunghe')) {
-        // mantieni il colore ma unifica il tipo
-        nome = nome.replace(/\(sopra la caviglia\)/,'').trim();
-      }
+  if (!fromStr || !toStr) { notify('Inserisci le date del viaggio'); return; }
+  const from = new Date(fromStr);
+  const to = new Date(toStr);
+  if (to < from) { notify('Data fine deve essere dopo inizio'); return; }
 
-      const key = nome;
-      if(!unique[key]){
-        unique[key]={nome:key, cat:item.cat, emoji:item.emoji, days:new Set(), uses:0};
-      }
-      unique[key].days.add(di);
-      unique[key].uses++;
-    });
-  }));
+  const days = [];
+  const cur = new Date(from);
+  while (cur <= to) {
+    days.push(new Date(cur));
+    cur.setDate(cur.getDate() + 1);
+  }
 
-  // Calcola quantità fisiche reali:
-  // - Intimo: 1 per ogni giorno (si cambia ogni giorno) → giorni totali
-  // - Calze: 1 per ogni giorno in cui vengono usate
-  // - Vestiti (torso/gambe/strato): sempre 1 fisico (si può riusare)
-  // - Scarpe: sempre 1 paio fisico
-  // - Accessori: sempre 1 fisico
-  const byC={};
-  Object.values(unique).forEach(({nome,cat,emoji,days,uses})=>{
-    let qty, note='';
-    if(cat==='intimo'){
-      qty = totalDays; // 1 al giorno
-      note = `(${totalDays} giorni)`;
-    } else if(cat==='calze'){
-      qty = days.size;
-      if(nome==='Senza calze'){qty=0;return;} // non mettere in valigia
-      note = days.size > 1 ? `(${days.size} paia)` : '';
+  const travelPlanEl = document.getElementById('travelPlan');
+  travelPlanEl.classList.add('visible');
+  const daysList = document.getElementById('travelDaysList');
+  daysList.innerHTML = '';
+
+  travelUsedCombos = [];
+  const packingSet = new Map(); // nome → { item, count }
+
+  const addToPacking = (item, qty = 1) => {
+    if (!item) return;
+    const nome = typeof item === 'string' ? item : item.nome;
+    if (packingSet.has(nome)) {
+      if (qty > 1) packingSet.get(nome).count = Math.max(packingSet.get(nome).count, qty);
     } else {
-      qty = 1; // 1 pezzo fisico, si riusa
+      packingSet.set(nome, { nome, count: qty });
     }
-    if(!byC[cat])byC[cat]=[];
-    byC[cat].push({nome,emoji,qty,note});
+  };
+
+  // Genero outfit per ogni giorno
+  const numDays = days.length;
+
+  days.forEach((d, di) => {
+    const isFirst = di === 0;
+    const isLast = di === numDays - 1;
+    const dateStr = d.toISOString().split('T')[0];
+    const dateLabel = d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'short' });
+
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'travel-day';
+
+    let moments = [];
+    if (isFirst && isLast) {
+      moments = [{ label: 'Partenza + Arrivo', occasione: 'Casual' }, { label: 'Aperitivo', occasione: 'Aperitivo' }, { label: 'Cena', occasione: 'Cena' }];
+    } else if (isFirst) {
+      moments = [{ label: 'Partenza', occasione: 'Casual' }, { label: 'Aperitivo', occasione: 'Aperitivo' }, { label: 'Cena', occasione: 'Cena' }];
+    } else if (isLast) {
+      moments = [{ label: 'Mattina', occasione: getMorningOcc(tipo) }, { label: 'Ritorno', occasione: 'Casual' }];
+    } else {
+      moments = [{ label: 'Mattina / Pranzo', occasione: getMorningOcc(tipo) }, { label: 'Aperitivo', occasione: 'Aperitivo' }, { label: 'Cena', occasione: 'Cena' }];
+    }
+
+    let dayHtml = `<div class="travel-day-header">Giorno ${di + 1} — ${dateLabel}</div>`;
+
+    moments.forEach(m => {
+      const outfit = generateOutfit({ occasione: m.occasione, date: dateStr, meteo, usedCombos: travelUsedCombos, silent: true, quickType: m.occasione });
+      if (!outfit) return;
+      travelUsedCombos.push(outfit.comboKey);
+
+      // Aggiungi al packing
+      addToPacking(outfit.sopra);
+      addToPacking(outfit.sotto);
+      if (outfit.strato) addToPacking(outfit.strato);
+      if (outfit.scarpe) addToPacking(outfit.scarpe);
+      // Intimo e calze × giorni
+      const intimoNome = typeof outfit.intimo === 'string' ? outfit.intimo : outfit.intimo?.nome || 'Boxer/slip';
+      addToPacking(intimoNome + ` (×${numDays})`, numDays);
+      addToPacking(`Calze (×${numDays})`, numDays);
+      // Accessori
+      if (outfit.cintura) addToPacking(outfit.cintura.split('—')[0].trim());
+      if (outfit.orologio) addToPacking(outfit.orologio.split(',')[0].trim());
+
+      const layers = buildOutfitLayersHtml(outfit);
+      dayHtml += `
+        <div class="travel-moment">
+          <div class="travel-moment-title">${m.label}</div>
+          ${layers}
+          <div class="stars-row travel-stars" data-combo="${outfit.comboKey}">
+            ${[1,2,3,4,5].map(n => `<span class="star" onclick="rateTravelOutfit(this,${n},'${outfit.comboKey}')">★</span>`).join('')}
+          </div>
+        </div>
+      `;
+    });
+
+    dayDiv.innerHTML = dayHtml;
+    daysList.appendChild(dayDiv);
   });
 
-  const CL={intimo:"👙 Intimo",calze:"🧦 Calze",torso:"👕 Sopra",strato:"🧥 Strati",gambe:"👖 Sotto",scarpe:"👞 Scarpe",accessori:"✨ Accessori"};
-  const CO=["intimo","calze","torso","strato","gambe","scarpe","accessori"];
-  let html=`<div class="valigia-section"><div class="valigia-header"><h3>🧳 Lista Valigia</h3><span>${dest}</span></div><div class="valigia-body">`;
-  CO.forEach(cat=>{
-    if(!byC[cat]||!byC[cat].length)return;
-    html+=`<div class="valigia-cat"><div class="valigia-cat-title">${CL[cat]||cat}</div>`;
-    byC[cat].forEach(({nome,emoji,qty,note})=>{
-      html+=`<div class="valigia-item"><span class="valigia-qty">${qty}×</span><span>${nome}${note?' <span style="font-size:11px;color:var(--muted)">'+note+'</span>':''}</span></div>`;
-    });
-    html+=`</div>`;
+  // Packing list
+  const packingEl = document.getElementById('packingItems');
+  packingEl.innerHTML = '';
+  packingSet.forEach(({ nome, count }) => {
+    const div = document.createElement('div');
+    div.className = 'packing-item';
+    div.innerHTML = `<span>${escapeHtml(nome)}</span><span class="packing-qty">${count > 1 ? count + 'x' : '1×'}</span>`;
+    packingEl.appendChild(div);
   });
-  html+=`</div></div>`;
+
+  // Scroll to plan
+  setTimeout(() => travelPlanEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function getMorningOcc(tipo) {
+  if (tipo === 'Mare') return 'Casual';
+  if (tipo === 'Montagna') return 'Weekend';
+  if (tipo === 'Città') return 'Casual';
+  if (tipo === 'Resort') return 'Aperitivo';
+  if (tipo === 'Evento') return 'Cena';
+  return 'Casual';
+}
+
+function buildOutfitLayersHtml(outfit) {
+  const addRow = (icon, cat, item, note) => {
+    if (!item) return '';
+    const nome = typeof item === 'string' ? item : item.nome;
+    return `
+      <div class="outfit-layer">
+        <div class="outfit-layer-icon">${icon}</div>
+        <div class="outfit-layer-content">
+          <div class="outfit-layer-cat">${cat}</div>
+          <div class="outfit-layer-item">${escapeHtml(nome)}</div>
+          ${note ? `<div class="outfit-layer-note">${escapeHtml(note)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  };
+  let html = '';
+  html += addRow('🩲', 'Intimo', outfit.intimo, null);
+  html += addRow('👕', 'Sopra', outfit.sopra, null);
+  if (outfit.strato) html += addRow('🧥', 'Strato', outfit.strato, null);
+  html += addRow('👖', 'Sotto', outfit.sotto, null);
+  if (outfit.scarpe) html += addRow('👟', 'Scarpe', outfit.scarpe, outfit.calzeNote);
+  if (outfit.cintura) html += addRow('🪡', 'Cintura', outfit.cintura, null);
+  if (outfit.orologio) html += addRow('⌚', 'Orologio', outfit.orologio, null);
+  if (outfit.gioielli) html += addRow('💍', 'Gioielli', outfit.gioielli, null);
   return html;
 }
 
-// ════════════════════════════════════════
-//  SINGLE OUTFIT RENDER
-// ════════════════════════════════════════
-const SO=[{key:"intimo",label:"Intimo",emoji:"👙"},{key:"torso",label:"Sopra",emoji:"👕"},{key:"strato",label:"Strato",emoji:"🧥"},{key:"gambe",label:"Sotto",emoji:"👖"},{key:"scarpe",label:"Scarpe",emoji:"👞"},{key:"calze",label:"Calze",emoji:"🧦"},{key:"accessori",label:"Accessori",emoji:"✨"}];
-const SL={primavera:"🌸 Primavera","primavera-fredda":"🌸 Primavera (fresca)",estate:"☀️ Estate","autunno-caldo":"🍂 Fine estate",autunno:"🍂 Autunno",inverno:"❄️ Inverno"};
-
-function renderOutfit(items,ctx,oid){
-  const g={};items.forEach(i=>{if(!g[i.cat])g[i.cat]=[];g[i.cat].push(i);});
-  let h=`<div class="outfit-card" id="card-${oid}"><div class="outfit-card-header"><span class="outfit-occasion">${ctx.occasione.toUpperCase()}</span><span class="outfit-timestamp">${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div>`;
-  const weatherEmoji = {normale:'',caldo:' 🥵',fresco:' 🌤',pioggia:' 🌧',freddo:' 🥶'};
-  const wTag = ctx.weather && ctx.weather!=='normale' ? `<span class="season-tag" style="margin-left:6px;">${weatherEmoji[ctx.weather]||''} ${ctx.weather.charAt(0).toUpperCase()+ctx.weather.slice(1)}</span>` : '';
-  h+=`<span class="season-tag">${SL[ctx.stagione]||ctx.stagione}</span>${wTag}<div class="outfit-items">`;
-  SO.forEach(s=>{if(!g[s.key]||!g[s.key].length)return;h+=`<div class="outfit-section"><div class="outfit-section-title">${s.emoji} ${s.label}</div>`;g[s.key].forEach(item=>{h+=`<div class="outfit-item"><span class="outfit-item-emoji">${item.emoji}</span><span class="outfit-item-name">${item.nome}</span></div>`;});h+=`</div>`;});
-  h+=`</div>`;
-  if(ctx.note)h+=`<div class="outfit-note">${ctx.note}</div>`;
-  h+=`<div class="rating-area"><span class="rating-label">Valuta il look</span><div class="stars-row" id="stars-${oid}">${[1,2,3,4,5].map(n=>`<button class="star" onclick="rateOutfit('${oid}',${n})">☆</button>`).join('')}</div><span class="rating-saved" id="ratingSaved-${oid}">✓ Salvato</span></div></div>`;
-  return h;
-}
-
-function rateTripMoment(momentId, rating) {
-  const items = tripMomentItems[momentId];
-  if (!items) return;
-  // Update stars UI
-  document.querySelectorAll(`#stars-${momentId} .star`).forEach((s,i)=>{
-    s.textContent=i<rating?'★':'☆';
-    s.classList.toggle('active',i<rating);
-    s.onclick=null;
-  });
-  const sv=document.getElementById(`ratingSaved-${momentId}`);
-  if(sv) sv.classList.add('show');
-  // Save item ratings
-  updateItemRating(items, rating);
-  // Save combo rating
-  const torso=items.find(i=>i.cat==='torso');
-  const gambe=items.find(i=>i.cat==='gambe');
-  if(torso&&gambe){
-    const comboKey=torso.nome+'|'+gambe.nome;
-    const comboRatings=JSON.parse(localStorage.getItem('comboRatings')||'[]');
-    comboRatings.push({key:comboKey,rating,date:new Date().toISOString()});
-    localStorage.setItem('comboRatings',JSON.stringify(comboRatings.slice(-100)));
+function rateTravelOutfit(el, stars, comboKey) {
+  const row = el.closest('.travel-stars');
+  row.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('lit', i < stars));
+  if (comboKey) {
+    const cr = getComboRatings();
+    const prev = cr[comboKey] || [];
+    prev.push(stars);
+    if (prev.length > 20) prev.shift();
+    cr[comboKey] = prev;
+    save('comboRatings', cr);
   }
+  notify(`★ ${stars}`);
 }
 
-function rateOutfit(oid,rating){
-  document.querySelectorAll(`#stars-${oid} .star`).forEach((s,i)=>{s.textContent=i<rating?'★':'☆';s.classList.toggle('active',i<rating);s.onclick=null;});
-  const sv=document.getElementById(`ratingSaved-${oid}`);if(sv)sv.classList.add('show');
-  const hist=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
-  const o=hist.find(x=>x.id===oid);
-  if(o){
-    o.rating=rating;
-    localStorage.setItem('outfitHistory',JSON.stringify(hist));
-    updateItemRating(o.items,rating);
-    // Salva anche la valutazione della combo torso+gambe
-    const torso=o.items&&o.items.find(i=>i.cat==='torso');
-    const gambe=o.items&&o.items.find(i=>i.cat==='gambe');
-    if(torso&&gambe){
-      const comboKey=torso.nome+'|'+gambe.nome;
-      const comboRatings=JSON.parse(localStorage.getItem('comboRatings')||'[]');
-      comboRatings.push({key:comboKey,rating,date:new Date().toISOString()});
-      // Mantieni solo ultimi 100
-      localStorage.setItem('comboRatings',JSON.stringify(comboRatings.slice(-100)));
-    }
-  }
-}
-
-// ════════════════════════════════════════
-//  MODE / NAVIGATION
-// ════════════════════════════════════════
-function selectTripWeather(w){
-  selectedTripWeather = w;
-  document.querySelectorAll('[id^="tw-"]').forEach(b=>b.classList.remove('selected'));
-  const el = document.getElementById('tw-'+w);
-  if(el) el.classList.add('selected');
-}
-
-function selectWeather(w){
-  selectedWeather = w;
-  document.querySelectorAll('.weather-chip').forEach(b=>b.classList.remove('selected'));
-  const el = document.getElementById('w-'+w);
-  if(el) el.classList.add('selected');
-}
-
-// Applica le condizioni meteo al contesto: sovrascrive stagione e aggiunge flag
-function applyWeather(ctx, weather) {
-  ctx.weather = weather;
-  switch(weather) {
-    case 'caldo':
-      // Forza estate: capi leggeri, no strati
-      ctx.stagione = 'estate';
-      ctx.noStrato = true;
-      ctx.note += ' Caldo intenso: privilegia tessuti leggeri e traspiranti.';
-      break;
-    case 'fresco':
-      // Sposta verso primavera fredda: strato leggero ok
-      if(['estate','primavera','autunno-caldo'].includes(ctx.stagione)){
-        ctx.stagione = 'primavera-fredda';
-      }
-      ctx.note += ' Aria fresca: considera uno strato leggero.';
-      break;
-    case 'pioggia':
-      // Evita scarpe aperte, suggerisce strato
-      ctx.pioggia = true;
-      ctx.note += ' Pioggia in arrivo: scarpe chiuse e uno strato.';
-      break;
-    case 'freddo':
-      // Forza inverno: strato obbligatorio
-      ctx.stagione = 'inverno';
-      ctx.forceStrato = true;
-      ctx.note += ' Freddo: strato obbligatorio.';
-      break;
-    case 'normale':
-    default:
-      break;
-  }
-  return ctx;
-}
-
-function switchMode(mode){
-  document.getElementById('tabSingle').classList.toggle('active',mode==='single');
-  document.getElementById('tabTrip').classList.toggle('active',mode==='trip');
-  document.getElementById('singleInput').style.display=mode==='single'?'block':'none';
-  document.getElementById('tripInput').classList.toggle('active',mode==='trip');
-  // Reset weather selectors when switching tab
-  if(mode==='single') selectWeather(selectedWeather);
-  if(mode==='trip') selectTripWeather(selectedTripWeather);
-  document.getElementById('outfitArea').innerHTML=`<div class="empty-state"><div class="empty-icon">${mode==='trip'?'✈':'✦'}</div><p>${mode==='trip'?'Inserisci destinazione e date per pianificare il guardaroba del tuo viaggio.':'Scrivi l\'occasione e lascia che il tuo stilista personale componga il look perfetto.'}</p></div>`;
-}
-
-function setPill(val){document.getElementById('occasionInput').value=val;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));event.target.classList.add('selected');generateOutfit();}
-
-function generateOutfit(){
-  const input=document.getElementById('occasionInput');
-  const occ=input.value.trim();
-  if(!occ){input.focus();input.placeholder="Scrivi prima cosa fai oggi!";setTimeout(()=>{input.placeholder="es. cena elegante, giorno al mare…";},2000);return;}
-  const btn=document.getElementById('generateBtn');btn.classList.add('loading');btn.textContent='...';
-  setTimeout(()=>{
-    const ctx=parseOccasion(occ);
-    const dateVal=document.getElementById('singleDate').value;
-    if(dateVal) ctx.stagione=seasonFromDate(dateVal);
-    applyWeather(ctx, selectedWeather);
-    // Passa una mini-map che blocca solo l'ultima combo usata
-    const singleMap = new Map();
-    if(lastSingleCombo) singleMap.set('__last__', lastSingleCombo);
-    const items=buildOutfit(ctx, singleMap);
-    // Aggiorna l'ultima combo usata
-    const t=items.find(i=>i.cat==='torso');
-    const g=items.find(i=>i.cat==='gambe');
-    if(t&&g) lastSingleCombo=t.nome+'|'+g.nome;
-    const id='outfit_'+Date.now();
-    const hist=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
-    hist.unshift({id,occasion:occ,ctx,items,rating:null,date:new Date().toISOString()});
-    localStorage.setItem('outfitHistory',JSON.stringify(hist.slice(0,20)));
-    const area=document.getElementById('outfitArea');
-    const ex=area.querySelector('.outfit-card');
-    area.innerHTML=renderOutfit(items,ctx,id)+(ex?ex.outerHTML:'');
-    btn.classList.remove('loading');btn.textContent='Crea';
-    area.scrollTo({top:0,behavior:'smooth'});
-  },300);
-}
-
-// ════════════════════════════════════════
-//  HISTORY
-// ════════════════════════════════════════
-// ══════════════════════════════
-//  WARDROBE MANAGER
-// ══════════════════════════════
-let wpNewMaterial = null;  // materiale selezionato per nuovo capo
-let wpNewCategory = null;  // categoria selezionata per nuovo capo
-
+// ══════════════════════════════════════════════════
+// WARDROBE OVERLAY
+// ══════════════════════════════════════════════════
 function openWardrobe() {
-  renderWardrobePanel();
-  document.getElementById('wardrobePanel').classList.add('open');
+  renderWardrobeList();
+  document.getElementById('wardrobeOverlay').classList.add('open');
 }
-
 function closeWardrobe() {
-  document.getElementById('wardrobePanel').classList.remove('open');
+  document.getElementById('wardrobeOverlay').classList.remove('open');
 }
 
-// Global map: index -> nome, for safe onclick handling
-const wpItemNames = {};
-
-function renderWardrobePanel() {
-  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
-  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
-
-  // Build the full item list from BASE_CATALOG (source of truth in memory)
-  const allItems = [];
-  const catOrder = ['intimo','torso','strato','gambe','scarpe','accessori'];
-  catOrder.forEach(cat => {
-    (BASE_CATALOG[cat] || []).forEach(item => {
-      allItems.push({ nome: item.nome, cat });
-    });
-  });
-
-  document.getElementById('wpCount').textContent = allItems.length + ' capi';
-
-  // Category chips for new item
-  wpNewMaterial = null;
-  wpNewCategory = null;
-  const cats = [
-    {id:'torso',label:'👕 Sopra'},{id:'gambe',label:'👖 Sotto'},
-    {id:'scarpe',label:'👟 Scarpe'},{id:'strato',label:'🧥 Strato'},
-    {id:'accessori',label:'✨ Accessori'},{id:'intimo',label:'🩲 Intimo'}
-  ];
-  document.getElementById('wpCatChips').innerHTML = cats.map(c =>
-    `<button class="mat-chip" id="wpcat_${c.id}" onclick="selectNewCat('${c.id}')">${c.label}</button>`
-  ).join('');
-
-  // Material chips for new item
-  const allMats = [
-    {id:'cotone_leggero',label:'Cotone leggero'},{id:'lino',label:'Lino'},
-    {id:'cotone',label:'Cotone'},{id:'jersey',label:'Jersey/polo'},
-    {id:'denim',label:'Denim'},{id:'maglia',label:'Maglia'},
-    {id:'lana',label:'Lana'},{id:'cashmere',label:'Cashmere'},
-    {id:'pelle',label:'Pelle'},{id:'suede',label:'Suede/camoscio'},
-    {id:'canvas',label:'Canvas/tela'},{id:'sintetico',label:'Sintetico'},
-    {id:'metallo',label:'Metallo/oro'},{id:'plastica',label:'Plastica'}
-  ];
-  document.getElementById('wpNewChips').innerHTML = allMats.map(m =>
-    `<button class="mat-chip" id="wpnew_${m.id}" onclick="selectNewMat('${m.id}')">${m.label}</button>`
-  ).join('');
-
-  const list = document.getElementById('wpList');
-  if (!allItems.length) {
-    list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px;font-style:italic;">Nessun capo nel guardaroba.</p>';
+function renderWardrobeList() {
+  const catalog = getCatalog();
+  const el = document.getElementById('wardrobeList');
+  if (catalog.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👔</div><div class="empty-state-text">Nessun capo nel guardaroba</div></div>';
     return;
   }
-
-  // Store names in global map
-  allItems.forEach((item, idx) => { wpItemNames[idx] = item.nome; });
-
-  list.innerHTML = allItems.map((item, idx) => {
-    const { nome, cat } = item;
-    const matId = saved[nome] || DEFAULT_MATERIALS[nome] || null;
-    const chips = allMats.map(m =>
-      `<button class="mat-chip${matId === m.id ? ' sel' : ''}"
-        id="wpedit_${idx}_${m.id}"
-        onclick="updateMaterialByIdx(${idx},'${m.id}')">${m.label}</button>`
-    ).join('');
-    const catLabels = {torso:'Sopra',gambe:'Sotto',scarpe:'Scarpe',strato:'Strato',accessori:'Accessori',intimo:'Intimo'};
-    return `<div class="wp-item" id="wpitem_${idx}">
-      <div class="wp-item-top">
-        <span class="wp-item-name">${nome}</span>
-        <span class="wp-item-cat">${catLabels[cat]||cat}</span>
-        <button class="wp-item-del" onclick="deleteWardrobeByIdx(${idx})" title="Elimina">×</button>
+  el.innerHTML = catalog.map((item, i) => `
+    <div class="wardrobe-item">
+      <span style="font-size:20px">${item.emoji || '👔'}</span>
+      <div style="flex:1">
+        <div class="wardrobe-item-name">${escapeHtml(item.nome)}</div>
+        <div class="wardrobe-item-meta">${item.cat} — <span class="mat-chip-small" onclick="editMat(${item.id})">${item.mat}</span></div>
       </div>
-      <div class="wp-item-chips">${chips}</div>
-    </div>`;
+      <button class="wardrobe-delete" onclick="deleteItem(${item.id})">×</button>
+    </div>
+  `).join('');
+}
+
+function editMat(id) {
+  const catalog = getCatalog();
+  const item = catalog.find(i => i.id === id);
+  if (!item) return;
+  const mats = MATS;
+  const current = item.mat;
+  const next = mats[(mats.indexOf(current) + 1) % mats.length];
+  item.mat = next;
+  item.stagioni = MAT_SEASONS[next] || MAT_SEASONS['Cotone'];
+  saveCatalog(catalog);
+  renderWardrobeList();
+  notify(`Materiale: ${next}`);
+}
+
+function deleteItem(id) {
+  let catalog = getCatalog();
+  catalog = catalog.filter(i => i.id !== id);
+  saveCatalog(catalog);
+  renderWardrobeList();
+  notify('Capo eliminato');
+}
+
+function selectNewCat(el, cat) {
+  newItemCat = cat;
+  document.querySelectorAll('#newItemCatChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectNewMat(el, mat) {
+  newItemMat = mat;
+  document.querySelectorAll('#newItemMatChips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function addNewItem() {
+  const nome = document.getElementById('newItemName').value.trim();
+  if (!nome) { notify('Inserisci il nome del capo'); return; }
+  if (!newItemCat) { notify('Seleziona la categoria'); return; }
+  const mat = newItemMat || 'Cotone';
+  const catalog = getCatalog();
+  const item = {
+    id: Date.now(),
+    nome,
+    cat: newItemCat,
+    mat,
+    stagioni: MAT_SEASONS[mat] || MAT_SEASONS['Cotone'],
+    formalita: guessFormalita(nome, newItemCat),
+    emoji: CAT_EMOJI[newItemCat] || '👔'
+  };
+  catalog.push(item);
+  saveCatalog(catalog);
+  document.getElementById('newItemName').value = '';
+  newItemCat = null; newItemMat = null;
+  document.querySelectorAll('#newItemCatChips .chip, #newItemMatChips .chip').forEach(c => c.classList.remove('selected'));
+  renderWardrobeList();
+  notify('Capo aggiunto!');
+}
+
+function resetAll() {
+  if (!confirm('Eliminare tutto il guardaroba? Questa azione non può essere annullata.')) return;
+  localStorage.clear();
+  notify('Reset completato');
+  setTimeout(() => location.reload(), 1000);
+}
+
+// ══════════════════════════════════════════════════
+// HISTORY OVERLAY
+// ══════════════════════════════════════════════════
+function openHistory() {
+  renderHistory();
+  document.getElementById('historyOverlay').classList.add('open');
+}
+function closeHistory() {
+  document.getElementById('historyOverlay').classList.remove('open');
+}
+
+function renderHistory() {
+  const h = getHistory();
+  const el = document.getElementById('historyBody');
+  if (h.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◷</div><div class="empty-state-text">Nessun outfit generato ancora</div></div>';
+    return;
+  }
+  el.innerHTML = h.map(o => {
+    const dateLabel = o.date ? new Date(o.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    const stars = o.rating ? '★'.repeat(o.rating) + '☆'.repeat(5 - o.rating) : '☆☆☆☆☆';
+    return `
+      <div class="history-item">
+        <div class="history-occasion">${escapeHtml(o.occasione || '—')}</div>
+        <div class="history-date">${dateLabel}</div>
+        <div class="history-items">${o.items ? o.items.map(escapeHtml).join(' · ') : ''}</div>
+        <div class="history-stars">${stars}</div>
+      </div>
+    `;
   }).join('');
 }
 
-
-function selectNewCat(catId) {
-  wpNewCategory = catId;
-  document.querySelectorAll('[id^="wpcat_"]').forEach(b => b.classList.remove('sel'));
-  const el = document.getElementById('wpcat_' + catId);
-  if (el) el.classList.add('sel');
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function selectNewMat(matId) {
-  wpNewMaterial = matId;
-  document.querySelectorAll('[id^="wpnew_"]').forEach(b => b.classList.remove('sel'));
-  const el = document.getElementById('wpnew_' + matId);
-  if (el) el.classList.add('sel');
+function notify(msg) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
 }
-
-function updateMaterialByIdx(idx, matId) {
-  const nome = wpItemNames[idx];
-  if (!nome) return;
-  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
-  saved[nome] = matId;
-  localStorage.setItem('materialSelections', JSON.stringify(saved));
-  const allIds = ['cotone_leggero','lino','cotone','jersey','denim','maglia','lana','cashmere','pelle','suede','canvas','sintetico','metallo','plastica'];
-  allIds.forEach(id => {
-    const chip = document.getElementById(`wpedit_${idx}_${id}`);
-    if (chip) chip.classList.toggle('sel', id === matId);
-  });
-  buildEnrichedWardrobe();
-}
-
-function addWardrobeItem() {
-  const input = document.getElementById('wpNewName');
-  const nome = input.value.trim();
-  if (!nome) { input.focus(); return; }
-  if (!wpNewCategory) { alert('Seleziona la categoria del capo.'); return; }
-  if (!wpNewMaterial) { alert('Seleziona il materiale del capo.'); return; }
-
-  const text = localStorage.getItem('wardrobeText') || '';
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-  if (lines.includes(nome)) { alert('Questo capo è già nel guardaroba.'); return; }
-  lines.push(nome);
-  localStorage.setItem('wardrobeText', lines.join('\n'));
-
-  // Save material
-  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
-  saved[nome] = wpNewMaterial;
-  localStorage.setItem('materialSelections', JSON.stringify(saved));
-
-  // Save category override
-  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
-  catOverrides[nome] = wpNewCategory;
-  localStorage.setItem('catOverrides', JSON.stringify(catOverrides));
-
-  // Add to BASE_CATALOG
-  const cat = wpNewCategory;
-  const emojiMap = {torso:'👕',gambe:'👖',scarpe:'👟',strato:'🧥',accessori:'✨',intimo:'🩲'};
-  const occasioniMap = {
-    torso:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
-    gambe:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
-    scarpe:['casual','smart-casual','aperitivo','weekend','cena','date'],
-    strato:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio'],
-    accessori:['casual','smart-casual','aperitivo','weekend','cena','date','mare'],
-    intimo:['all']
-  };
-  BASE_CATALOG[cat] = BASE_CATALOG[cat] || [];
-  BASE_CATALOG[cat].push({
-    nome, cat,
-    emoji: emojiMap[cat] || '👕',
-    colori: ['neutro'],
-    formalita: 3,
-    occasioni: occasioniMap[cat] || ['casual','smart-casual']
-  });
-
-  saveCatalogToStorage();
-  buildEnrichedWardrobe();
-  input.value = '';
-  wpNewMaterial = null;
-  wpNewCategory = null;
-  renderWardrobePanel();
-}
-
-function deleteWardrobeByIdx(idx) {
-  const nome = wpItemNames[idx];
-  if (!nome) return;
-  if (!confirm('Eliminare "' + nome + '" dal guardaroba?')) return;
-
-  // Remove from BASE_CATALOG (in memory)
-  for (const cat in BASE_CATALOG) {
-    BASE_CATALOG[cat] = (BASE_CATALOG[cat] || []).filter(i => i.nome !== nome);
-  }
-
-  // Remove from wardrobeText in localStorage
-  const text = localStorage.getItem('wardrobeText') || '';
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean).filter(l => l !== nome);
-  localStorage.setItem('wardrobeText', lines.join('\n'));
-
-  // Remove material
-  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
-  delete saved[nome];
-  localStorage.setItem('materialSelections', JSON.stringify(saved));
-
-  // Remove category override
-  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
-  delete catOverrides[nome];
-  localStorage.setItem('catOverrides', JSON.stringify(catOverrides));
-
-  // Persist and rebuild
-  saveCatalogToStorage();
-  buildEnrichedWardrobe();
-  renderWardrobePanel();
-}
-
-
-function openHistory(){
-  const hist=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
-  const list=document.getElementById('historyList');
-  if(!hist.length){list.innerHTML='<p style="text-align:center;color:var(--muted);padding:40px;font-style:italic;">Nessun outfit generato ancora.</p>';}
-  else{list.innerHTML=hist.map(o=>{
-    if(o.type==='trip'){const fd=new Date(o.fromVal).toLocaleDateString('it-IT',{day:'numeric',month:'short'});const td=new Date(o.toVal).toLocaleDateString('it-IT',{day:'numeric',month:'short'});return`<div class="history-item"><div class="history-item-header"><span class="history-item-occasion">✈ ${o.dest}</span></div><div class="history-badge">VIAGGIO</div><div class="history-item-date">${fd} — ${td} · ${o.plan.length} giorni</div></div>`;}
-    const stars=o.rating?'★'.repeat(o.rating)+'☆'.repeat(5-o.rating):'—';
-    const il=o.items?o.items.filter(i=>i.cat!=='intimo'&&i.cat!=='calze').map(i=>i.nome).join(', '):'';
-    const dt=new Date(o.date).toLocaleDateString('it-IT',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-    return`<div class="history-item"><div class="history-item-header"><span class="history-item-occasion">${o.occasion}</span><span class="history-item-rating">${stars}</span></div><div class="history-item-date">${dt}</div><div class="history-item-items">${il}</div></div>`;
-  }).join('');}
-  document.getElementById('historyPanel').classList.add('open');
-}
-function closeHistory(){document.getElementById('historyPanel').classList.remove('open');}
-
-// ════════════════════════════════════════
-//  RESET / SCREENS
-// ════════════════════════════════════════
-function openReset(){document.getElementById('resetModal').classList.add('open');}
-function closeReset(){document.getElementById('resetModal').classList.remove('open');}
-function doReset(){localStorage.clear();location.reload();}
-function showMainScreen(){
-  document.getElementById('setupScreen').classList.remove('active');
-  document.getElementById('materialsScreen').classList.remove('active');
-  document.getElementById('mainScreen').classList.add('active');
-}
-
-// ════════════════════════════════════════
-//  INIT
-// ════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem('wardrobeSet')) {
-    loadCatalogFromStorage();
-    buildEnrichedWardrobe();
-    showMainScreen();
-  } else {
-    document.getElementById('setupScreen').classList.add('active');
-  }
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('singleDate').value = today;
-  document.getElementById('tripFrom').value = today;
-  document.getElementById('tripTo').value = today;
-  selectVtype('mare');
-});
 </script>
 </body>
 </html>
