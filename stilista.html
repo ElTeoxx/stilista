@@ -152,6 +152,28 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
 .valigia-qty{background:var(--gold);color:var(--dark-brown);border-radius:10px;padding:1px 7px;font-size:10px;font-weight:bold;flex-shrink:0;}
 
 /* HISTORY */
+/* WARDROBE MANAGER */
+#wardrobePanel{position:fixed;inset:0;background:var(--ivory);z-index:100;display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#wardrobePanel.open{display:flex;flex-direction:column;}
+.wp-header{background:var(--dark-brown);padding:calc(env(safe-area-inset-top,20px)+16px) 20px 18px;display:flex;align-items:flex-end;justify-content:space-between;position:sticky;top:0;z-index:10;flex-shrink:0;}
+.wp-header h2{font-size:16px;color:var(--gold);font-weight:normal;letter-spacing:2px;}
+.wp-header p{font-size:11px;color:var(--sand);margin-top:2px;}
+.wp-add{background:var(--white);margin:16px 16px 0;border-radius:8px;padding:16px;box-shadow:0 1px 8px rgba(0,0,0,0.06);}
+.wp-add-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.wp-input{width:100%;border:1px solid var(--sand);border-radius:3px;padding:10px 12px;font-family:inherit;font-size:14px;color:var(--charcoal);background:var(--ivory);outline:none;-webkit-appearance:none;margin-bottom:10px;}
+.wp-input:focus{border-color:var(--warm-brown);}
+.wp-add-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.wp-list{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.wp-item{background:var(--white);border-radius:8px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,0.05);}
+.wp-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.wp-item-name{font-size:14px;color:var(--charcoal);flex:1;}
+.wp-item-cat{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-left:8px;}
+.wp-item-del{background:transparent;border:none;color:var(--sand);font-size:18px;cursor:pointer;padding:0 4px;-webkit-appearance:none;flex-shrink:0;}
+.wp-item-del:active{color:var(--error);}
+.wp-item-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.wp-danger{padding:16px;margin-bottom:env(safe-area-inset-bottom,16px);}
+.btn-danger-soft{width:100%;padding:12px;border:1px solid var(--error);border-radius:4px;background:transparent;color:var(--error);font-family:inherit;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;}
+
 #historyPanel{position:fixed;inset:0;background:var(--ivory);z-index:100;display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #historyPanel.open{display:flex;}
 .history-header{background:var(--dark-brown);padding:calc(env(safe-area-inset-top,20px)+16px) 20px 18px;display:flex;align-items:flex-end;justify-content:space-between;position:sticky;top:0;z-index:10;}
@@ -215,7 +237,7 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn-icon" onclick="openHistory()">◷</button>
-      <button class="btn-icon" onclick="openReset()">⚙</button>
+      <button class="btn-icon" onclick="openWardrobe()">⚙</button>
     </div>
   </div>
   <div class="mode-tabs">
@@ -292,6 +314,36 @@ html,body{height:100%;background:var(--cream);font-family:'Georgia','Times New R
       <div class="empty-icon">✦</div>
       <p>Scrivi l'occasione e lascia che il tuo stilista personale componga il look perfetto.</p>
     </div>
+  </div>
+</div>
+
+<!-- WARDROBE MANAGER -->
+<div id="wardrobePanel">
+  <div class="wp-header">
+    <div>
+      <h2>Guardaroba</h2>
+      <p id="wpCount"></p>
+    </div>
+    <button class="btn-close" onclick="closeWardrobe()">Chiudi</button>
+  </div>
+
+  <!-- Add new item -->
+  <div class="wp-add">
+    <div class="wp-add-title">➕ Aggiungi capo</div>
+    <input type="text" id="wpNewName" placeholder="es. Giacca lino beige…" class="wp-input" />
+    <div class="input-label" style="margin:8px 0 6px;">Categoria</div>
+    <div class="wp-add-chips" id="wpCatChips"></div>
+    <div class="input-label" style="margin:10px 0 6px;">Materiale</div>
+    <div class="wp-add-chips" id="wpNewChips"></div>
+    <button class="btn-gold" onclick="addWardrobeItem()" style="margin-top:12px;">Aggiungi</button>
+  </div>
+
+  <!-- Existing items -->
+  <div class="wp-list" id="wpList"></div>
+
+  <!-- Danger zone -->
+  <div class="wp-danger">
+    <button class="btn-danger-soft" onclick="openReset()">🗑 Reset completo guardaroba</button>
   </div>
 </div>
 
@@ -397,59 +449,29 @@ const MATERIAL_OPTIONS = {
 //  WARDROBE CATALOG (base — stagioni da materiale)
 // ════════════════════════════════════════
 const BASE_CATALOG = {
-  intimo:[
-    {nome:"Boxer/slip",cat:"intimo",emoji:"🩲",colori:["neutro"],formalita:1,occasioni:["all"]}
-  ],
-  torso:[
-    {nome:"Polo beige maglia Zara",          cat:"torso",emoji:"👕",colori:["beige","neutro"],       formalita:3,occasioni:["casual","smart-casual","aperitivo","weekend"]},
-    {nome:"Polo maniche lunghe beige Zara",   cat:"torso",emoji:"👕",colori:["beige","neutro"],       formalita:3,occasioni:["casual","smart-casual","ufficio","aperitivo"]},
-    {nome:"Polo bianca Ralph Lauren",         cat:"torso",emoji:"👕",colori:["bianco","neutro"],      formalita:4,occasioni:["smart-casual","ufficio","aperitivo","cena","date","weekend"]},
-    {nome:"Polo nera Lacoste",                cat:"torso",emoji:"👕",colori:["nero"],                 formalita:4,occasioni:["smart-casual","ufficio","aperitivo","cena","date"]},
-    {nome:"Camicia RL blu righe bianche",     cat:"torso",emoji:"👔",colori:["blu","bianco"],         formalita:4,occasioni:["smart-casual","ufficio","aperitivo","cena","date","weekend"]},
-    {nome:"Camicia Zara lino righe azzurre",  cat:"torso",emoji:"👔",colori:["azzurro","bianco"],     formalita:3,occasioni:["casual","smart-casual","mare","weekend","aperitivo"]},
-    {nome:"Camicia RL lino bianca",           cat:"torso",emoji:"👔",colori:["bianco","neutro"],      formalita:4,occasioni:["casual","smart-casual","mare","cena","aperitivo","date","weekend"]},
-    {nome:"Camicia RL lino blu chiaro",       cat:"torso",emoji:"👔",colori:["azzurro","blu"],        formalita:4,occasioni:["casual","smart-casual","mare","cena","aperitivo","date","weekend"]},
-    {nome:"Camicia Casablanca avorio",        cat:"torso",emoji:"👔",colori:["beige","avorio","neutro"],formalita:4,occasioni:["smart-casual","aperitivo","cena","date","weekend"]},
-    {nome:"Camicia Pull&Bear beige traforata",cat:"torso",emoji:"👕",colori:["beige","neutro"],       formalita:2,occasioni:["casual","mare","weekend","aperitivo"]},
-    {nome:"Maglione RL navy",                 cat:"torso",emoji:"🧥",colori:["navy","blu"],           formalita:3,occasioni:["casual","smart-casual","ufficio","weekend"]},
-    {nome:"Maglione RL zip beige",            cat:"torso",emoji:"🧥",colori:["beige","neutro"],       formalita:3,occasioni:["casual","smart-casual","ufficio","weekend","aperitivo"]},
-    {nome:"Maglione RL zip azzurro",          cat:"torso",emoji:"🧥",colori:["azzurro"],              formalita:3,occasioni:["casual","smart-casual","ufficio","weekend","aperitivo"]},
-    {nome:"Dolcevita nero",                   cat:"torso",emoji:"🖤",colori:["nero"],                 formalita:4,occasioni:["smart-casual","cena","date","aperitivo","ufficio"]},
-  ],
-  strato:[
-    {nome:"Cappotto grigio",   cat:"strato",emoji:"🧥",colori:["grigio","neutro"],formalita:5,occasioni:["smart-casual","ufficio","cena","date","aperitivo","weekend"]},
-    {nome:"Giacca pelle nera", cat:"strato",emoji:"🧥",colori:["nero"],           formalita:3,occasioni:["casual","smart-casual","aperitivo","date","weekend"]},
-  ],
-  gambe:[
-    {nome:"Chino navy",                    cat:"gambe",emoji:"👖",colori:["navy","blu"],          formalita:4,occasioni:["smart-casual","ufficio","aperitivo","cena","date","weekend"]},
-    {nome:"Chino beige",                   cat:"gambe",emoji:"👖",colori:["beige","neutro"],      formalita:4,occasioni:["smart-casual","ufficio","aperitivo","cena","date","weekend","casual"]},
-    {nome:"Pantaloni lino bianchi",        cat:"gambe",emoji:"👖",colori:["bianco","neutro"],     formalita:4,occasioni:["smart-casual","cena","aperitivo","date","mare","weekend"]},
-    {nome:"Jeans neri relaxed",            cat:"gambe",emoji:"👖",colori:["nero"],                formalita:3,occasioni:["casual","smart-casual","aperitivo","date","weekend"]},
-    {nome:"Jeans denim scuro",             cat:"gambe",emoji:"👖",colori:["blu","navy"],          formalita:3,occasioni:["casual","smart-casual","ufficio","aperitivo","date","weekend"]},
-    {nome:"Bermuda bianchi",               cat:"gambe",emoji:"🩳",colori:["bianco","neutro"],     formalita:2,occasioni:["casual","mare","weekend"]},
-    {nome:"Pantaloncini sabbia uncinetto", cat:"gambe",emoji:"🩳",colori:["sabbia","beige","neutro"],formalita:2,occasioni:["casual","mare","weekend"]},
-    {nome:"Pantaloncini Casablanca",       cat:"gambe",emoji:"🩳",colori:["vari"],                formalita:2,occasioni:["casual","mare","weekend","aperitivo"]},
-  ],
-  scarpe:[
-    {nome:"Zegna suede marrone",  cat:"scarpe",emoji:"👞",colori:["marrone"],       formalita:5,occasioni:["smart-casual","ufficio","cena","date","aperitivo"]},
-    {nome:"Espadrillas sabbia",   cat:"scarpe",emoji:"👟",colori:["sabbia","beige"],formalita:2,occasioni:["casual","mare","weekend","aperitivo"]},
-    {nome:"Birkenstock Boston",   cat:"scarpe",emoji:"🥿",colori:["neutro","beige"],formalita:1,occasioni:["casual","mare","weekend"]},
-    {nome:"Valentino bianche",    cat:"scarpe",emoji:"👟",colori:["bianco"],        formalita:3,occasioni:["casual","smart-casual","aperitivo","date","weekend"]},
-    {nome:"Heritage Court nere",  cat:"scarpe",emoji:"👟",colori:["nero"],          formalita:3,ocasioni:["casual","smart-casual","aperitivo","date","weekend"]},
-    {nome:"Chelsea neri",         cat:"scarpe",emoji:"👞",colori:["nero"],          formalita:5,occasioni:["smart-casual","ufficio","cena","date","aperitivo"]},
-    {nome:"LV Trainer",           cat:"scarpe",emoji:"👟",colori:["vari"],          formalita:3,occasioni:["casual","smart-casual","aperitivo","date","weekend"]},
-  ],
-  accessori:[
-    {nome:"Hermès marrone",           cat:"accessori",emoji:"🪢",colori:["marrone"],formalita:5,tipo:"cintura", occasioni:["smart-casual","ufficio","cena","date","aperitivo"]},
-    {nome:"Ferragamo marrone scuro",  cat:"accessori",emoji:"🪢",colori:["marrone"],formalita:5,tipo:"cintura", occasioni:["smart-casual","ufficio","cena","date","aperitivo"]},
-    {nome:"Ferragamo nera",           cat:"accessori",emoji:"🪢",colori:["nero"],   formalita:5,tipo:"cintura", occasioni:["smart-casual","ufficio","cena","date","aperitivo"]},
-    {nome:"Casio navy",               cat:"accessori",emoji:"⌚",colori:["navy","blu"],formalita:2,tipo:"orologio",occasioni:["casual","mare","weekend","smart-casual"]},
-    {nome:"Casio bicolore",           cat:"accessori",emoji:"⌚",colori:["neutro"], formalita:3,tipo:"orologio",occasioni:["casual","smart-casual","weekend","aperitivo","date"]},
-    {nome:"Anello sigillo",           cat:"accessori",emoji:"💍",colori:["oro"],    formalita:4,tipo:"gioiello",occasioni:["smart-casual","cena","date","aperitivo","weekend"]},
-    {nome:"Collana oro semplice",     cat:"accessori",emoji:"📿",colori:["oro"],    formalita:3,tipo:"gioiello",occasioni:["casual","smart-casual","mare","aperitivo","date","weekend"]},
-    {nome:"Bracciale catena semplice",cat:"accessori",emoji:"⛓",colori:["oro"],    formalita:3,tipo:"gioiello",occasioni:["casual","smart-casual","mare","aperitivo","date","weekend"]},
-  ]
+  intimo: [], torso: [], strato: [], gambe: [], scarpe: [], accessori: []
 };
+
+// Carica i capi salvati in localStorage nel BASE_CATALOG
+function loadCatalogFromStorage() {
+  const stored = JSON.parse(localStorage.getItem('userCatalog') || '[]');
+  // Reset
+  for (const cat in BASE_CATALOG) BASE_CATALOG[cat] = [];
+  stored.forEach(item => {
+    const cat = item.cat || 'torso';
+    if (!BASE_CATALOG[cat]) BASE_CATALOG[cat] = [];
+    BASE_CATALOG[cat].push(item);
+  });
+}
+
+// Salva BASE_CATALOG in localStorage
+function saveCatalogToStorage() {
+  const all = [];
+  for (const cat in BASE_CATALOG) {
+    (BASE_CATALOG[cat] || []).forEach(item => all.push(item));
+  }
+  localStorage.setItem('userCatalog', JSON.stringify(all));
+}
 
 // Wardrobe arricchito con stagioni (popolato dopo setup)
 let W = null;
@@ -467,6 +489,9 @@ const tripMomentItems = {};
 // ════════════════════════════════════════
 // Mappatura automatica nome→categoria per lo step materiali
 function guessCategory(name) {
+  // Check manual override first (set when user adds a new item)
+  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
+  if (catOverrides[name]) return catOverrides[name];
   const n = name.toLowerCase();
   if(/boxer|slip|intimo/.test(n)) return 'intimo';
   if(/cappotto|giacca|giubbotto|blazer/.test(n)) return 'strato';
@@ -489,6 +514,7 @@ function goToMaterials() {
   const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
   if (!lines.length) { alert("Nessun capo trovato."); return; }
 
+  // pendingItems: nome + categoria auto-rilevata (modificabile nello step 2)
   pendingItems = lines.map(nome => ({ nome, cat: guessCategory(nome) }));
   materialSelections = {};
 
@@ -500,16 +526,49 @@ function goToMaterials() {
 
 function renderMaterialList() {
   const list = document.getElementById('matList');
+  const cats = [
+    {id:'torso',label:'👕 Sopra'},{id:'gambe',label:'👖 Sotto'},
+    {id:'scarpe',label:'👟 Scarpe'},{id:'strato',label:'🧥 Strato'},
+    {id:'accessori',label:'✨ Accessori'},{id:'intimo',label:'🩲 Intimo'}
+  ];
   list.innerHTML = pendingItems.map((item, idx) => {
     const opts = MATERIAL_OPTIONS[item.cat] || MATERIAL_OPTIONS['torso'];
-    const chips = opts.map(o =>
+    const matChips = opts.map(o =>
       `<button class="mat-chip" id="chip_${idx}_${o.id}" onclick="selectMaterial(${idx},'${o.id}')">${o.label}</button>`
     ).join('');
+    const catChips = cats.map(c =>
+      `<button class="mat-chip${item.cat===c.id?' sel':''}" id="ccat_${idx}_${c.id}" onclick="selectItemCat(${idx},'${c.id}')">${c.label}</button>`
+    ).join('');
     return `<div class="mat-item" id="matitem_${idx}">
-      <div class="mat-item-name"><span>${item.cat.toUpperCase()}</span>${item.nome}</div>
-      <div class="mat-chips">${chips}</div>
+      <div class="mat-item-name"><span>CAPO</span>${item.nome}</div>
+      <div style="padding:6px 16px 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Categoria</div>
+      <div class="mat-chips">${catChips}</div>
+      <div style="padding:6px 16px 2px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Materiale</div>
+      <div class="mat-chips">${matChips}</div>
     </div>`;
   }).join('');
+}
+
+
+function selectItemCat(idx, catId) {
+  pendingItems[idx].cat = catId;
+  // Update cat chips UI
+  const cats = ['torso','gambe','scarpe','strato','accessori','intimo'];
+  cats.forEach(c => {
+    const chip = document.getElementById(`ccat_${idx}_${c}`);
+    if (chip) chip.classList.toggle('sel', c === catId);
+  });
+  // Refresh material chips for new category
+  const opts = MATERIAL_OPTIONS[catId] || MATERIAL_OPTIONS['torso'];
+  const matContainer = document.querySelector(`#matitem_${idx} .mat-chips:last-child`);
+  if (matContainer) {
+    matContainer.innerHTML = opts.map(o =>
+      `<button class="mat-chip" id="chip_${idx}_${o.id}" onclick="selectMaterial(${idx},'${o.id}')">${o.label}</button>`
+    ).join('');
+    // Clear previous selection for this item
+    delete materialSelections[pendingItems[idx].nome];
+    updateMatProgress();
+  }
 }
 
 function selectMaterial(idx, materialId) {
@@ -542,10 +601,34 @@ function saveMaterials() {
     const missing = pendingItems.filter(i => !materialSelections[i.nome]).map(i=>i.nome);
     if (!confirm(`${total-done} capi senza materiale:\n${missing.slice(0,5).join('\n')}${missing.length>5?'\n…':''}\n\nProcedere comunque?`)) return;
   }
-  // Save to localStorage
-  localStorage.setItem('wardrobeText', document.getElementById('wardrobeInput').value.trim());
+
+  // Build BASE_CATALOG from pendingItems
+  for (const cat in BASE_CATALOG) BASE_CATALOG[cat] = [];
+  const emojiMap = {torso:'👕',gambe:'👖',scarpe:'👟',strato:'🧥',accessori:'✨',intimo:'🩲'};
+  const occasioniMap = {
+    torso:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
+    gambe:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
+    scarpe:['casual','smart-casual','aperitivo','weekend','cena','date'],
+    strato:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio'],
+    accessori:['casual','smart-casual','aperitivo','weekend','cena','date','mare'],
+    intimo:['all']
+  };
+  pendingItems.forEach(item => {
+    const cat = item.cat;
+    if (!BASE_CATALOG[cat]) BASE_CATALOG[cat] = [];
+    BASE_CATALOG[cat].push({
+      nome: item.nome, cat,
+      emoji: emojiMap[cat] || '👕',
+      colori: ['neutro'],
+      formalita: 3,
+      occasioni: occasioniMap[cat] || ['casual','smart-casual']
+    });
+  });
+
+  // Persist everything
   localStorage.setItem('materialSelections', JSON.stringify(materialSelections));
   localStorage.setItem('wardrobeSet', '1');
+  saveCatalogToStorage();
   buildEnrichedWardrobe();
   showMainScreen();
 }
@@ -581,6 +664,7 @@ const DEFAULT_MATERIALS = {
 
 function buildEnrichedWardrobe() {
   const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
+  // BASE_CATALOG is persisted via userCatalog in localStorage
   W = {};
   for (const cat in BASE_CATALOG) {
     W[cat] = BASE_CATALOG[cat].map(item => {
@@ -1173,6 +1257,206 @@ function generateOutfit(){
 // ════════════════════════════════════════
 //  HISTORY
 // ════════════════════════════════════════
+// ══════════════════════════════
+//  WARDROBE MANAGER
+// ══════════════════════════════
+let wpNewMaterial = null;  // materiale selezionato per nuovo capo
+let wpNewCategory = null;  // categoria selezionata per nuovo capo
+
+function openWardrobe() {
+  renderWardrobePanel();
+  document.getElementById('wardrobePanel').classList.add('open');
+}
+
+function closeWardrobe() {
+  document.getElementById('wardrobePanel').classList.remove('open');
+}
+
+// Global map: index -> nome, for safe onclick handling
+const wpItemNames = {};
+
+function renderWardrobePanel() {
+  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
+  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
+
+  // Build the full item list from BASE_CATALOG (source of truth in memory)
+  const allItems = [];
+  const catOrder = ['intimo','torso','strato','gambe','scarpe','accessori'];
+  catOrder.forEach(cat => {
+    (BASE_CATALOG[cat] || []).forEach(item => {
+      allItems.push({ nome: item.nome, cat });
+    });
+  });
+
+  document.getElementById('wpCount').textContent = allItems.length + ' capi';
+
+  // Category chips for new item
+  wpNewMaterial = null;
+  wpNewCategory = null;
+  const cats = [
+    {id:'torso',label:'👕 Sopra'},{id:'gambe',label:'👖 Sotto'},
+    {id:'scarpe',label:'👟 Scarpe'},{id:'strato',label:'🧥 Strato'},
+    {id:'accessori',label:'✨ Accessori'},{id:'intimo',label:'🩲 Intimo'}
+  ];
+  document.getElementById('wpCatChips').innerHTML = cats.map(c =>
+    `<button class="mat-chip" id="wpcat_${c.id}" onclick="selectNewCat('${c.id}')">${c.label}</button>`
+  ).join('');
+
+  // Material chips for new item
+  const allMats = [
+    {id:'cotone_leggero',label:'Cotone leggero'},{id:'lino',label:'Lino'},
+    {id:'cotone',label:'Cotone'},{id:'jersey',label:'Jersey/polo'},
+    {id:'denim',label:'Denim'},{id:'maglia',label:'Maglia'},
+    {id:'lana',label:'Lana'},{id:'cashmere',label:'Cashmere'},
+    {id:'pelle',label:'Pelle'},{id:'suede',label:'Suede/camoscio'},
+    {id:'canvas',label:'Canvas/tela'},{id:'sintetico',label:'Sintetico'},
+    {id:'metallo',label:'Metallo/oro'},{id:'plastica',label:'Plastica'}
+  ];
+  document.getElementById('wpNewChips').innerHTML = allMats.map(m =>
+    `<button class="mat-chip" id="wpnew_${m.id}" onclick="selectNewMat('${m.id}')">${m.label}</button>`
+  ).join('');
+
+  const list = document.getElementById('wpList');
+  if (!allItems.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px;font-style:italic;">Nessun capo nel guardaroba.</p>';
+    return;
+  }
+
+  // Store names in global map
+  allItems.forEach((item, idx) => { wpItemNames[idx] = item.nome; });
+
+  list.innerHTML = allItems.map((item, idx) => {
+    const { nome, cat } = item;
+    const matId = saved[nome] || DEFAULT_MATERIALS[nome] || null;
+    const chips = allMats.map(m =>
+      `<button class="mat-chip${matId === m.id ? ' sel' : ''}"
+        id="wpedit_${idx}_${m.id}"
+        onclick="updateMaterialByIdx(${idx},'${m.id}')">${m.label}</button>`
+    ).join('');
+    const catLabels = {torso:'Sopra',gambe:'Sotto',scarpe:'Scarpe',strato:'Strato',accessori:'Accessori',intimo:'Intimo'};
+    return `<div class="wp-item" id="wpitem_${idx}">
+      <div class="wp-item-top">
+        <span class="wp-item-name">${nome}</span>
+        <span class="wp-item-cat">${catLabels[cat]||cat}</span>
+        <button class="wp-item-del" onclick="deleteWardrobeByIdx(${idx})" title="Elimina">×</button>
+      </div>
+      <div class="wp-item-chips">${chips}</div>
+    </div>`;
+  }).join('');
+}
+
+
+function selectNewCat(catId) {
+  wpNewCategory = catId;
+  document.querySelectorAll('[id^="wpcat_"]').forEach(b => b.classList.remove('sel'));
+  const el = document.getElementById('wpcat_' + catId);
+  if (el) el.classList.add('sel');
+}
+
+function selectNewMat(matId) {
+  wpNewMaterial = matId;
+  document.querySelectorAll('[id^="wpnew_"]').forEach(b => b.classList.remove('sel'));
+  const el = document.getElementById('wpnew_' + matId);
+  if (el) el.classList.add('sel');
+}
+
+function updateMaterialByIdx(idx, matId) {
+  const nome = wpItemNames[idx];
+  if (!nome) return;
+  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
+  saved[nome] = matId;
+  localStorage.setItem('materialSelections', JSON.stringify(saved));
+  const allIds = ['cotone_leggero','lino','cotone','jersey','denim','maglia','lana','cashmere','pelle','suede','canvas','sintetico','metallo','plastica'];
+  allIds.forEach(id => {
+    const chip = document.getElementById(`wpedit_${idx}_${id}`);
+    if (chip) chip.classList.toggle('sel', id === matId);
+  });
+  buildEnrichedWardrobe();
+}
+
+function addWardrobeItem() {
+  const input = document.getElementById('wpNewName');
+  const nome = input.value.trim();
+  if (!nome) { input.focus(); return; }
+  if (!wpNewCategory) { alert('Seleziona la categoria del capo.'); return; }
+  if (!wpNewMaterial) { alert('Seleziona il materiale del capo.'); return; }
+
+  const text = localStorage.getItem('wardrobeText') || '';
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.includes(nome)) { alert('Questo capo è già nel guardaroba.'); return; }
+  lines.push(nome);
+  localStorage.setItem('wardrobeText', lines.join('\n'));
+
+  // Save material
+  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
+  saved[nome] = wpNewMaterial;
+  localStorage.setItem('materialSelections', JSON.stringify(saved));
+
+  // Save category override
+  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
+  catOverrides[nome] = wpNewCategory;
+  localStorage.setItem('catOverrides', JSON.stringify(catOverrides));
+
+  // Add to BASE_CATALOG
+  const cat = wpNewCategory;
+  const emojiMap = {torso:'👕',gambe:'👖',scarpe:'👟',strato:'🧥',accessori:'✨',intimo:'🩲'};
+  const occasioniMap = {
+    torso:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
+    gambe:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio','mare'],
+    scarpe:['casual','smart-casual','aperitivo','weekend','cena','date'],
+    strato:['casual','smart-casual','aperitivo','weekend','cena','date','ufficio'],
+    accessori:['casual','smart-casual','aperitivo','weekend','cena','date','mare'],
+    intimo:['all']
+  };
+  BASE_CATALOG[cat] = BASE_CATALOG[cat] || [];
+  BASE_CATALOG[cat].push({
+    nome, cat,
+    emoji: emojiMap[cat] || '👕',
+    colori: ['neutro'],
+    formalita: 3,
+    occasioni: occasioniMap[cat] || ['casual','smart-casual']
+  });
+
+  saveCatalogToStorage();
+  buildEnrichedWardrobe();
+  input.value = '';
+  wpNewMaterial = null;
+  wpNewCategory = null;
+  renderWardrobePanel();
+}
+
+function deleteWardrobeByIdx(idx) {
+  const nome = wpItemNames[idx];
+  if (!nome) return;
+  if (!confirm('Eliminare "' + nome + '" dal guardaroba?')) return;
+
+  // Remove from BASE_CATALOG (in memory)
+  for (const cat in BASE_CATALOG) {
+    BASE_CATALOG[cat] = (BASE_CATALOG[cat] || []).filter(i => i.nome !== nome);
+  }
+
+  // Remove from wardrobeText in localStorage
+  const text = localStorage.getItem('wardrobeText') || '';
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean).filter(l => l !== nome);
+  localStorage.setItem('wardrobeText', lines.join('\n'));
+
+  // Remove material
+  const saved = JSON.parse(localStorage.getItem('materialSelections') || '{}');
+  delete saved[nome];
+  localStorage.setItem('materialSelections', JSON.stringify(saved));
+
+  // Remove category override
+  const catOverrides = JSON.parse(localStorage.getItem('catOverrides') || '{}');
+  delete catOverrides[nome];
+  localStorage.setItem('catOverrides', JSON.stringify(catOverrides));
+
+  // Persist and rebuild
+  saveCatalogToStorage();
+  buildEnrichedWardrobe();
+  renderWardrobePanel();
+}
+
+
 function openHistory(){
   const hist=JSON.parse(localStorage.getItem('outfitHistory')||'[]');
   const list=document.getElementById('historyList');
@@ -1205,51 +1489,11 @@ function showMainScreen(){
 // ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('wardrobeSet')) {
+    loadCatalogFromStorage();
     buildEnrichedWardrobe();
     showMainScreen();
   } else {
     document.getElementById('setupScreen').classList.add('active');
-    // Pre-carica il tuo guardaroba
-    document.getElementById('wardrobeInput').value =
-`Polo beige maglia Zara
-Polo maniche lunghe beige Zara
-Polo bianca Ralph Lauren
-Polo nera Lacoste
-Camicia RL blu righe bianche
-Camicia Zara lino righe azzurre
-Camicia RL lino bianca
-Camicia RL lino blu chiaro
-Camicia Casablanca avorio
-Camicia Pull&Bear beige traforata
-Maglione RL navy
-Maglione RL zip beige
-Maglione RL zip azzurro
-Dolcevita nero
-Cappotto grigio
-Giacca pelle nera
-Chino navy
-Chino beige
-Pantaloni lino bianchi
-Jeans neri relaxed
-Jeans denim scuro
-Bermuda bianchi
-Pantaloncini sabbia uncinetto
-Pantaloncini Casablanca
-Zegna suede marrone
-Espadrillas sabbia
-Birkenstock Boston
-Valentino bianche
-Heritage Court nere
-Chelsea neri
-LV Trainer
-Hermès marrone
-Ferragamo marrone scuro
-Ferragamo nera
-Casio navy
-Casio bicolore
-Anello sigillo
-Collana oro semplice
-Bracciale catena semplice`;
   }
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('singleDate').value = today;
