@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stilista personale — Outfit Planner</title>
+<title>Stilista Personale — Outfit Planner</title>
 <style>
 :root {
   --brown: #3D2B1F;
@@ -633,6 +633,177 @@ input:focus { border-color: var(--gold); }
 }
 .notif.show { opacity: 1; }
 
+
+/* ── COLOR SWATCHES ── */
+.color-swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.color-swatch {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  position: relative;
+}
+.color-swatch:active { transform: scale(0.9); }
+.color-swatch.selected {
+  border-color: var(--gold);
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px var(--ivory), 0 0 0 4px var(--gold);
+}
+.color-swatch[data-color="bianco"] { background: #F8F6F0; border-color: #ddd; }
+.color-swatch[data-color="avorio"] { background: #EDE8D5; }
+.color-swatch[data-color="crema"] { background: #E8DFC0; }
+.color-swatch[data-color="beige"] { background: #D4B896; }
+.color-swatch[data-color="cammello"] { background: #C19A6B; }
+.color-swatch[data-color="tan"] { background: #A0724A; }
+.color-swatch[data-color="marrone chiaro"] { background: #8B5E3C; }
+.color-swatch[data-color="marrone"] { background: #6B3F1F; }
+.color-swatch[data-color="marrone scuro"] { background: #3D1F0A; }
+.color-swatch[data-color="grigio chiaro"] { background: #C8C8C8; }
+.color-swatch[data-color="grigio"] { background: #8E8E8E; }
+.color-swatch[data-color="grigio scuro"] { background: #4A4A4A; }
+.color-swatch[data-color="antracite"] { background: #2E2E2E; }
+.color-swatch[data-color="nero"] { background: #111111; }
+.color-swatch[data-color="navy"] { background: #1A2A4A; }
+.color-swatch[data-color="blu"] { background: #1A4FA0; }
+.color-swatch[data-color="blu medio"] { background: #3A7BD5; }
+.color-swatch[data-color="azzurro"] { background: #6AAFD6; }
+.color-swatch[data-color="turchese"] { background: #2A9D8F; }
+.color-swatch[data-color="verde scuro"] { background: #1B4332; }
+.color-swatch[data-color="verde"] { background: #2D6A4F; }
+.color-swatch[data-color="oliva"] { background: #6B7C3A; }
+.color-swatch[data-color="salvia"] { background: #87A87A; }
+.color-swatch[data-color="bordeaux"] { background: #6B1A2A; }
+.color-swatch[data-color="borgogna"] { background: #800020; }
+.color-swatch[data-color="rosso"] { background: #C0392B; }
+.color-swatch[data-color="ruggine"] { background: #B5451B; }
+.color-swatch[data-color="arancione"] { background: #E07020; }
+.color-swatch[data-color="rosa"] { background: #E8A0A0; }
+.color-swatch[data-color="lilla"] { background: #B09AC0; }
+.color-swatch[data-color="oro"] { background: #C9A96E; }
+.color-swatch[data-color="argento"] { background: #A8A8A8; border-color: #ccc; }
+.selected-color-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -4px;
+  margin-bottom: 8px;
+  min-height: 16px;
+}
+.color-section-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 5px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.color-secondary-toggle {
+  font-size: 11px;
+  color: var(--gold);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  background: none;
+  font-family: Georgia, serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.dual-swatch-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  min-height: 20px;
+}
+.dual-swatch-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.dual-swatch-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+
+/* ── COLOR SWATCHES ── */
+.color-swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.color-swatch {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.color-swatch:active { transform: scale(0.9); }
+.color-swatch.selected {
+  border-color: var(--gold);
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px var(--ivory), 0 0 0 4px var(--gold);
+}
+.color-swatch[data-color="bianco"]        { background:#F8F6F0; border-color:#ddd; }
+.color-swatch[data-color="avorio"]        { background:#EDE8D5; }
+.color-swatch[data-color="crema"]         { background:#E8DFC0; }
+.color-swatch[data-color="beige"]         { background:#D4B896; }
+.color-swatch[data-color="cammello"]      { background:#C19A6B; }
+.color-swatch[data-color="tan"]           { background:#A0724A; }
+.color-swatch[data-color="marrone chiaro"]{ background:#8B5E3C; }
+.color-swatch[data-color="marrone"]       { background:#6B3F1F; }
+.color-swatch[data-color="marrone scuro"] { background:#3D1F0A; }
+.color-swatch[data-color="grigio chiaro"] { background:#C8C8C8; }
+.color-swatch[data-color="grigio"]        { background:#8E8E8E; }
+.color-swatch[data-color="grigio scuro"]  { background:#4A4A4A; }
+.color-swatch[data-color="antracite"]     { background:#2E2E2E; }
+.color-swatch[data-color="nero"]          { background:#111111; }
+.color-swatch[data-color="navy"]          { background:#1A2A4A; }
+.color-swatch[data-color="blu"]           { background:#1A4FA0; }
+.color-swatch[data-color="blu medio"]     { background:#3A7BD5; }
+.color-swatch[data-color="azzurro"]       { background:#6AAFD6; }
+.color-swatch[data-color="turchese"]      { background:#2A9D8F; }
+.color-swatch[data-color="verde scuro"]   { background:#1B4332; }
+.color-swatch[data-color="verde"]         { background:#2D6A4F; }
+.color-swatch[data-color="oliva"]         { background:#6B7C3A; }
+.color-swatch[data-color="salvia"]        { background:#87A87A; }
+.color-swatch[data-color="bordeaux"]      { background:#6B1A2A; }
+.color-swatch[data-color="borgogna"]      { background:#800020; }
+.color-swatch[data-color="rosso"]         { background:#C0392B; }
+.color-swatch[data-color="ruggine"]       { background:#B5451B; }
+.color-swatch[data-color="arancione"]     { background:#E07020; }
+.color-swatch[data-color="rosa"]          { background:#E8A0A0; }
+.color-swatch[data-color="lilla"]         { background:#B09AC0; }
+.color-swatch[data-color="oro"]           { background:#C9A96E; }
+.color-swatch[data-color="argento"]       { background:#A8A8A8; border-color:#ccc; }
+.selected-color-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -4px;
+  margin-bottom: 8px;
+  min-height: 16px;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 0; }
 </style>
@@ -817,6 +988,23 @@ input:focus { border-color: var(--gold); }
         </div>
       </div>
       <div class="field-group">
+        <label class="field-label">Colore</label>
+        <div class="color-section-label">
+          Principale
+          <button class="color-secondary-toggle" onclick="toggleNewItemSecondary()">+ secondo colore</button>
+        </div>
+        <div id="newItemColorSwatches"></div>
+        <div id="newItemSecondarySection" style="display:none">
+          <div class="color-section-label">Secondario</div>
+          <div id="newItemColor2Swatches"></div>
+          <div class="color-section-label">Pattern</div>
+          <div class="chip-group" id="newItemPatternChips"></div>
+        </div>
+        <div class="dual-swatch-preview" id="newItemColorPreview">
+          <div class="dual-swatch-label" id="newItemColorLabel">— nessun colore selezionato —</div>
+        </div>
+      </div>
+      <div class="field-group">
         <label class="field-label">Materiale</label>
         <div class="chip-group" id="newItemMatChips">
           <span class="chip" onclick="selectNewMat(this,'Cotone leggero')">Cotone leggero</span>
@@ -863,7 +1051,47 @@ input:focus { border-color: var(--gold); }
 // ══════════════════════════════════════════════════
 
 const CATS = ['Sopra','Sotto','Scarpe','Strato','Accessori','Intimo'];
+
+// Palette completa swatches
+const COLORS = [
+  'bianco','avorio','crema','beige','cammello','tan',
+  'marrone chiaro','marrone','marrone scuro',
+  'grigio chiaro','grigio','grigio scuro','antracite','nero',
+  'navy','blu','blu medio','azzurro','turchese',
+  'verde scuro','verde','oliva','salvia',
+  'bordeaux','borgogna','rosso','ruggine','arancione',
+  'rosa','lilla','oro','argento'
+];
+
+const PATTERNS = [
+  { id: 'tinta-unita',        label: 'Tinta unita',         icon: '▬', formality: 0 },
+  { id: 'righe-verticali',    label: 'Righe verticali',     icon: '║', formality: 2 },  // pinstripe, chalk stripe — formali, allungano
+  { id: 'righe-orizzontali',  label: 'Righe orizzontali',   icon: '═', formality: -1 }, // marinière, breton — casual, allargano
+  { id: 'quadri',             label: 'Quadri',              icon: '▦', formality: 1 },
+  { id: 'principe-galles',    label: 'Principe di Galles',  icon: '⊞', formality: 2 },
+  { id: 'pied-de-poule',      label: 'Pied de poule',       icon: '◈', formality: 2 },
+  { id: 'fantasia',           label: 'Fantasia',            icon: '✦', formality: -1 },
+];
+
 const MATS = ['Cotone leggero','Lino','Cotone','Jersey-polo','Denim','Maglia','Lana','Cashmere','Pelle','Suede-camoscio','Canvas-tela','Sintetico','Metallo-oro','Plastica'];
+
+
+// Genera griglia swatch colori (primary o secondary)
+function buildSwatchGrid(groupId, selectedColor, onSelectFn) {
+  const id = groupId !== null ? groupId + ',' : '';
+  const swatches = COLORS.map(c =>
+    `<span class="color-swatch${selectedColor===c?' selected':''}" data-color="${c}" title="${c}" onclick="${onSelectFn}(${id}'${c}',this)"></span>`
+  ).join('');
+  return `<div class="color-swatch-grid">${swatches}</div>`;
+}
+
+// Genera chip pattern
+function buildPatternChips(groupId, selectedPattern, onSelectFn) {
+  const id = groupId !== null ? `${groupId},` : '';
+  return PATTERNS.map(p =>
+    `<span class="chip${selectedPattern===p.id?' selected':''}" onclick="${onSelectFn}(${id}'${p.id}',this)" style="font-size:13px">${p.icon} ${p.label}</span>`
+  ).join('');
+}
 
 // Stagioni per materiale
 const MAT_SEASONS = {
@@ -1247,10 +1475,15 @@ const COLOR_HARMONY = {
   ],
 };
 
-// Rileva il colore canonico dal nome del capo
-function getColor(name) {
-  if (!name) return null;
-  const n = name.toLowerCase();
+// Rileva il colore canonico — accetta stringa (nome) o oggetto capo
+function getColor(input) {
+  if (!input) return null;
+  // Se è un oggetto capo con colore esplicito, usa quello
+  if (typeof input === 'object') {
+    if (input.colore) return input.colore;
+    input = input.nome || '';
+  }
+  const n = String(input).toLowerCase();
   for (const [canonical, keywords] of Object.entries(COLOR_FAMILIES)) {
     for (const kw of keywords) {
       if (n.includes(kw)) return canonical;
@@ -1261,16 +1494,50 @@ function getColor(name) {
 
 // getColor now defined in COLOR_FAMILIES section above
 
-function colorsMatch(nameA, nameB) {
-  if (!nameA || !nameB) return true;
-  const cA = getColor(nameA);
-  const cB = getColor(nameB);
-  if (!cA || !cB) return true; // colore sconosciuto = compatibile con tutto
-  if (cA === cB) return true;  // stesso colore = sempre ok (tono su tono)
-  const listA = COLOR_HARMONY[cA] || [];
-  const listB = COLOR_HARMONY[cB] || [];
-  // Simmetrico: A abbina B oppure B abbina A
-  return listA.includes(cB) || listB.includes(cA);
+function colorsMatch(a, b) {
+  if (!a || !b) return true;
+
+  // Estrai dati da oggetto o stringa
+  const getItemData = x => typeof x === 'object'
+    ? { c1: x.colore, c2: x.colore2, pat: x.pattern || 'tinta-unita' }
+    : { c1: getColor(x), c2: null, pat: 'tinta-unita' };
+
+  const A = getItemData(a);
+  const B = getItemData(b);
+
+  // Colori sconosciuti = compatibili con tutto
+  if (!A.c1 || !B.c1) return true;
+
+  // ── REGOLA PATTERN ──
+  const aHasPattern = A.pat && A.pat !== 'tinta-unita';
+  const bHasPattern = B.pat && B.pat !== 'tinta-unita';
+
+  if (aHasPattern && bHasPattern) {
+    // Unica eccezione accettata nel menswear classico:
+    // righe verticali sottili (pinstripe) + principe di Galles o pied-de-poule
+    // ma solo se sono dello stesso gruppo tonale — troppo avanzato, meglio vietare sempre
+    return false;
+  }
+
+  // Righe orizzontali: richiedono che l'altro capo sia assolutamente tinta unita
+  // (già garantito dal blocco sopra, ma esplicitiamo per chiarezza)
+  if (A.pat === 'righe-orizzontali' && bHasPattern) return false;
+  if (B.pat === 'righe-orizzontali' && aHasPattern) return false;
+
+  // ── REGOLA COLORE DOMINANTE ──
+  // Il colore principale di A deve abbinarsi al principale di B
+  const listA1 = COLOR_HARMONY[A.c1] || [];
+  const listB1 = COLOR_HARMONY[B.c1] || [];
+  const dominantOk = A.c1 === B.c1 || listA1.includes(B.c1) || listB1.includes(A.c1);
+  if (!dominantOk) return false;
+
+  // ── REGOLA COLORE SECONDARIO ──
+  // Il secondario di A non deve essere uguale al dominante di B
+  // (evita di "raddoppiare" l'accento nell'outfit)
+  if (A.c2 && A.c2 === B.c1) return false;
+  if (B.c2 && B.c2 === A.c1) return false;
+
+  return true;
 }
 
 // Formalità per occasione
@@ -1330,6 +1597,7 @@ let selectedQuick = null;
 let selectedTravelType = null;
 let newItemCat = null;
 let newItemMat = null;
+let newItemColor = null;
 let travelUsedCombos = [];
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -1384,6 +1652,9 @@ function buildCatalogSetupList(items) {
   window._setupItems = items;
   window._setupCats = {};
   window._setupMats = {};
+  window._setupColors = {};
+  window._setupColors2 = {};
+  window._setupPatterns = {};
 
   items.forEach((nome, i) => {
     const div = document.createElement('div');
@@ -1394,6 +1665,23 @@ function buildCatalogSetupList(items) {
       <div class="chip-group-label">Categoria</div>
       <div class="chip-group" id="cat-chips-${i}">
         ${CATS.map(c => `<span class="chip" data-idx="${i}" data-cat="${c}">${c}</span>`).join('')}
+      </div>
+      <div class="chip-group-label">Colore</div>
+      <div class="color-section-label">
+        Principale
+        <button class="color-secondary-toggle" onclick="toggleSecondary(${i})">+ secondo colore</button>
+      </div>
+      <div id="color-swatches-${i}">${buildSwatchGrid(i, null, 'selectSetupColor')}</div>
+      <div id="secondary-section-${i}" style="display:none">
+        <div class="color-section-label">Secondario</div>
+        <div id="color2-swatches-${i}">${buildSwatchGrid(i, null, 'selectSetupColor2')}</div>
+        <div class="color-section-label">Pattern</div>
+        <div class="chip-group" id="pattern-chips-${i}">
+          ${buildPatternChips(i, 'tinta-unita', 'selectSetupPattern')}
+        </div>
+      </div>
+      <div class="dual-swatch-preview" id="color-preview-${i}">
+        <div class="dual-swatch-label" id="color-label-${i}">— nessun colore selezionato —</div>
       </div>
       <div class="chip-group-label">Materiale</div>
       <div class="chip-group" id="mat-chips-${i}">
@@ -1464,6 +1752,78 @@ function autoGuessSetup(i, nome) {
       if (c.textContent === 'Cotone') c.classList.add('selected');
     });
   }
+  // Auto-guess color from name
+  const guessedColor = getColor(nome);
+  if (guessedColor) {
+    window._setupColors[i] = guessedColor;
+    const swatch = document.querySelector(`#color-swatches-${i} [data-color="${guessedColor}"]`);
+    if (swatch) swatch.classList.add('selected');
+    updateColorPreview(i);
+  }
+  // Auto-guess pattern (basic)
+  const nl = nome.toLowerCase();
+  let guessedPattern = 'tinta-unita';
+  if (nl.includes('pinstr') || nl.includes('chalk stripe') || nl.includes('gessato')) guessedPattern = 'righe-verticali';
+  else if (nl.includes('marinière') || nl.includes('mariniere') || nl.includes('breton') || nl.includes('righe oriz')) guessedPattern = 'righe-orizzontali';
+  else if (nl.includes('rig') || nl.includes('stri')) guessedPattern = 'righe-verticali'; // default righe → verticali
+  else if (nl.includes('quadri') || nl.includes('check') || nl.includes('tartan')) guessedPattern = 'quadri';
+  else if (nl.includes('principe') || nl.includes('galles') || nl.includes('glen')) guessedPattern = 'principe-galles';
+  else if (nl.includes('pied') || nl.includes('houndstooth')) guessedPattern = 'pied-de-poule';
+  else if (nl.includes('fantasia') || nl.includes('floral') || nl.includes('paisley') || nl.includes('stampa')) guessedPattern = 'fantasia';
+  window._setupPatterns[i] = guessedPattern;
+}
+
+function selectSetupColor(i, color, el) {
+  window._setupColors[i] = color;
+  document.querySelectorAll(`#color-swatches-${i} .color-swatch`).forEach(s => s.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  updateColorPreview(i);
+}
+
+function selectSetupColor2(i, color, el) {
+  window._setupColors2[i] = color;
+  document.querySelectorAll(`#color2-swatches-${i} .color-swatch`).forEach(s => s.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  updateColorPreview(i);
+}
+
+function selectSetupPattern(i, pattern, el) {
+  window._setupPatterns[i] = pattern;
+  document.querySelectorAll(`#pattern-chips-${i} .chip`).forEach(c => c.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+}
+
+function toggleSecondary(i) {
+  const sec = document.getElementById('secondary-section-' + i);
+  if (!sec) return;
+  const open = sec.style.display !== 'none';
+  sec.style.display = open ? 'none' : 'block';
+  if (open) {
+    delete window._setupColors2[i];
+    delete window._setupPatterns[i];
+    updateColorPreview(i);
+  }
+}
+
+function updateColorPreview(i) {
+  const preview = document.getElementById('color-preview-' + i);
+  const label = document.getElementById('color-label-' + i);
+  if (!preview || !label) return;
+  const c1 = window._setupColors[i];
+  const c2 = window._setupColors2[i];
+  if (!c1) { label.textContent = '— nessun colore selezionato —'; preview.innerHTML = `<div class="dual-swatch-label" id="color-label-${i}">— nessun colore selezionato —</div>`; return; }
+  let html = `<span class="color-swatch dual-swatch-dot" data-color="${c1}" style="cursor:default"></span>`;
+  let text = c1;
+  if (c2) {
+    html += `<span style="color:var(--text-muted);font-size:13px">+</span><span class="color-swatch dual-swatch-dot" data-color="${c2}" style="cursor:default"></span>`;
+    text += ` + ${c2}`;
+  }
+  const pattern = window._setupPatterns[i];
+  if (pattern && pattern !== 'tinta-unita') {
+    const p = PATTERNS.find(x => x.id === pattern);
+    text += ` · ${p ? p.label : pattern}`;
+  }
+  preview.innerHTML = html + `<div class="dual-swatch-label" id="color-label-${i}">${text}</div>`;
 }
 
 function selectSetupCat(i, cat, el) {
@@ -1493,16 +1853,25 @@ function saveSetup() {
   var cats = window._setupCats || {};
   var mats = window._setupMats || {};
   if (items.length === 0) { notify('Nessun capo da salvare'); return; }
+  var colors = window._setupColors || {};
+  var colors2 = window._setupColors2 || {};
+  var patterns = window._setupPatterns || {};
   var catalog = items.map(function(nome, i) {
     var cat = cats[i] || autoGuessCategory(nome);
     var mat = mats[i] || 'Cotone';
     var stagioni = MAT_SEASONS[mat] || MAT_SEASONS['Cotone'];
+    var colore = colors[i] || getColor(nome) || null;
+    var colore2 = colors2[i] || null;
+    var pattern = patterns[i] || 'tinta-unita';
     return {
       id: Date.now() + i,
       nome: nome,
       cat: cat,
       mat: mat,
       stagioni: stagioni,
+      colore: colore,
+      colore2: colore2,
+      pattern: pattern,
       formalita: guessFormalita(nome, cat),
       emoji: CAT_EMOJI[cat] || '👔'
     };
@@ -1612,7 +1981,7 @@ function generateOutfit(opts = {}) {
 
   for (const s of sopra) {
     for (const p of sotto) {
-      if (!colorsMatch(s.nome, p.nome)) continue;
+      if (!colorsMatch(s, p)) continue;
       const key = `${s.id}_${p.id}`;
       const isJustUsed = used.length > 0 && used[used.length - 1] === key;
       if (isJustUsed) continue;
@@ -1645,7 +2014,7 @@ function generateOutfit(opts = {}) {
   if (!combo) { notify('Impossibile creare outfit'); return null; }
 
   // Scegli scarpe compatibili
-  let compatScarpe = scarpe.filter(sc => colorsMatch(sc.nome, combo.sotto.nome) || colorsMatch(sc.nome, combo.sopra.nome));
+  let compatScarpe = scarpe.filter(sc => colorsMatch(sc, combo.sotto) || colorsMatch(sc, combo.sopra));
   if (compatScarpe.length === 0) compatScarpe = scarpe;
   const pickedScarpe = compatScarpe.length ? pick(compatScarpe) : null;
 
@@ -1659,7 +2028,7 @@ function generateOutfit(opts = {}) {
   const intimoColor = getIntimoColor(formalTarget);
 
   // Cintura
-  const shoeColor = pickedScarpe ? getColor(pickedScarpe.nome) : null;
+  const shoeColor = pickedScarpe ? getColor(pickedScarpe) : null;
   const cintura = getCintura(shoeColor);
   const orologio = getOrologio(formalTarget);
   const gioielli = getGioielli(formalTarget);
@@ -1789,9 +2158,15 @@ function renderOutfit(outfit) {
   };
 
   addLayer('🩲', 'Intimo', outfit.intimo, outfit.intimoNote);
-  addLayer('👕', 'Sopra', outfit.sopra, null);
+  const sopraPat = outfit.sopra?.pattern && outfit.sopra.pattern !== 'tinta-unita'
+    ? (PATTERNS.find(p => p.id === outfit.sopra.pattern)?.label || outfit.sopra.pattern)
+    : null;
+  addLayer('👕', 'Sopra', outfit.sopra, sopraPat ? `Pattern: ${sopraPat}` : null);
   if (outfit.strato) addLayer('🧥', 'Strato', outfit.strato, null);
-  addLayer('👖', 'Sotto', outfit.sotto, null);
+  const sottoPat = outfit.sotto?.pattern && outfit.sotto.pattern !== 'tinta-unita'
+    ? (PATTERNS.find(p => p.id === outfit.sotto.pattern)?.label || outfit.sotto.pattern)
+    : null;
+  addLayer('👖', 'Sotto', outfit.sotto, sottoPat ? `Pattern: ${sottoPat}` : null);
   if (outfit.scarpe) addLayer('👟', 'Scarpe', outfit.scarpe, outfit.calzeNote);
   else if (outfit.calzeNote) addLayer('🧦', 'Calze', outfit.calzeNote, null);
   
@@ -2026,6 +2401,12 @@ function rateTravelOutfit(el, stars, comboKey) {
 // ══════════════════════════════════════════════════
 function openWardrobe() {
   renderWardrobeList();
+  const s1 = document.getElementById('newItemColorSwatches');
+  if (s1 && !s1.innerHTML) s1.innerHTML = buildSwatchGrid(null, null, 'selectNewColor');
+  const s2 = document.getElementById('newItemColor2Swatches');
+  if (s2 && !s2.innerHTML) s2.innerHTML = buildSwatchGrid(null, null, 'selectNewColor2');
+  const sp = document.getElementById('newItemPatternChips');
+  if (sp && !sp.innerHTML) sp.innerHTML = buildPatternChips(null, 'tinta-unita', 'selectNewPattern');
   document.getElementById('wardrobeOverlay').classList.add('open');
 }
 function closeWardrobe() {
@@ -2039,16 +2420,100 @@ function renderWardrobeList() {
     el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👔</div><div class="empty-state-text">Nessun capo nel guardaroba</div></div>';
     return;
   }
-  el.innerHTML = catalog.map((item, i) => `
-    <div class="wardrobe-item">
+  el.innerHTML = catalog.map((item) => {
+    const swatchStyle = item.colore
+      ? `display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--swatch-${item.colore.replace(/ /g,'-')},#ccc);border:1px solid rgba(0,0,0,0.15);vertical-align:middle;margin-right:5px;`
+      : '';
+    const colorDot = item.colore
+      ? `<span class="color-swatch" data-color="${item.colore}" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:4px;cursor:default;flex-shrink:0;border:1px solid rgba(0,0,0,0.1);border-radius:50%;"></span>`
+      : `<span style="display:inline-block;width:18px;height:18px;border-radius:50%;border:1px dashed #bbb;vertical-align:middle;margin-right:4px;cursor:pointer;flex-shrink:0;" onclick="pickColorForItem(${item.id})" title="Aggiungi colore"></span>`;
+    return `
+    <div class="wardrobe-item" id="witem-${item.id}">
       <span style="font-size:20px">${item.emoji || '👔'}</span>
-      <div style="flex:1">
+      <div style="flex:1;min-width:0;">
         <div class="wardrobe-item-name">${escapeHtml(item.nome)}</div>
-        <div class="wardrobe-item-meta">${item.cat} — <span class="mat-chip-small" onclick="editMat(${item.id})">${item.mat}</span></div>
+        <div class="wardrobe-item-meta" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+          ${colorDot}
+          <span style="font-size:11px;color:var(--text-muted);cursor:pointer;" onclick="pickColorForItem(${item.id})">${item.colore || '<em>colore?</em>'}</span>
+          ${item.colore2 ? `<span style="font-size:11px;color:var(--text-muted)">+</span><span class="color-swatch" data-color="${item.colore2}" style="width:14px;height:14px;display:inline-block;vertical-align:middle;border-radius:50%;border:1px solid rgba(0,0,0,0.1);cursor:default;"></span><span style="font-size:11px;color:var(--text-muted)">${item.colore2}</span>` : ''}
+          ${item.pattern && item.pattern !== 'tinta-unita' ? `<span style="font-size:10px;color:var(--gold);border:1px solid var(--border);border-radius:8px;padding:1px 6px;">${PATTERNS.find(p=>p.id===item.pattern)?.label||item.pattern}</span>` : ''}
+          <span style="color:var(--text-muted)">·</span>
+          <span class="mat-chip-small" onclick="editMat(${item.id})">${item.mat}</span>
+        </div>
+        <div id="colorpicker-${item.id}" style="display:none;margin-top:8px;">
+          ${buildSwatchGrid(item.id, item.colore || null, 'saveColorForItem')}
+        </div>
       </div>
       <button class="wardrobe-delete" onclick="deleteItem(${item.id})">×</button>
     </div>
-  `).join('');
+  `}).join('');
+}
+
+function pickColorForItem(id) {
+  const picker = document.getElementById('colorpicker-' + id);
+  if (!picker) return;
+  const isOpen = picker.style.display !== 'none';
+  document.querySelectorAll('[id^="colorpicker-"]').forEach(p => p.style.display = 'none');
+  if (!isOpen) {
+    // Rebuild with color2 + pattern if not already built
+    if (!picker.dataset.built) {
+      const catalog = getCatalog();
+      const item = catalog.find(i => i.id === id);
+      if (item) {
+        picker.innerHTML = `
+          <div class="color-section-label">Principale</div>
+          ${buildSwatchGrid(id, item.colore || null, 'saveColorForItem')}
+          <div class="color-section-label" style="margin-top:6px">Secondario <span style="font-size:10px;color:var(--text-muted)">(opzionale)</span></div>
+          ${buildSwatchGrid(id, item.colore2 || null, 'saveColor2ForItem')}
+          <div class="color-section-label" style="margin-top:6px">Pattern</div>
+          <div class="chip-group">${buildPatternChips(id, item.pattern || 'tinta-unita', 'savePatternForItem')}</div>
+        `;
+        picker.dataset.built = '1';
+      }
+    }
+    picker.style.display = 'block';
+  }
+}
+
+function saveColorForItem(id, color, el) {
+  const catalog = getCatalog();
+  const item = catalog.find(i => i.id === id);
+  if (!item) return;
+  item.colore = color;
+  saveCatalog(catalog);
+  // Update swatch highlight without full re-render
+  document.querySelectorAll(`#colorpicker-${id} .color-swatch`).forEach(s => {
+    if (s.closest('[id^="colorpicker"]') === document.getElementById('colorpicker-'+id)) return;
+  });
+  const picker = document.getElementById('colorpicker-' + id);
+  if (picker) { picker.dataset.built = ''; picker.style.display = 'none'; }
+  renderWardrobeList();
+  notify('Colore: ' + color);
+}
+
+function saveColor2ForItem(id, color, el) {
+  const catalog = getCatalog();
+  const item = catalog.find(i => i.id === id);
+  if (!item) return;
+  item.colore2 = color;
+  saveCatalog(catalog);
+  const picker = document.getElementById('colorpicker-' + id);
+  if (picker) { picker.dataset.built = ''; picker.style.display = 'none'; }
+  renderWardrobeList();
+  notify('Colore secondario: ' + color);
+}
+
+function savePatternForItem(id, pattern, el) {
+  const catalog = getCatalog();
+  const item = catalog.find(i => i.id === id);
+  if (!item) return;
+  item.pattern = pattern;
+  saveCatalog(catalog);
+  const picker = document.getElementById('colorpicker-' + id);
+  if (picker) { picker.dataset.built = ''; picker.style.display = 'none'; }
+  renderWardrobeList();
+  const p = PATTERNS.find(x => x.id === pattern);
+  notify('Pattern: ' + (p ? p.label : pattern));
 }
 
 function editMat(id) {
@@ -2083,6 +2548,55 @@ function selectNewMat(el, mat) {
   document.querySelectorAll('#newItemMatChips .chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 }
+let newItemColor2 = null;
+let newItemPattern = 'tinta-unita';
+
+function updateNewItemPreview() {
+  const preview = document.getElementById('newItemColorPreview');
+  if (!preview) return;
+  const c1 = newItemColor, c2 = newItemColor2, pat = newItemPattern;
+  if (!c1) { preview.innerHTML = '<div class="dual-swatch-label" id="newItemColorLabel">— nessun colore selezionato —</div>'; return; }
+  let html = `<span class="color-swatch dual-swatch-dot" data-color="${c1}" style="cursor:default"></span>`;
+  let text = c1;
+  if (c2) {
+    html += `<span style="color:var(--text-muted);font-size:13px">+</span><span class="color-swatch dual-swatch-dot" data-color="${c2}" style="cursor:default"></span>`;
+    text += ` + ${c2}`;
+  }
+  if (pat && pat !== 'tinta-unita') {
+    const p = PATTERNS.find(x => x.id === pat);
+    text += ` · ${p ? p.label : pat}`;
+  }
+  preview.innerHTML = html + `<div class="dual-swatch-label" id="newItemColorLabel">${text}</div>`;
+}
+
+function selectNewColor(color, el) {
+  newItemColor = color;
+  document.querySelectorAll('#newItemColorSwatches .color-swatch').forEach(s => s.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  updateNewItemPreview();
+}
+
+function selectNewColor2(color, el) {
+  newItemColor2 = color;
+  document.querySelectorAll('#newItemColor2Swatches .color-swatch').forEach(s => s.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  updateNewItemPreview();
+}
+
+function selectNewPattern(pattern, el) {
+  newItemPattern = pattern;
+  document.querySelectorAll('#newItemPatternChips .chip').forEach(c => c.classList.remove('selected'));
+  if (el) el.classList.add('selected');
+  updateNewItemPreview();
+}
+
+function toggleNewItemSecondary() {
+  const sec = document.getElementById('newItemSecondarySection');
+  if (!sec) return;
+  const open = sec.style.display !== 'none';
+  sec.style.display = open ? 'none' : 'block';
+  if (open) { newItemColor2 = null; newItemPattern = 'tinta-unita'; updateNewItemPreview(); }
+}
 
 function addNewItem() {
   const nome = document.getElementById('newItemName').value.trim();
@@ -2090,20 +2604,29 @@ function addNewItem() {
   if (!newItemCat) { notify('Seleziona la categoria'); return; }
   const mat = newItemMat || 'Cotone';
   const catalog = getCatalog();
+  const colore = newItemColor || getColor(nome) || null;
   const item = {
     id: Date.now(),
     nome,
     cat: newItemCat,
     mat,
     stagioni: MAT_SEASONS[mat] || MAT_SEASONS['Cotone'],
+    colore,
+    colore2: newItemColor2 || null,
+    pattern: newItemPattern || 'tinta-unita',
     formalita: guessFormalita(nome, newItemCat),
     emoji: CAT_EMOJI[newItemCat] || '👔'
   };
   catalog.push(item);
   saveCatalog(catalog);
   document.getElementById('newItemName').value = '';
-  newItemCat = null; newItemMat = null;
+  newItemCat = null; newItemMat = null; newItemColor = null; newItemColor2 = null; newItemPattern = 'tinta-unita';
   document.querySelectorAll('#newItemCatChips .chip, #newItemMatChips .chip').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('#newItemColorSwatches .color-swatch, #newItemColor2Swatches .color-swatch').forEach(s => s.classList.remove('selected'));
+  const secEl = document.getElementById('newItemSecondarySection');
+  if (secEl) secEl.style.display = 'none';
+  const preview = document.getElementById('newItemColorPreview');
+  if (preview) preview.innerHTML = '<div class="dual-swatch-label" id="newItemColorLabel">— nessun colore selezionato —</div>';
   renderWardrobeList();
   notify('Capo aggiunto!');
 }
